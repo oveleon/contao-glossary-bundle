@@ -1,0 +1,14 @@
+
+<div class="layout_full block<?= $this->class ?>" itemscope itemtype="http://schema.org/Article">
+
+  <h1 itemprop="name"><?= $this->itemHeadline ?></h1>
+
+  <?php if ($this->hasText): ?>
+    <?= $this->text ?>
+  <?php else: ?>
+    <div class="ce_text block">
+      <?= $this->teaser ?>
+    </div>
+  <?php endif; ?>
+
+</div>

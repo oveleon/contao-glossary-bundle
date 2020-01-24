@@ -1,0 +1,10 @@
+
+<div class="layout_short glossary_<?= $this->glossary->id ?> block<?= $this->class ?>">
+
+  <strong><?= $this->linkHeadline ?></strong>
+
+  <div class="ce_text block" itemprop="description">
+    <?= $this->teaser ?>
+  </div>
+
+</div>
