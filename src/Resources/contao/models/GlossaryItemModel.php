@@ -57,4 +57,67 @@ class GlossaryItemModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_glossary_item';
+
+    /**
+     * Find published news items by their parent ID
+     *
+     * @param array   $arrPids     An array of glossary archive IDs
+     * @param integer $intLimit    An optional limit
+     * @param integer $intOffset   An optional offset
+     * @param array   $arrOptions  An optional options array
+     *
+     * @return \Model\Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossaries
+     */
+    public static function findPublishedByPids($arrPids, $intLimit=0, $intOffset=0, array $arrOptions=array())
+    {
+        if (empty($arrPids) || !\is_array($arrPids))
+        {
+            return null;
+        }
+
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")");
+
+        // Never return unpublished elements in the back end
+        if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
+        {
+            $arrColumns[] = "$t.published='1'";
+        }
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order']  = "$t.keyword ASC";
+        }
+
+        $arrOptions['limit']  = $intLimit;
+        $arrOptions['offset'] = $intOffset;
+
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
+
+    /**
+     * Count published glossary items by their parent ID
+     *
+     * @param array   $arrPids     An array of glossary archive IDs
+     * @param array   $arrOptions  An optional options array
+     *
+     * @return integer The number of news items
+     */
+    public static function countPublishedByPids($arrPids, array $arrOptions=array())
+    {
+        if (empty($arrPids) || !\is_array($arrPids))
+        {
+            return 0;
+        }
+
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")");
+
+        if (!static::isPreviewMode($arrOptions))
+        {
+            $arrColumns[] = "$t.published='1'";
+        }
+
+        return static::countBy($arrColumns, null, $arrOptions);
+    }
 }

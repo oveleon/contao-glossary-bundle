@@ -2,10 +2,10 @@
 
 <?php $this->block('content'); ?>
 
-  <?php if (empty($this->items)): ?>
+  <?php if (empty($this->articles)): ?>
     <p class="empty"><?= $this->empty ?></p>
   <?php else: ?>
-    <?= implode('', $this->items) ?>
+    <?= implode('', $this->articles) ?>
     <?= $this->pagination ?>
   <?php endif; ?>
 

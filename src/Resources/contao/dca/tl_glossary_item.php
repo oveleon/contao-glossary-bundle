@@ -39,7 +39,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		'sorting' => array
 		(
 			'mode'                    => 4,
-			'fields'                  => array('title'),
+			'fields'                  => array('keyword'),
 			'headerFields'            => array('title', 'jumpTo', 'tstamp', 'protected'),
 			'panelLayout'             => 'filter;sort,search,limit',
 			'child_record_callback'   => array('tl_glossary_item', 'listGlossaryItems'),
@@ -107,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'default'                     => '{title_legend},headline,alias;{date_legend},date,time;{teaser_legend},subheadline,teaser;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
+		'default'                     => '{title_legend},keyword,alias;{teaser_legend},teaser;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
 	// Fields
@@ -160,6 +160,14 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"
 		),
+        'cssClass' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['cssClass'],
+            'exclude'                 => true,
+            'inputType'               => 'text',
+            'eval'                    => array('tl_class'=>'w50'),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ),
 		'published' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['published'],
@@ -333,7 +341,7 @@ class tl_glossary_item extends Backend
 			$varValue = StringUtil::generateAlias($dc->activeRecord->keyword);
 		}
 
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_glossary WHERE alias=? AND id!=?")
+		$objAlias = $this->Database->prepare("SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?")
 								   ->execute($varValue, $dc->id);
 
 		// Check whether the glossary item alias exists

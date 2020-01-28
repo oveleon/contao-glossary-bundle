@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Oveleon\\ContaoGlosaryBundle\\": "src/"
+            "Oveleon\\ContaoGlossaryBundle\\": "src/"
         },
         "classmap": [
             "src/Resources/contao/"
@@ -35,6 +35,6 @@
         ]
     },
     "extra": {
-        "contao-manager-plugin": "Oveleon\\ContaoGlosaryBundle\\ContaoManager\\Plugin"
+        "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin"
     }
 }

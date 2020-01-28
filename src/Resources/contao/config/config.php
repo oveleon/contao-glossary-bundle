@@ -7,7 +7,7 @@ array_insert($GLOBALS['BE_MOD']['content'], 5, array
 (
     'glossary' => array
     (
-        'tables'      => array('tl_glossary', 'tl_glossary_item')
+        'tables'      => array('tl_glossary', 'tl_glossary_item', 'tl_content')
     )
 ));
 
