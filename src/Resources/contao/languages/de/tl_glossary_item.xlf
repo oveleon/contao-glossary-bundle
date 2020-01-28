@@ -58,6 +58,14 @@
         <source>Make the glossary item publicly visible on the website.</source>
         <target>Den Glossareitrag auf der Webseite anzeigen.</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.new.0">
+        <source>New glossary item</source>
+        <target>Neuer Glossareintrag</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.new.1">
+        <source>Create a new glossary item</source>
+        <target>Einen neuen Glossareintrag erstellen</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.show.0">
         <source>Item details</source>
         <target>Glossareintrag-Details</target>
