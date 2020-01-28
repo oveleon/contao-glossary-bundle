@@ -107,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'default'                     => '{title_legend},keyword,alias;{teaser_legend},teaser;{expert_legend:hide},cssClass;{publish_legend},published'
+		'default'                     => '{title_legend},keyword,alias;{teaser_legend},teaser;{meta_legend:hide},metaTitle,metaDescription;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
 	// Fields
@@ -135,7 +135,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			'sorting'                 => true,
 			'flag'                    => 1,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => array('mandatory'=>true, 'maxlength'=>64, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'alias' => array
@@ -156,6 +156,22 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['teaser'],
 			'exclude'                 => true,
 			'search'                  => true,
+			'inputType'               => 'textarea',
+			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
+			'sql'                     => "text NULL"
+		),
+        'metaTitle' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['metaTitle'],
+            'exclude'                 => true,
+            'inputType'               => 'text',
+            'eval'                    => array('maxlength'=>64, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(64) NOT NULL default ''"
+        ),
+		'metaDescription' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['metaDescription'],
+			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"

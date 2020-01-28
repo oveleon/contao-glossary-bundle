@@ -73,7 +73,7 @@ class ModuleGlossaryList extends ModuleGlossary
 		}
 
 		$this->Template->articles = array();
-		$this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
+		$this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyGlossaryList'];
 
 		// Get the total number of items
 		$intTotal = $this->countItems($this->glossary_archives);

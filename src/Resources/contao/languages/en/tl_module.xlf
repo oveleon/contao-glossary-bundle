@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_module.php" source-language="en">
+    <body>
+      <trans-unit id="tl_module.glossary_archives.0">
+        <source>Glossary archives</source>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_archives.1">
+        <source>Please select one or more glossary archives.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_template.0">
+        <source>Glossary template</source>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_template.1">
+        <source>Please select one or more glossary templates.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

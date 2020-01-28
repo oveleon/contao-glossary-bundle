@@ -1,0 +1,22 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_user_group.php" source-language="en">
+    <body>
+      <trans-unit id="tl_user_group.news_legend">
+        <source>Glossary permissions</source>
+        <target>Glossarrechte</target>
+      </trans-unit>
+      <trans-unit id="tl_user_group.glossarys.0">
+        <source>Allowed glossaries</source>
+      </trans-unit>
+      <trans-unit id="tl_user_group.glossarys.1">
+        <source>Here you can grant access to one or more glossary archives.</source>
+      </trans-unit>
+      <trans-unit id="tl_user_group.glossaryp.0">
+        <source>Glossary permissions</source>
+      </trans-unit>
+      <trans-unit id="tl_user_group.glossaryp.1">
+        <source>Here you can define the glossary permissions.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
