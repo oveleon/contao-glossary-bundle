@@ -2,11 +2,21 @@
 
 <?php $this->block('content'); ?>
 
-  <?php if (empty($this->articles)): ?>
-    <p class="empty"><?= $this->empty ?></p>
-  <?php else: ?>
-    <?= implode('', $this->articles) ?>
-    <?= $this->pagination ?>
-  <?php endif; ?>
+  <ul>
+    <?php foreach ($this->availableGroups as $group => $available): ?>
+      <li><?= $available ? '<a href="#'.$group.'">'.$group.'</a>' : '<span>'.$group.'</span>' ?></li>
+    <?php endforeach; ?>
+  </ul>
+
+  <?php foreach ($this->groups as $letter => $group): ?>
+    <div class="letter">
+      <div class="letter"><?= $letter ?></div>
+      <ul>
+        <?php foreach ($group as $item): ?>
+          <li><?= $item['link'] ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endforeach; ?>
 
 <?php $this->endblock(); ?>

@@ -6,13 +6,22 @@
         <source>Glossaries</source>
       </trans-unit>
       <trans-unit id="MOD.glossary.1">
-        <source>Manage glossaries</source>
+        <source>Manage glossaries and display them in a glossary list</source>
       </trans-unit>
-      <trans-unit id="FMD.glossary_archives.0">
-        <source>Glossary archives</source>
+      <trans-unit id="FMD.glossary">
+        <source>Glossaries</source>
       </trans-unit>
-      <trans-unit id="FMD.glossary_archives.1">
-        <source>Adds a glossary archive to the page</source>
+      <trans-unit id="FMD.glossarylist.0">
+        <source>Glossarylist</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossarylist.1">
+        <source>Adds a list of glossary items to the page</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossaryreader.0">
+        <source>Glossaryreader</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossaryreader.1">
+        <source>Shows the details of a glossary item</source>
       </trans-unit>
     </body>
   </file>

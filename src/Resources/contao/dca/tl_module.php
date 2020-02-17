@@ -7,13 +7,12 @@
  */
 
 // Add palettes to tl_module
-$GLOBALS['TL_DCA']['tl_module']['palettes']['glossarylist']   = '{title_legend},name,headline,type;{config_legend},glossary_archives,numberOfItems,perPage,skipFirst;{template_legend:hide},glossary_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['glossarylist']   = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule;{template_legend:hide},glossary_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['glossaryreader'] = '{title_legend},name,headline,type;{config_legend},glossary_archives;{template_legend:hide},glossary_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Add fields to tl_module
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_archives'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_archives'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'options_callback'        => array('tl_module_glossary', 'getGlossaries'),
@@ -21,15 +20,23 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_archives'] = array
 	'sql'                     => "blob NULL"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = array
+(
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options_callback'        => array('tl_module_glossary', 'getReaderModules'),
+    'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+    'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+    'sql'                     => "int(10) unsigned NOT NULL default 0"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_template'],
-    'default'                 => 'glossary_short',
     'exclude'                 => true,
     'inputType'               => 'select',
     'options_callback'        => array('tl_module_glossary', 'getGlossaryTemplates'),
     'eval'                    => array('tl_class'=>'w50'),
-    'sql'                     => "varchar(64) NOT NULL default ''"
+    'sql'                     => "varchar(64) NOT NULL default 'glossary_default'"
 );
 
 
@@ -38,7 +45,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = array
  *
  * @author Fabian Ekert <https://github.com/eki89>
  */
-class tl_module_glossary extends \Backend
+class tl_module_glossary extends Contao\Backend
 {
 	/**
 	 * Import the back end user object
@@ -50,7 +57,7 @@ class tl_module_glossary extends \Backend
 	}
 
 	/**
-	 * Get all calendars and return them as array
+	 * Get all glossaries and return them as array
 	 *
 	 * @return array
 	 */
@@ -66,7 +73,7 @@ class tl_module_glossary extends \Backend
 
 		while ($objGlossary->next())
 		{
-			if ($this->User->hasAccess($objGlossary->id, 'glossaries'))
+			if ($this->User->hasAccess($objGlossary->id, 'glossarys'))
 			{
 				$arrGlossary[$objGlossary->id] = $objGlossary->title;
 			}
@@ -75,13 +82,31 @@ class tl_module_glossary extends \Backend
 		return $arrGlossary;
 	}
 
-	/**
-	 * Return all calendar templates as array
-	 *
-	 * @return array
-	 */
-	public function getGlossaryTemplates()
-	{
-		return $this->getTemplateGroup('glossary_');
-	}
+    /**
+     * Get all glossary reader modules and return them as array
+     *
+     * @return array
+     */
+    public function getReaderModules()
+    {
+        $arrModules = array();
+        $objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='glossaryreader' ORDER BY t.name, m.name");
+
+        while ($objModules->next())
+        {
+            $arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
+        }
+
+        return $arrModules;
+    }
+
+    /**
+     * Return all glossary templates as array
+     *
+     * @return array
+     */
+    public function getGlossaryTemplates()
+    {
+        return $this->getTemplateGroup('glossary_');
+    }
 }

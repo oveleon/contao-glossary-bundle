@@ -8,7 +8,10 @@
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\FrontendTemplate;
+use Model\Collection;
 use Patchwork\Utf8;
 
 /**
@@ -35,7 +38,6 @@ class ModuleGlossaryList extends ModuleGlossary
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossarylist'][0]) . ' ###';
@@ -55,6 +57,12 @@ class ModuleGlossaryList extends ModuleGlossary
 			return '';
 		}
 
+        // Show the glossary reader if an item has been selected
+        if ($this->glossary_readerModule > 0 && (isset($_GET['items']) || (Config::get('useAutoItem') && isset($_GET['auto_item']))))
+        {
+            return $this->getFrontendModule($this->glossary_readerModule, $this->strColumn);
+        }
+
 		return parent::generate();
 	}
 
@@ -63,129 +71,86 @@ class ModuleGlossaryList extends ModuleGlossary
 	 */
 	protected function compile()
 	{
-		$limit = null;
-		$offset = (int) $this->skipFirst;
+		$objItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
 
-		// Maximum number of items
-		if ($this->numberOfItems > 0)
-		{
-			$limit = $this->numberOfItems;
-		}
+		if ($objItems === null)
+        {
+            return '';
+        }
 
-		$this->Template->articles = array();
-		$this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyGlossaryList'];
+        $arrLetterRange = range('A', 'Z');
+		$availableGroups = array();
+		$arrGroups = array();
 
-		// Get the total number of items
-		$intTotal = $this->countItems($this->glossary_archives);
+		foreach ($arrLetterRange as $letter)
+        {
+            $availableGroups[$letter] = false;
+        }
 
-		if ($intTotal < 1)
-		{
-			return;
-		}
+		while ($objItems->next())
+        {
+            $group = strtoupper(substr($objItems->keyword, 0, 1));
 
-		$total = $intTotal - $offset;
+            $arrItem = $objItems->row();
 
-		// Split the results
-		if ($this->perPage > 0 && (!isset($limit) || $this->numberOfItems > $this->perPage))
-		{
-			// Adjust the overall limit
-			if (isset($limit))
-			{
-				$total = min($limit, $total);
-			}
+            $arrItem['link'] = $this->generateLink($objItems->keyword, $objItems);
 
-			// Get the current page
-			$id = 'page_n' . $this->id;
-			$page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
+            // Clean the RTE output
+            if ($objItems->teaser != '')
+            {
+                $arrItem['teaser'] = \StringUtil::encodeEmail(\StringUtil::toHtml5($objItems->teaser));
+            }
 
-			// Do not index or cache the page if the page number is outside the range
-			if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
-			{
-				throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
-			}
+            $arrGroups[$group][] = $arrItem;
 
-			// Set limit and offset
-			$limit = $this->perPage;
-			$offset += (max($page, 1) - 1) * $this->perPage;
-			$skip = (int) $this->skipFirst;
+            // Flag group as available
+            $availableGroups[$group] = true;
+        }
 
-			// Overall limit
-			if ($offset + $limit > $total + $skip)
-			{
-				$limit = $total + $skip - $offset;
-			}
-
-			// Add the pagination menu
-			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
-			$this->Template->pagination = $objPagination->generate("\n  ");
-		}
-
-		$objArticles = $this->fetchItems($this->glossary_archives, ($limit ?: 0), $offset);
-
-		// Add the articles
-		if ($objArticles !== null)
-		{
-			$this->Template->articles = $this->parseArticles($objArticles);
-		}
+		$this->Template->availableGroups = $availableGroups;
+		$this->Template->groups = $arrGroups;
 	}
 
-	/**
-	 * Count the total matching items
-	 *
-	 * @param array   $glossaryArchives
-	 *
-	 * @return integer
-	 */
-	protected function countItems($glossaryArchives)
-	{
-		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['glossaryListCountItems']) && \is_array($GLOBALS['TL_HOOKS']['glossaryListCountItems']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['glossaryListCountItems'] as $callback)
-			{
-				if (($intResult = \System::importStatic($callback[0])->{$callback[1]}($glossaryArchives, $this)) === false)
-				{
-					continue;
-				}
+    /**
+     * Generate a link and return it as string
+     *
+     * @param string            $strLink
+     * @param GlossaryItemModel $objItem
+     *
+     * @return string
+     */
+    protected function generateLink($strLink, $objItem)
+    {
+        // Internal link
+        if ($objItem->source != 'external')
+        {
+            return sprintf(
+                '<a href="%s" title="%s" itemprop="url"><span itemprop="headline">%s</span></a>',
+                GlossaryItem::generateUrl($objItem),
+                \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->keyword), true),
+                $strLink
+            );
+        }
 
-				if (\is_int($intResult))
-				{
-					return $intResult;
-				}
-			}
-		}
+        // Encode e-mail addresses
+        if (0 === strncmp($objItem->url, 'mailto:', 7))
+        {
+            $strArticleUrl = \StringUtil::encodeEmail($objItem->url);
+        }
 
-		return GlossaryItemModel::countPublishedByPids($glossaryArchives);
-	}
+        // Ampersand URIs
+        else
+        {
+            $strArticleUrl = ampersand($objItem->url);
+        }
 
-	/**
-	 * Fetch the matching items
-	 *
-	 * @param array   $glossaryArchives
-	 * @param integer $limit
-	 * @param integer $offset
-	 *
-	 * @return \Model\Collection|GlossaryItemModel|null
-	 */
-	protected function fetchItems($glossaryArchives, $limit, $offset)
-	{
-		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['glossaryListFetchItems']) && \is_array($GLOBALS['TL_HOOKS']['glossaryListFetchItems']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['glossaryListFetchItems'] as $callback)
-			{
-				if (($objCollection = \System::importStatic($callback[0])->{$callback[1]}($glossaryArchives, $limit, $offset, $this)) === false)
-				{
-					continue;
-				}
-
-				if ($objCollection === null || $objCollection instanceof \Model\Collection)
-				{
-					return $objCollection;
-				}
-			}
-		}
-
-		return GlossaryItemModel::findPublishedByPids($glossaryArchives, $limit, $offset);
-	}
+        // External link
+        return sprintf(
+            '<a href="%s" title="%s"%s itemprop="url"><span itemprop="headline">%s</span></a>',
+            $strArticleUrl,
+            \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
+            ($objItem->target ? ' target="_blank"' : ''),
+            $strLink
+        );
+    }
 }

@@ -8,8 +8,11 @@
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\Model;
+use Contao\Model\Collection;
+
 /**
- * Reads and writes glossary archives
+ * Reads and writes glossaries
  *
  * @property integer $id
  * @property integer $tstamp
@@ -27,14 +30,14 @@ namespace Oveleon\ContaoGlossaryBundle;
  * @method static GlossaryModel|null findOneByProtected($val, array $opt=array())
  * @method static GlossaryModel|null findOneByGroups($val, array $opt=array())
  *
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findByTstamp($val, array $opt=array())
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findByTitle($val, array $opt=array())
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findByJumpTo($val, array $opt=array())
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findByProtected($val, array $opt=array())
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findByGroups($val, array $opt=array())
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findMultipleByIds($val, array $opt=array())
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findBy($col, $val, array $opt=array())
- * @method static \Model\Collection|GlossaryModel[]|GlossaryModel|null findAll(array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findByTstamp($val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findByTitle($val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findByJumpTo($val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findByProtected($val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findByGroups($val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findMultipleByIds($val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findBy($col, $val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findAll(array $opt=array())
  *
  * @method static integer countById($id, array $opt=array())
  * @method static integer countByTstamp($val, array $opt=array())
@@ -45,7 +48,7 @@ namespace Oveleon\ContaoGlossaryBundle;
  *
  * @author Fabian Ekert <https://github.com/eki89>
  */
-class GlossaryModel extends \Model
+class GlossaryModel extends Model
 {
 	/**
 	 * Table name

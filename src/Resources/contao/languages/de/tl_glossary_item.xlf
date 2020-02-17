@@ -18,29 +18,85 @@
         <source>The glossary item alias is a unique reference to the glossary item which can be called instead of its numeric ID.</source>
         <target>Der Glossareintrag-Alias ist eine eindeutige Referenz, die anstelle der numerischen Glossareintrag-ID aufgerufen werden kann.</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.pageTitle.0">
+        <source>Meta title</source>
+        <target>Meta-Titel</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.pageTitle.1">
+        <source>Here you can add a custom meta title to overwrite the default page title.</source>
+        <target>Hier können Sie einen individuellen Meta-Titel eingeben, um den Standard-Seitentitel zu überschreiben.</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.description.0">
+        <source>Meta description</source>
+        <target>Meta-Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.description.1">
+        <source>Here you can add a custom meta description to overwrite the default page description.</source>
+        <target>Hier können Sie eine individuelle Meta-Beschreibung eingeben, um die Standard-Seitenbeschreibung zu überschreiben.</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.teaser.0">
-        <source>Glossary item description</source>
-        <target>Glossareintrag Beschreibung</target>
+        <source>Glossary item teaser</source>
+        <target>Teasertext</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.teaser.1">
-        <source>The glossary item description can be shown in a glossary list instead of the full story. A &quot;read more …&quot; link will be added automatically.</source>
-        <target>Die Glossareintrag Beschreibung kann in einer Glossareintragsliste anstatt des ganzen Glossareintrags angezeigt werden. Ein &quot;Weiterlesen …&quot;-Link wird automatisch hinzugefügt.</target>
+        <source>The glossary item teaser can be used in a tooltip or can be shown in a glossary list instead of the full article.</source>
+        <target>Der Teasertext kann in einem Tooltip angezeigt werden, oder in einer Glossarliste anstatt des ganzen Beitrags angezeigt werden.</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.metaTitle.0">
-        <source>Meta title</source>
-        <target>Meta Titel</target>
+      <trans-unit id="tl_glossary_item.source.0">
+        <source>Redirect target</source>
+        <target>Weiterleitungsziel</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.metaTitle.1">
-        <source>Please enter the glossary item meta title.</source>
-        <target>Bitte geben Sie den Glossareintrags-Meta Titel ein.</target>
+      <trans-unit id="tl_glossary_item.source.1">
+        <source>Here you can override the default redirect target.</source>
+        <target>Hier können Sie die Standard-Weiterleitung überschreiben.</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.metaDescription.0">
-        <source>Meta description</source>
-        <target>Meta Beschreibung</target>
+      <trans-unit id="tl_glossary_item.default.0">
+        <source>Use default</source>
+        <target>Standard</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.metaDescription.1">
-        <source>Please enter the glossary item meta description.</source>
-        <target>Bitte geben Sie die Glossareintrags - Meta Beschreibung ein.</target>
+      <trans-unit id="tl_glossary_item.default.1">
+        <source>By clicking the glossary item link, visitors will be redirected to the default page of the glossary.</source>
+        <target>Beim Anklicken des Glossareintrag-Links wird der Besucher auf die Standardseite des Glossars weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.internal.0">
+        <source>Page</source>
+        <target>Seite</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.internal.1">
+        <source>By clicking the glossary item link, visitors will be redirected to a page.</source>
+        <target>Beim Anklicken des Glossareintrag-Links wird der Besucher auf eine Seite weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.article.0">
+        <source>Article</source>
+        <target>Artikel</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.article.1">
+        <source>By clicking the glossary item link, visitors will be redirected to an article.</source>
+        <target>Beim Anklicken des Glossareintrag-Links wird der Besucher auf einen Artikel weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.external.0">
+        <source>Custom URL</source>
+        <target>Individuelle URL</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.external.1">
+        <source>By clicking the glossary item link, visitors will be redirected to a custom URL.</source>
+        <target>Beim Anklicken des Glossareintrag-Links wird der Besucher auf eine individuelle URL weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.jumpTo.0">
+        <source>Redirect page</source>
+        <target>Weiterleitungsseite</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.jumpTo.1">
+        <source>Please choose the page to which visitors will be redirected when clicking the glossary item.</source>
+        <target>Bitte wählen Sie die Seite aus, zu der Besucher weitergeleitet werden, wenn Sie einen Glossareintrag anklicken.</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.articleId.0">
+        <source>Article</source>
+        <target>Artikel</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.articleId.1">
+        <source>Please choose the article to which visitors will be redirected when clicking the glossary item.</source>
+        <target>Bitte wählen Sie den Artikel aus, zu der Besucher weitergeleitet werden, wenn Sie einen Glossareintrag anklicken.</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.cssClass.0">
         <source>CSS class</source>
@@ -58,22 +114,6 @@
         <source>Make the glossary item publicly visible on the website.</source>
         <target>Den Glossareitrag auf der Webseite anzeigen.</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.new.0">
-        <source>New glossary item</source>
-        <target>Neuer Glossareintrag</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.new.1">
-        <source>Create a new glossary item</source>
-        <target>Einen neuen Glossareintrag erstellen</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.show.0">
-        <source>Item details</source>
-        <target>Glossareintrag-Details</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.show.1">
-        <source>Show the details of glossary item ID %s</source>
-        <target>Die Details des Glossareintrag ID %s anzeigen</target>
-      </trans-unit>
       <trans-unit id="tl_glossary_item.tstamp.0">
         <source>Revision date</source>
         <target>Änderungsdatum</target>
@@ -83,16 +123,20 @@
         <target>Datum und Uhrzeit der letzten Änderung</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.title_legend">
-        <source>Titl</source>
+        <source>Title</source>
         <target>Titel</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.teaser_legend">
-        <source>Description</source>
-        <target>Beschreibung</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.meta_legend">
         <source>Meta data</source>
         <target>Metadaten</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.teaser_legend">
+        <source>Teaser</source>
+        <target>Teaser</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.source_legend">
+        <source>Redirect target</source>
+        <target>Weiterleitungsziel</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.expert_legend">
         <source>Expert settings</source>
@@ -102,53 +146,45 @@
         <source>Publish settings</source>
         <target>Veröffentlichung</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.edit.0">
-        <source>Edit item</source>
-        <target>Glossareintrag bearbeiten</target>
+      <trans-unit id="tl_glossary_item.new.0">
+        <source>New</source>
+        <target>Neu</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.edit.1">
-        <source>Edit glossary item ID %s.</source>
+      <trans-unit id="tl_glossary_item.new.1">
+        <source>Create a new glossary item</source>
+        <target>Einen neuen Glossareintrag erstellen</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.show">
+        <source>Show the details of glossary item ID %s</source>
+        <target>Details des Glossareintrags ID %s anzeigen</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.edit">
+        <source>Edit glossary item ID %s</source>
         <target>Glossareintrag ID %s bearbeiten</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.copy.0">
-        <source>Duplicate item</source>
-        <target>Glossareintrag duplizieren</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.copy.1">
+      <trans-unit id="tl_glossary_item.copy">
         <source>Duplicate glossary item ID %s</source>
         <target>Glossareintrag ID %s duplizieren</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.cut.0">
-        <source>Move item</source>
-        <target>Glossareintrag verschieben</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.cut.1">
+      <trans-unit id="tl_glossary_item.cut">
         <source>Move glossary item ID %s</source>
         <target>Glossareintrag ID %s verschieben</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.delete.0">
-        <source>Delete item</source>
-        <target>Glossareintrag löschen</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.delete.1">
+      <trans-unit id="tl_glossary_item.delete">
         <source>Delete glossary item ID %s</source>
         <target>Glossareintrag ID %s löschen</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.toggle.0">
-        <source>Publish/unpublish item</source>
-        <target>Glossareintrag veröffentlichen/unveröffentlichen</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.toggle.1">
-        <source>Publish/unpublish glossary item ID %s.</source>
+      <trans-unit id="tl_glossary_item.toggle">
+        <source>Publish/unpublish glossary item ID %s</source>
         <target>Glossareintrag ID %s veröffentlichen/unveröffentlichen</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.editmeta.0">
-        <source>Edit item settings</source>
-        <target>Glossareintrag-Einstellungen bearbeiten</target>
+      <trans-unit id="tl_glossary_item.editheader">
+        <source>Edit the settings of glossary item ID %s</source>
+        <target>Einstellungen des Glossareintrags ID %s bearbeiten</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.editmeta.1">
-        <source>Edit the glossary item settings</source>
-        <target>Die Glossareintrag-Einstellungen bearbeiten</target>
+      <trans-unit id="tl_glossary_item.pasteafter.0">
+        <source>Paste into this glossary</source>
+        <target>In dieses Glossar einfügen</target>
       </trans-unit>
     </body>
   </file>

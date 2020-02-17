@@ -7,16 +7,28 @@
         <target>Glossare</target>
       </trans-unit>
       <trans-unit id="MOD.glossary.1">
-        <source>Manage glossaries</source>
-        <target>Glossare verwalten</target>
+        <source>Manage glossaries and display them in a glossary list</source>
+        <target>Glossare verwalten und als Glossarliste ausgeben</target>
       </trans-unit>
-      <trans-unit id="FMD.glossary_archives.0">
-        <source>Glossary archives</source>
-        <target>Glossararchive</target>
+      <trans-unit id="FMD.glossary">
+        <source>Glossaries</source>
+        <target>Glossare</target>
       </trans-unit>
-      <trans-unit id="FMD.glossary_archives.1">
-        <source>Adds a glossary archive to the page</source>
-        <target>Fügt der Seite ein Glossararchiv hinzu</target>
+      <trans-unit id="FMD.glossarylist.0">
+        <source>Glossarylist</source>
+        <target>Glossarliste</target>
+      </trans-unit>
+      <trans-unit id="FMD.glossarylist.1">
+        <source>Adds a list of glossary items to the page</source>
+        <target>Fügt der Seite eine Glossarliste hinzu</target>
+      </trans-unit>
+      <trans-unit id="FMD.glossaryreader.0">
+        <source>Glossaryreader</source>
+        <target>Glossarleser</target>
+      </trans-unit>
+      <trans-unit id="FMD.glossaryreader.1">
+        <source>Shows the details of a glossary item</source>
+        <target>Stellt einen einzelnen Glossareintrag dar</target>
       </trans-unit>
     </body>
   </file>

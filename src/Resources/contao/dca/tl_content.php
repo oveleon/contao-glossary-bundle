@@ -7,10 +7,10 @@
  */
 
 // Dynamically add the permission check and parent table
-if (Input::get('do') == 'glossary')
+if (Contao\Input::get('do') == 'glossary')
 {
     $GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'tl_glossary_item';
-    $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = array('tl_content_glossary', 'checkPermission');
+    array_unshift($GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'], array('tl_content_glossary', 'checkPermission'));
     $GLOBALS['TL_DCA']['tl_content']['list']['operations']['toggle']['button_callback'] = array('tl_content_glossary', 'toggleIcon');
 }
 
@@ -51,7 +51,7 @@ class tl_content_glossary extends Backend
         }
 
         // Check the current action
-        switch (Input::get('act'))
+        switch (Contao\Input::get('act'))
         {
             case '': // empty
             case 'paste':
@@ -67,16 +67,16 @@ class tl_content_glossary extends Backend
             case 'cutAll':
             case 'copyAll':
                 // Check access to the parent element if a content element is moved
-                if (Input::get('act') == 'cutAll' || Input::get('act') == 'copyAll')
+                if (Contao\Input::get('act') == 'cutAll' || Contao\Input::get('act') == 'copyAll')
                 {
-                    $this->checkAccessToElement(Input::get('pid'), $root, (Input::get('mode') == 2));
+                    $this->checkAccessToElement(Contao\Input::get('pid'), $root, (Contao\Input::get('mode') == 2));
                 }
 
                 $objCes = $this->Database->prepare("SELECT id FROM tl_content WHERE ptable='tl_glossary_item' AND pid=?")
                     ->execute(CURRENT_ID);
 
                 /** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
-                $objSession = System::getContainer()->get('session');
+                $objSession = Contao\System::getContainer()->get('session');
 
                 $session = $objSession->all();
                 $session['CURRENT']['IDS'] = array_intersect((array) $session['CURRENT']['IDS'], $objCes->fetchEach('id'));
@@ -86,12 +86,12 @@ class tl_content_glossary extends Backend
             case 'cut':
             case 'copy':
                 // Check access to the parent element if a content element is moved
-                $this->checkAccessToElement(Input::get('pid'), $root, (Input::get('mode') == 2));
+                $this->checkAccessToElement(Contao\Input::get('pid'), $root, (Contao\Input::get('mode') == 2));
             // no break
 
             default:
                 // Check access to the content element
-                $this->checkAccessToElement(Input::get('id'), $root);
+                $this->checkAccessToElement(Contao\Input::get('id'), $root);
                 break;
         }
     }
@@ -126,7 +126,7 @@ class tl_content_glossary extends Backend
             throw new Contao\CoreBundle\Exception\AccessDeniedException('Invalid glossary item content element ID ' . $id . '.');
         }
 
-        // The news archive is not mounted
+        // The glossary is not mounted
         if (!in_array($objArchive->id, $root))
         {
             throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to modify article ID ' . $objArchive->nid . ' in glossary ID ' . $objArchive->id . '.');
@@ -147,9 +147,9 @@ class tl_content_glossary extends Backend
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-        if (strlen(Input::get('tid')))
+        if (Contao\Input::get('cid'))
         {
-            $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
+            $this->toggleVisibility(Contao\Input::get('cid'), (Contao\Input::get('state') == 1), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
         }
 
@@ -159,14 +159,14 @@ class tl_content_glossary extends Backend
             return '';
         }
 
-        $href .= '&amp;id=' . Input::get('id') . '&amp;tid=' . $row['id'] . '&amp;state=' . $row['invisible'];
+        $href .= '&amp;id=' . Contao\Input::get('id') . '&amp;tid=' . $row['id'] . '&amp;state=' . $row['invisible'];
 
         if ($row['invisible'])
         {
             $icon = 'invisible.svg';
         }
 
-        return '<a href="' . $this->addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['invisible'] ? 0 : 1) . '"') . '</a> ';
+        return '<a href="' . $this->addToUrl($href) . '" title="' . Contao\StringUtil::specialchars($title) . '" data-tid="cid"' . $attributes . '>' . Contao\Image::getHtml($icon, $label, 'data-state="' . ($row['invisible'] ? 0 : 1) . '"') . '</a> ';
     }
 
     /**
@@ -174,13 +174,13 @@ class tl_content_glossary extends Backend
      *
      * @param integer       $intId
      * @param boolean       $blnVisible
-     * @param DataContainer $dc
+     * @param Contao\DataContainer $dc
      */
-    public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
+    public function toggleVisibility($intId, $blnVisible, Contao\DataContainer $dc=null)
     {
         // Set the ID and action
-        Input::setGet('id', $intId);
-        Input::setGet('act', 'toggle');
+        Contao\Input::setGet('id', $intId);
+        Contao\Input::setGet('act', 'toggle');
 
         if ($dc)
         {
@@ -223,7 +223,7 @@ class tl_content_glossary extends Backend
             }
         }
 
-        $objVersions = new Versions('tl_content', $intId);
+        $objVersions = new Contao\Versions('tl_content', $intId);
         $objVersions->initialize();
 
         // Reverse the logic (elements have invisible=1)

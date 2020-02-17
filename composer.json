@@ -1,7 +1,7 @@
 {
     "name": "oveleon/contao-glossary-bundle",
     "type": "contao-bundle",
-    "description": "Adds a glossary functionality to Contao 4",
+    "description": "Adds a glossary functionality to Contao",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^5.6 || ^7.0",
+        "php": "^7.1",
         "contao/core-bundle": "^4.4"
     },
     "require-dev": {

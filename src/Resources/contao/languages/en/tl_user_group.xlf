@@ -3,19 +3,6 @@
     <body>
       <trans-unit id="tl_user_group.glossary_legend">
         <source>Glossary permissions</source>
-        <target>Glossarrechte</target>
-      </trans-unit>
-      <trans-unit id="tl_user_group.glossarys.0">
-        <source>Allowed glossaries</source>
-      </trans-unit>
-      <trans-unit id="tl_user_group.glossarys.1">
-        <source>Here you can grant access to one or more glossary archives.</source>
-      </trans-unit>
-      <trans-unit id="tl_user_group.glossaryp.0">
-        <source>Glossary permissions</source>
-      </trans-unit>
-      <trans-unit id="tl_user_group.glossaryp.1">
-        <source>Here you can define the glossary permissions.</source>
       </trans-unit>
     </body>
   </file>

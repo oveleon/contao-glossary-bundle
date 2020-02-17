@@ -18,6 +18,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		'ctable'                      => array('tl_content'),
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
+        'markAsCopy'                  => 'keyword',
 		'onload_callback' => array
 		(
 			array('tl_glossary_item', 'checkPermission')
@@ -49,7 +50,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		(
 			'all' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
@@ -59,45 +59,39 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_glossary_item']['edit'],
 				'href'                => 'table=tl_content',
 				'icon'                => 'edit.svg'
 			),
 			'editheader' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_glossary_item']['editmeta'],
 				'href'                => 'act=edit',
 				'icon'                => 'header.svg'
 			),
 			'copy' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_glossary_item']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.svg'
 			),
 			'cut' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_glossary_item']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.svg'
 			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_glossary_item']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_glossary_item']['toggle'],
 				'icon'                => 'visible.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_glossary_item', 'toggleIcon')
+				'button_callback'     => array('tl_glossary_item', 'toggleIcon'),
+                'showInHeader'        => true
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_glossary_item']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.svg'
 			)
@@ -107,8 +101,17 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'default'                     => '{title_legend},keyword,alias;{teaser_legend},teaser;{meta_legend:hide},metaTitle,metaDescription;{expert_legend:hide},cssClass;{publish_legend},published'
+        '__selector__'                => array('source'),
+		'default'                     => '{title_legend},keyword,alias;{meta_legend},pageTitle,description;{teaser_legend},teaser;{source_legend:hide},source;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
+
+    // Subpalettes
+    'subpalettes' => array
+    (
+        'source_internal'             => 'jumpTo',
+        'source_article'              => 'articleId',
+        'source_external'             => 'url,target'
+    ),
 
 	// Fields
 	'fields' => array
@@ -129,18 +132,16 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		),
 		'keyword' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['keyword'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'sorting'                 => true,
 			'flag'                    => 1,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>64, 'tl_class'=>'w50'),
-			'sql'                     => "varchar(64) NOT NULL default ''"
+			'eval'                    => array('mandatory'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+			'sql'                     => "varchar(128) NOT NULL default ''"
 		),
 		'alias' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['alias'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -149,36 +150,79 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			(
 				array('tl_glossary_item', 'generateAlias')
 			),
-			'sql'                     => "varchar(255) COLLATE utf8_bin NOT NULL default ''"
+			'sql'                     => "varchar(255) BINARY NOT NULL default ''"
 		),
+        'pageTitle' => array
+        (
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => array('maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ),
+        'description' => array
+        (
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'textarea',
+            'eval'                    => array('style'=>'height:60px', 'decodeEntities'=>true, 'tl_class'=>'clr'),
+            'sql'                     => "text NULL"
+        ),
 		'teaser' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['teaser'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
 			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"
 		),
-        'metaTitle' => array
+        'source' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['metaTitle'],
             'exclude'                 => true,
-            'inputType'               => 'text',
-            'eval'                    => array('maxlength'=>64, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(64) NOT NULL default ''"
+            'filter'                  => true,
+            'inputType'               => 'radio',
+            'options_callback'        => array('tl_glossary_item', 'getSourceOptions'),
+            'reference'               => &$GLOBALS['TL_LANG']['tl_glossary_item'],
+            'eval'                    => array('submitOnChange'=>true, 'helpwizard'=>true),
+            'sql'                     => "varchar(32) NOT NULL default 'default'"
         ),
-		'metaDescription' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['metaDescription'],
-			'exclude'                 => true,
-			'inputType'               => 'textarea',
-			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
-			'sql'                     => "text NULL"
-		),
+        'jumpTo' => array
+        (
+            'exclude'                 => true,
+            'inputType'               => 'pageTree',
+            'foreignKey'              => 'tl_page.title',
+            'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio'),
+            'sql'                     => "int(10) unsigned NOT NULL default 0",
+            'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
+        ),
+        'articleId' => array
+        (
+            'exclude'                 => true,
+            'inputType'               => 'select',
+            'options_callback'        => array('tl_glossary_item', 'getArticleAlias'),
+            'eval'                    => array('chosen'=>true, 'mandatory'=>true, 'tl_class'=>'w50'),
+            'sql'                     => "int(10) unsigned NOT NULL default 0",
+            'relation'                => array('table'=>'tl_article', 'type'=>'hasOne', 'load'=>'lazy'),
+        ),
+        'url' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['MSC']['url'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => array('mandatory'=>true, 'rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'dcaPicker'=>true, 'addWizardClass'=>false, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ),
+        'target' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['MSC']['target'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 m12'),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
         'cssClass' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['cssClass'],
             'exclude'                 => true,
             'inputType'               => 'text',
             'eval'                    => array('tl_class'=>'w50'),
@@ -186,7 +230,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
 		'published' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['published'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'flag'                    => 1,
@@ -340,38 +383,30 @@ class tl_glossary_item extends Backend
 	 * Auto-generate the glossary item alias if it has not been set yet
 	 *
 	 * @param mixed         $varValue
-	 * @param DataContainer $dc
+	 * @param Contao\DataContainer $dc
 	 *
 	 * @return string
 	 *
 	 * @throws Exception
 	 */
-	public function generateAlias($varValue, DataContainer $dc)
+	public function generateAlias($varValue, Contao\DataContainer $dc)
 	{
-		$autoAlias = false;
+        $aliasExists = function (string $alias) use ($dc): bool
+        {
+            return $this->Database->prepare("SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+        };
 
-		// Generate alias if there is none
-		if ($varValue == '')
-		{
-			$autoAlias = true;
-			$varValue = StringUtil::generateAlias($dc->activeRecord->keyword);
-		}
+        // Generate alias if there is none
+        if ($varValue == '')
+        {
+            $varValue = Contao\System::getContainer()->get('contao.slug')->generate($dc->activeRecord->keyword, \Oveleon\ContaoGlossaryBundle\GlossaryModel::findByPk($dc->activeRecord->pid)->jumpTo, $aliasExists);
+        }
+        elseif ($aliasExists($varValue))
+        {
+            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+        }
 
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?")
-								   ->execute($varValue, $dc->id);
-
-		// Check whether the glossary item alias exists
-		if ($objAlias->numRows)
-		{
-			if (!$autoAlias)
-			{
-				throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
-			}
-
-			$varValue .= '-' . $dc->id;
-		}
-
-		return $varValue;
+        return $varValue;
 	}
 
 	/**
@@ -385,6 +420,101 @@ class tl_glossary_item extends Backend
 	{
 		return '<div class="tl_content_left">' . $arrRow['keyword'] . '</div>';
 	}
+
+    /**
+     * Get all articles and return them as array
+     *
+     * @param Contao\DataContainer $dc
+     *
+     * @return array
+     */
+    public function getArticleAlias(Contao\DataContainer $dc)
+    {
+        $arrPids = array();
+        $arrAlias = array();
+
+        if (!$this->User->isAdmin)
+        {
+            foreach ($this->User->pagemounts as $id)
+            {
+                $arrPids[] = array($id);
+                $arrPids[] = $this->Database->getChildRecords($id, 'tl_page');
+            }
+
+            if (!empty($arrPids))
+            {
+                $arrPids = array_merge(...$arrPids);
+            }
+            else
+            {
+                return $arrAlias;
+            }
+
+            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN(" . implode(',', array_map('\intval', array_unique($arrPids))) . ") ORDER BY parent, a.sorting")
+                ->execute($dc->id);
+        }
+        else
+        {
+            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting")
+                ->execute($dc->id);
+        }
+
+        if ($objAlias->numRows)
+        {
+            Contao\System::loadLanguageFile('tl_article');
+
+            while ($objAlias->next())
+            {
+                $arrAlias[$objAlias->parent][$objAlias->id] = $objAlias->title . ' (' . ($GLOBALS['TL_LANG']['COLS'][$objAlias->inColumn] ?: $objAlias->inColumn) . ', ID ' . $objAlias->id . ')';
+            }
+        }
+
+        return $arrAlias;
+    }
+
+    /**
+     * Add the source options depending on the allowed fields
+     *
+     * @param Contao\DataContainer $dc
+     *
+     * @return array
+     */
+    public function getSourceOptions(Contao\DataContainer $dc)
+    {
+        if ($this->User->isAdmin)
+        {
+            return array('default', 'internal', 'article', 'external');
+        }
+
+        $arrOptions = array('default');
+
+        // Add the "internal" option
+        if ($this->User->hasAccess('tl_glossary_item::jumpTo', 'alexf'))
+        {
+            $arrOptions[] = 'internal';
+        }
+
+        // Add the "article" option
+        if ($this->User->hasAccess('tl_glossary_item::articleId', 'alexf'))
+        {
+            $arrOptions[] = 'article';
+        }
+
+        // Add the "external" option
+        if ($this->User->hasAccess('tl_glossary_item::url', 'alexf'))
+        {
+            $arrOptions[] = 'external';
+        }
+
+        // Add the option currently set
+        if ($dc->activeRecord && $dc->activeRecord->source != '')
+        {
+            $arrOptions[] = $dc->activeRecord->source;
+            $arrOptions = array_unique($arrOptions);
+        }
+
+        return $arrOptions;
+    }
 
 	/**
 	 * Return the "toggle visibility" button
@@ -419,7 +549,7 @@ class tl_glossary_item extends Backend
 			$icon = 'invisible.svg';
 		}
 
-		return '<a href="' . $this->addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
+		return '<a href="' . $this->addToUrl($href) . '" title="' . Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Contao\Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
 	}
 
 	/**
@@ -427,13 +557,13 @@ class tl_glossary_item extends Backend
 	 *
 	 * @param integer       $intId
 	 * @param boolean       $blnVisible
-	 * @param DataContainer $dc
+	 * @param Contao\DataContainer $dc
 	 */
-	public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
+	public function toggleVisibility($intId, $blnVisible, Contao\DataContainer $dc=null)
 	{
 		// Set the ID and action
-		Input::setGet('id', $intId);
-		Input::setGet('act', 'toggle');
+		Contao\Input::setGet('id', $intId);
+		Contao\Input::setGet('act', 'toggle');
 
 		if ($dc)
 		{

@@ -2,7 +2,7 @@
   <file datatype="php" original="src/Resources/contao/languages/en/default.php" source-language="en">
     <body>
       <trans-unit id="MSC.emptyGlossaryList">
-        <source>Currently there are no glossary items.</source>
+        <source>No items available.</source>
       </trans-unit>
     </body>
   </file>

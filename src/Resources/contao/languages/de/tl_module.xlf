@@ -3,20 +3,28 @@
   <file datatype="php" original="src/Resources/contao/languages/en/tl_module.php" source-language="en" target-language="de">
     <body>
       <trans-unit id="tl_module.glossary_archives.0">
-        <source>Glossary archives</source>
-        <target>Glossararchive</target>
+        <source>Glossaries</source>
+        <target>Glossare</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_archives.1">
-        <source>Please select one or more glossary archives.</source>
-        <target>Bitte wählen Sie ein oder mehrere Glossararchive</target>
+        <source>Please select one or more glossaries.</source>
+        <target>Bitte wählen Sie ein oder mehrere Glossare</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_readerModule.0">
+        <source>Glossar reader module</source>
+        <target>Glossarleser</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_readerModule.1">
+        <source>Automatically switch to the glossary reader if an item has been selected.</source>
+        <target>Automatisch zum Glossarleser wechseln, wenn ein Glossareintrag ausgewählt wurde.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
         <source>Glossary template</source>
-        <target>Glossar templates</target>
+        <target>Glossar-Template</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.1">
-        <source>Please select one or more glossary templates.</source>
-        <target>Bitte wählen Sie ein oder mehrere Glossartemplates</target>
+        <source>Here you can select the glossary template.</source>
+        <target>Hier können Sie das Glossar-Template auswählen.</target>
       </trans-unit>
     </body>
   </file>
