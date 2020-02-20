@@ -23,6 +23,10 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		(
 			array('tl_glossary_item', 'checkPermission')
 		),
+        'onsubmit_callback' => array
+        (
+            array('tl_glossary_item', 'setGlossaryItemGroup')
+        ),
 		'sql' => array
 		(
 			'keys' => array
@@ -130,6 +134,10 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		(
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
+        'letter' => array
+        (
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
 		'keyword' => array
 		(
 			'exclude'                 => true,
@@ -378,6 +386,22 @@ class tl_glossary_item extends Backend
 				break;
 		}
 	}
+
+    /**
+     * Set group by keyword
+     *
+     * @param Contao\DataContainer $dc
+     */
+    public function setGlossaryItemGroup(Contao\DataContainer $dc)
+    {
+        $newGroup = strtoupper(substr($dc->activeRecord->keyword, 0, 1));
+
+        if ($dc->activeRecord->letter != $newGroup)
+        {
+            $this->Database->prepare("UPDATE tl_glossary_item SET letter=? WHERE id=?")
+                ->execute($newGroup, $dc->id);
+        }
+    }
 
 	/**
 	 * Auto-generate the glossary item alias if it has not been set yet

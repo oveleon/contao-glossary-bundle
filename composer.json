@@ -1,7 +1,7 @@
 {
     "name": "oveleon/contao-glossary-bundle",
     "type": "contao-bundle",
-    "description": "Adds a glossary functionality to Contao",
+    "description": "Adds glossary functionality to Contao",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
@@ -10,15 +10,25 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "contao/core-bundle": "^4.4"
-    },
-    "require-dev": {
-        "contao/manager-plugin": "^2.0"
     },
     "conflict": {
         "contao/core": "*",
         "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.3.1",
+        "contao/test-case": "^4.0",
+        "phpunit/phpunit": "^8.4",
+        "symfony/http-client": "4.4.*",
+        "symfony/phpunit-bridge": "4.4.*"
+    },
+    "extra": {
+        "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin",
+        "symfony": {
+            "require": "^4.4"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -34,7 +44,13 @@
             "src/Resources/contao/templates/"
         ]
     },
-    "extra": {
-        "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin"
+    "autoload-dev": {
+        "psr-4": {
+            "Contao\\ContaoGlossaryBundle\\Tests\\": "tests/"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/oveleon/contao-glossary-bundle/issues",
+        "source": "https://github.com/oveleon/contao-glossary-bundle"
     }
 }

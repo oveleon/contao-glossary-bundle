@@ -20,7 +20,7 @@ array_insert($GLOBALS['FE_MOD'], 3, array
 (
     'glossary' => array
     (
-        'glossarylist'    => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryList',
+        'glossary'        => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryList',
         'glossaryreader'  => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryReader',
     )
 ));
@@ -28,6 +28,9 @@ array_insert($GLOBALS['FE_MOD'], 3, array
 // Models
 $GLOBALS['TL_MODELS']['tl_glossary']      = 'Oveleon\ContaoGlossaryBundle\GlossaryModel';
 $GLOBALS['TL_MODELS']['tl_glossary_item'] = 'Oveleon\ContaoGlossaryBundle\GlossaryItemModel';
+
+// Register hooks
+$GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('Oveleon\ContaoGlossaryBundle\Glossary', 'getSearchablePages');
 
 // Add permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'glossarys';

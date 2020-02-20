@@ -94,6 +94,60 @@ class GlossaryItemModel extends Model
 	protected static $strTable = 'tl_glossary_item';
 
     /**
+     * Find a published glossary item from one or more glossaries by its ID or alias
+     *
+     * @param mixed $varId      The numeric ID or alias name
+     * @param array $arrPids    An array of parent IDs
+     * @param array $arrOptions An optional options array
+     *
+     * @return GlossaryItemModel|null The model or null if there are no glossary items
+     */
+    public static function findPublishedByParentAndIdOrAlias($varId, $arrPids, array $arrOptions=array())
+    {
+        if (empty($arrPids) || !\is_array($arrPids))
+        {
+            return null;
+        }
+
+        $t = static::$strTable;
+        $arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? array("$t.alias=?") : array("$t.id=?");
+        $arrColumns[] = "$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")";
+
+        if (!static::isPreviewMode($arrOptions))
+        {
+            $arrColumns[] = "$t.published='1'";
+        }
+
+        return static::findOneBy($arrColumns, $varId, $arrOptions);
+    }
+
+    /**
+     * Find published glossary items with the default redirect target by their parent ID
+     *
+     * @param integer $intPid     The glossary ID
+     * @param array   $arrOptions An optional options array
+     *
+     * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no news
+     */
+    public static function findPublishedDefaultByPid($intPid, array $arrOptions=array())
+    {
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid=? AND $t.source='default'");
+
+        if (!static::isPreviewMode($arrOptions))
+        {
+            $arrColumns[] = "$t.published='1'";
+        }
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order'] = "$t.keyword ASC";
+        }
+
+        return static::findBy($arrColumns, $intPid, $arrOptions);
+    }
+
+    /**
      * Find published glossary items by their parent ID
      *
      * @param array   $arrPids     An array of glossary IDs
@@ -123,5 +177,40 @@ class GlossaryItemModel extends Model
         }
 
         return static::findBy($arrColumns, null, $arrOptions);
+    }
+
+    /**
+     * Find published glossary items by letter and their parent ID
+     *
+     * @param string  $strLetter   First glossary item letter
+     * @param array   $arrPids     An array of glossary IDs
+     * @param array   $arrOptions  An optional options array
+     *
+     * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossaries
+     */
+    public static function findPublishedByLetterAndPids($strLetter, $arrPids, array $arrOptions=array())
+    {
+        if (empty($arrPids) || !\is_array($arrPids))
+        {
+            return null;
+        }
+
+        $t = static::$strTable;
+        $arrColumns   = array("$t.letter=?");
+        $arrColumns[] = "$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")";
+        $arrValues    = array($strLetter);
+
+        // Never return unpublished elements in the back end
+        if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
+        {
+            $arrColumns[] = "$t.published='1'";
+        }
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order']  = "$t.keyword ASC";
+        }
+
+        return static::findBy($arrColumns, $arrValues, $arrOptions);
     }
 }

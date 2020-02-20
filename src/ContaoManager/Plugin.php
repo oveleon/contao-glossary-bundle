@@ -17,16 +17,11 @@ use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Oveleon\ContaoGlossaryBundle\ContaoGlossaryBundle;
 
 /**
- * Plugin for the Contao Manager.
- *
- * @author Fabian Ekert <https://github.com/eki89>
+ * @internal
  */
 class Plugin implements BundlePluginInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             BundleConfig::create(ContaoGlossaryBundle::class)

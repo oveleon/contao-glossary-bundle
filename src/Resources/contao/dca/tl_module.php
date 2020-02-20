@@ -6,9 +6,16 @@
  * (c) https://www.oveleon.de/
  */
 
+// Add a palette selector
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'glossary_singleGroup';
+
 // Add palettes to tl_module
-$GLOBALS['TL_DCA']['tl_module']['palettes']['glossarylist']   = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule;{template_legend:hide},glossary_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['glossary']       = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule,glossary_hideEmptyGroups,glossary_singleGroup;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['glossaryreader'] = '{title_legend},name,headline,type;{config_legend},glossary_archives;{template_legend:hide},glossary_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+
+// Add subpalettes to tl_module
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['glossary_singleGroup'] = 'glossary_letter';
+
 
 // Add fields to tl_module
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_archives'] = array
@@ -28,6 +35,31 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = array
     'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
     'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
     'sql'                     => "int(10) unsigned NOT NULL default 0"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['glossary_hideEmptyGroups'] = array
+(
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('tl_class'=>'clr'),
+    'sql'                     => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['glossary_singleGroup'] = array
+(
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
+    'sql'                     => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['glossary_letter'] = array
+(
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options'                 => range('A', 'Z'),
+    'eval'                    => array('mandatory'=>true, 'tl_class'=>'w50'),
+    'sql'                     => "char(1) NOT NULL default 'A'"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = array

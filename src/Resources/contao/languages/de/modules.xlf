@@ -14,13 +14,13 @@
         <source>Glossaries</source>
         <target>Glossare</target>
       </trans-unit>
-      <trans-unit id="FMD.glossarylist.0">
-        <source>Glossarylist</source>
-        <target>Glossarliste</target>
+      <trans-unit id="FMD.glossary.0">
+        <source>Glossary</source>
+        <target>Glossar</target>
       </trans-unit>
-      <trans-unit id="FMD.glossarylist.1">
-        <source>Adds a list of glossary items to the page</source>
-        <target>Fügt der Seite eine Glossarliste hinzu</target>
+      <trans-unit id="FMD.glossary.1">
+        <source>Adds a glossary to the page</source>
+        <target>Fügt der Seite ein Glossar hinzu</target>
       </trans-unit>
       <trans-unit id="FMD.glossaryreader.0">
         <source>Glossaryreader</source>

@@ -1,0 +1,41 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+  <div class="grouplist">
+    <ul>
+      <?php foreach ($this->availableGroups as $group): ?>
+        <li class="<?= $group['class'] ?>"><?= $group['item'] ?></li>
+      <?php endforeach; ?>
+    </ul>
+  </div>
+
+  <?php if (empty($this->groups)): ?>
+    <p class="empty"><?= $this->empty ?></p>
+  <?php else: ?>
+    <div class="itemlist">
+      <ul>
+        <?php foreach ($this->groups as $group): ?>
+          <?php foreach ($group['items'] as $item): ?>
+            <li><?= $item['item'] ?></li>
+          <?php endforeach; ?>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+
+    <div class="glossary">
+      <?php foreach ($this->groups as $letter => $group): ?>
+        <div class="group" id="<?= $group['id'] ?>">
+          <div class="letter"><?= $letter ?></div>
+          <?php foreach ($group['items'] as $item): ?>
+            <div class="item" id="<?= $item['id'] ?>">
+              <h4><?= $item['link'] ?></h4>
+              <p><?= $item['teaser'] ?></p>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+
+<?php $this->endblock(); ?>

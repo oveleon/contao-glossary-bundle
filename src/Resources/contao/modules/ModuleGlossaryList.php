@@ -10,6 +10,7 @@ namespace Oveleon\ContaoGlossaryBundle;
 
 use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\Database;
 use Contao\FrontendTemplate;
 use Model\Collection;
 use Patchwork\Utf8;
@@ -17,7 +18,11 @@ use Patchwork\Utf8;
 /**
  * Front end module "glossary list".
  *
- * @property array  $glossary_archives
+ * @property array    $glossary_archives
+ * @property integer  $glossary_readerModule
+ * @property boolean  $glossary_hideEmptyGroups
+ * @property boolean  $glossary_singleGroup
+ * @property string   $glossary_letter
  *
  * @author Fabian Ekert <https://github.com/eki89>
  */
@@ -27,7 +32,7 @@ class ModuleGlossaryList extends ModuleGlossary
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_glossarylist';
+	protected $strTemplate = 'mod_glossary';
 
 	/**
 	 * Display a wildcard in the back end
@@ -40,7 +45,7 @@ class ModuleGlossaryList extends ModuleGlossary
 		{
 			$objTemplate = new \BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossarylist'][0]) . ' ###';
+			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossary'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
 			$objTemplate->link = $this->name;
@@ -71,11 +76,19 @@ class ModuleGlossaryList extends ModuleGlossary
 	 */
 	protected function compile()
 	{
-		$objItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
+	    $objItems = null;
 
-		if ($objItems === null)
+	    if ($this->glossary_singleGroup)
         {
-            return '';
+            // Get the current page
+            $id = 'page_n' . $this->id;
+            $letter = \Input::get($id) ?? $this->glossary_letter;
+
+            $objItems = GlossaryItemModel::findPublishedByLetterAndPids($letter, $this->glossary_archives);
+        }
+	    else
+        {
+            $objItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
         }
 
         $arrLetterRange = range('A', 'Z');
@@ -87,26 +100,35 @@ class ModuleGlossaryList extends ModuleGlossary
             $availableGroups[$letter] = false;
         }
 
-		while ($objItems->next())
+        if ($objItems !== null)
         {
-            $group = strtoupper(substr($objItems->keyword, 0, 1));
-
-            $arrItem = $objItems->row();
-
-            $arrItem['link'] = $this->generateLink($objItems->keyword, $objItems);
-
-            // Clean the RTE output
-            if ($objItems->teaser != '')
+		    while ($objItems->next())
             {
-                $arrItem['teaser'] = \StringUtil::encodeEmail(\StringUtil::toHtml5($objItems->teaser));
+                $group = strtoupper(substr($objItems->keyword, 0, 1));
+
+                $arrItem = $objItems->row();
+
+                $arrItem['id'] = 'item'.$this->id.'_'.$objItems->id;
+                $arrItem['link'] = $this->generateLink($objItems->keyword, $objItems);
+                $arrItem['item'] = sprintf('<a href="%s#item%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $objItems->id, $objItems->keyword);
+
+                // Clean the RTE output
+                if ($objItems->teaser != '')
+                {
+                    $arrItem['teaser'] = \StringUtil::encodeEmail(\StringUtil::toHtml5($objItems->teaser));
+                }
+
+                $arrGroups[$group]['id'] = 'group'.$this->id.'_'.$group;
+                $arrGroups[$group]['items'][] = $arrItem;
+
+                // Flag group as available
+                $availableGroups[$group] = true;
             }
-
-            $arrGroups[$group][] = $arrItem;
-
-            // Flag group as available
-            $availableGroups[$group] = true;
         }
 
+        $this->generateGroupAnchors($availableGroups);
+
+        $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyGlossaryList'];
 		$this->Template->availableGroups = $availableGroups;
 		$this->Template->groups = $arrGroups;
 	}
@@ -152,5 +174,80 @@ class ModuleGlossaryList extends ModuleGlossary
             ($objItem->target ? ' target="_blank"' : ''),
             $strLink
         );
+    }
+
+    /**
+     * Generate group anchor links and return them as array
+     *
+     * @param array $availableGroups
+     */
+    protected function generateGroupAnchors(&$availableGroups)
+    {
+        if ($this->glossary_singleGroup)
+        {
+            $id = 'page_n' . $this->id;
+            $letter = \Input::get($id) ?? $this->glossary_letter;
+
+            $objItems = $this->Database->prepare("SELECT DISTINCT letter FROM tl_glossary_item WHERE pid IN(" . implode(',', array_map('\intval', $this->glossary_archives)) . ") AND published='1'")->execute();
+
+            while ($objItems->next())
+            {
+                $item = sprintf('<a href="%s?page_n%s=%s">%s</a>', explode('?', $this->Environment->get('request'), 2)[0], $this->id, $objItems->letter, $objItems->letter);
+
+                $availableGroups[$objItems->letter] = array
+                (
+                    'item' => $item,
+                    'class' => $objItems->letter == $letter ? 'active selected' : 'active'
+                );
+            }
+
+            foreach ($availableGroups as $group => $available)
+            {
+                if (!$available)
+                {
+                    if ($this->glossary_hideEmptyGroups)
+                    {
+                        unset($availableGroups[$group]);
+
+                        continue;
+                    }
+
+                    $item = sprintf('<span>%s</span>', $group);
+
+                    $availableGroups[$group] = array
+                    (
+                        'item' => $item,
+                        'class' => 'inactive'
+                    );
+                }
+            }
+        }
+        else
+        {
+            foreach ($availableGroups as $group => $available)
+            {
+                if ($available)
+                {
+                    $item = sprintf('<a href="%s#group%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $group, $group);
+                }
+                else
+                {
+                    if ($this->glossary_hideEmptyGroups)
+                    {
+                        unset($availableGroups[$group]);
+
+                        continue;
+                    }
+
+                    $item = sprintf('<span>%s</span>', $group);
+                }
+
+                $availableGroups[$group] = array
+                (
+                    'item' => $item,
+                    'class' => $available ? 'active' : 'inactive'
+                );
+            }
+        }
     }
 }

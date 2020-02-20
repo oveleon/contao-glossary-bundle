@@ -11,10 +11,10 @@
       <trans-unit id="FMD.glossary">
         <source>Glossaries</source>
       </trans-unit>
-      <trans-unit id="FMD.glossarylist.0">
-        <source>Glossarylist</source>
+      <trans-unit id="FMD.glossary.0">
+        <source>Glossary</source>
       </trans-unit>
-      <trans-unit id="FMD.glossarylist.1">
+      <trans-unit id="FMD.glossary.1">
         <source>Adds a list of glossary items to the page</source>
       </trans-unit>
       <trans-unit id="FMD.glossaryreader.0">
