@@ -23,9 +23,18 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		(
 			array('tl_glossary_item', 'checkPermission')
 		),
+        'oncut_callback' => array
+        (
+            array('tl_glossary_item', 'updateGlossaryIndex')
+        ),
+        'ondelete_callback' => array
+        (
+            array('tl_glossary_item', 'updateGlossaryIndex')
+        ),
         'onsubmit_callback' => array
         (
-            array('tl_glossary_item', 'setGlossaryItemGroup')
+            array('tl_glossary_item', 'setGlossaryItemGroup'),
+            array('tl_glossary_item', 'updateGlossaryIndex')
         ),
 		'sql' => array
 		(
@@ -106,7 +115,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('source'),
-		'default'                     => '{title_legend},keyword,alias;{meta_legend},pageTitle,description;{teaser_legend},teaser;{source_legend:hide},source;{expert_legend:hide},cssClass;{publish_legend},published'
+		'default'                     => '{title_legend},keyword,alias,search;{keyword_legend:hide},keywords;{meta_legend},pageTitle,description;{teaser_legend},teaser;{source_legend:hide},source;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
     // Subpalettes
@@ -145,8 +154,8 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			'sorting'                 => true,
 			'flag'                    => 1,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
-			'sql'                     => "varchar(128) NOT NULL default ''"
+			'eval'                    => array('mandatory'=>true, 'maxlength'=>64, 'tl_class'=>'w50'),
+			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'alias' => array
 		(
@@ -160,6 +169,22 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			),
 			'sql'                     => "varchar(255) BINARY NOT NULL default ''"
 		),
+        'search' => array
+        (
+            'exclude'                 => true,
+            'filter'                  => true,
+            'flag'                    => 1,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50 m12'),
+            'sql'                     => "char(1) NOT NULL default '1'"
+        ),
+        'keywords' => array
+        (
+            'exclude'                 => true,
+            'inputType'               => 'listWizard',
+            'eval'                    => array('doNotCopy'=>true, 'tl_class'=>'w50'),
+            'sql'                     => "blob NULL"
+        ),
         'pageTitle' => array
         (
             'exclude'                 => true,
@@ -538,6 +563,75 @@ class tl_glossary_item extends Backend
         }
 
         return $arrOptions;
+    }
+
+    /**
+     * Update the glossary index update
+     *
+     * @param Contao\DataContainer $dc
+     */
+    public function updateGlossaryIndex(Contao\DataContainer $dc)
+    {
+        // Return if there is no ID
+        if (!$dc->activeRecord || !$dc->activeRecord->id)
+        {
+            return;
+        }
+
+        $arrKeywords = \StringUtil::deserialize($dc->activeRecord->keywords, true);
+
+        foreach ($arrKeywords as $i => $keyword)
+        {
+            if (empty($keyword))
+            {
+                unset($arrKeywords[$i]);
+            }
+        }
+
+        array_unshift($arrKeywords, $dc->activeRecord->keyword);
+
+        $objIndex = $this->Database->prepare("SELECT id, word FROM tl_glossary_index WHERE pid=?")
+            ->execute($dc->activeRecord->id);
+
+        while ($objIndex->next())
+        {
+            if (($index = array_search($objIndex->word, $arrKeywords)) !== false)
+            {
+                unset($arrKeywords[$index]);
+            }
+            else
+            {
+                $this->Database->prepare("DELETE FROM tl_glossary_index WHERE id=?")
+                    ->execute($objIndex->id);
+            }
+
+            if (\Input::get('act') === 'delete')
+            {
+                $this->Database->prepare("DELETE FROM tl_glossary_index WHERE id=?")
+                    ->execute($objIndex->id);
+            }
+        }
+
+        foreach ($arrKeywords as $keyword)
+        {
+            $arrSet = array
+            (
+                'pid'  => $dc->activeRecord->id,
+                'word' => $keyword
+            );
+
+            $this->Database->prepare("INSERT INTO tl_glossary_index %s")->set($arrSet)->execute();
+        }
+    }
+
+    /**
+     * Add a link to the list items import wizard
+     *
+     * @return string
+     */
+    public function listImportWizard()
+    {
+        return ' <a href="' . $this->addToUrl('key=list') . '" title="' . Contao\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['lw_import'][1]) . '" onclick="Backend.getScrollOffset()">' . Contao\Image::getHtml('tablewizard.svg', $GLOBALS['TL_LANG']['MSC']['tw_import'][0]) . '</a>';
     }
 
 	/**
