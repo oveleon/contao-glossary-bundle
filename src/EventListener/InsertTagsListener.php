@@ -40,7 +40,7 @@ class InsertTagsListener
     /**
      * @return string|false
      */
-    public function __invoke(string $tag, bool $useCache, $cacheValue, array $flags)
+    public function onReplaceInsertTags(string $tag, bool $useCache, $cacheValue, array $flags)
     {
         $elements = explode('::', $tag);
         $key = strtolower($elements[0]);
