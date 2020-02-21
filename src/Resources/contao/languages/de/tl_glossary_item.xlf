@@ -22,6 +22,14 @@
         <source>The glossary item alias is a unique reference to the glossary item which can be called instead of its numeric ID.</source>
         <target>Der Glossareintrag-Alias ist eine eindeutige Referenz, die anstelle der numerischen Glossareintrag-ID aufgerufen werden kann.</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.keywords.0">
+        <source>Additonal search keywords</source>
+        <target>Weiter Suchbegriffe</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keywords.1">
+        <source>Here you can enter additional search keywords to be considered for automatic cross-references.</source>
+        <target>Hier können Sie weitere Suchbegriffe eingeben, die für automatische Querverweise berücksichtigt werden sollen.</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.pageTitle.0">
         <source>Meta title</source>
         <target>Meta-Titel</target>
@@ -118,6 +126,14 @@
         <source>Make the glossary item publicly visible on the website.</source>
         <target>Den Glossareitrag auf der Webseite anzeigen.</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.search.0">
+        <source>Set reference automatically</source>
+        <target>Verweise automatisch setzen</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.search.1">
+        <source>Replace all search terms occurring in texts by a link. Optionally a tooltip can be added to a link.</source>
+        <target>Alle in Texten vorkommenden Suchbegriffe durch einen Link ersetzen. Optional kann ein Link um ein Tooltip erweitert werden.</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.tstamp.0">
         <source>Revision date</source>
         <target>Änderungsdatum</target>
@@ -129,6 +145,10 @@
       <trans-unit id="tl_glossary_item.title_legend">
         <source>Title</source>
         <target>Titel</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keyword_legend">
+        <source>Search keywords</source>
+        <target>Suchbegriffe</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.meta_legend">
         <source>Meta data</source>
