@@ -109,7 +109,8 @@ class ModuleGlossaryList extends ModuleGlossary
                 $arrItem = $objItems->row();
 
                 $arrItem['id'] = 'item'.$this->id.'_'.$objItems->id;
-                $arrItem['link'] = $this->generateLink($objItems->keyword, $objItems);
+                $arrItem['linkHeadline'] = $this->generateLink($objItems->keyword, $objItems);
+                $arrItem['more'] = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objItems);
                 $arrItem['item'] = sprintf('<a href="%s#item%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $objItems->id, $objItems->keyword);
 
                 // Clean the RTE output

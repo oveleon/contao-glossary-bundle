@@ -19,7 +19,7 @@
           <div class="letter"><?= $letter ?></div>
           <ul>
             <?php foreach ($group['items'] as $item): ?>
-              <li class="item"><?= $item['link'] ?></li>
+              <li class="item"><?= $item['linkHeadline'] ?></li>
             <?php endforeach; ?>
           </ul>
         </div>

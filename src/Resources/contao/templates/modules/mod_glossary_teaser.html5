@@ -29,8 +29,9 @@
           <div class="letter"><?= $letter ?></div>
           <?php foreach ($group['items'] as $item): ?>
             <div class="item" id="<?= $item['id'] ?>">
-              <h4><?= $item['link'] ?></h4>
+              <h4><?= $item['linkHeadline'] ?></h4>
               <p><?= $item['teaser'] ?></p>
+              <p class="more"><?= $item['more'] ?></p>
             </div>
           <?php endforeach; ?>
         </div>
