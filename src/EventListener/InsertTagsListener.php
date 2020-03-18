@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoGlossaryBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Oveleon\ContaoGlossaryBundle\GlossaryItem;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 
@@ -28,11 +28,11 @@ class InsertTagsListener
     ];
 
     /**
-     * @var ContaoFramework
+     * @var ContaoFrameworkInterface
      */
     private $framework;
 
-    public function __construct(ContaoFramework $framework)
+    public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
     }
