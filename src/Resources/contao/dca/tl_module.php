@@ -20,6 +20,7 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['glossary_singleGroup'] = 'glossa
 // Add fields to tl_module
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_archives'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_archives'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'options_callback'        => array('tl_module_glossary', 'getGlossaries'),
@@ -29,6 +30,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_archives'] = array
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_readerModule'],
     'exclude'                 => true,
     'inputType'               => 'select',
     'options_callback'        => array('tl_module_glossary', 'getReaderModules'),
@@ -39,6 +41,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = array
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_hideEmptyGroups'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_hideEmptyGroups'],
     'exclude'                 => true,
     'inputType'               => 'checkbox',
     'eval'                    => array('tl_class'=>'clr'),
@@ -47,6 +50,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_hideEmptyGroups'] = array
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_singleGroup'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_singleGroup'],
     'exclude'                 => true,
     'inputType'               => 'checkbox',
     'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
@@ -55,6 +59,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_singleGroup'] = array
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_letter'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_letter'],
     'exclude'                 => true,
     'inputType'               => 'select',
     'options'                 => range('A', 'Z'),
@@ -64,6 +69,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_letter'] = array
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_template'],
     'exclude'                 => true,
     'inputType'               => 'select',
     'options_callback'        => array('tl_module_glossary', 'getGlossaryTemplates'),

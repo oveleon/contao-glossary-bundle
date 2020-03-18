@@ -16,6 +16,7 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 // Add fields to tl_user_group
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['glossarys'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_user_group']['glossarys'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'foreignKey'              => 'tl_glossary.title',
@@ -25,6 +26,7 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['glossarys'] = array
 
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['glossaryp'] = array
 (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_user_group']['glossaryp'],
     'exclude'                 => true,
     'inputType'               => 'checkbox',
     'options'                 => array('create', 'delete'),

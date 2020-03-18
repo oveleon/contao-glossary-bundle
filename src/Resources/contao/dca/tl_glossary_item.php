@@ -141,14 +141,17 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		),
 		'tstamp' => array
 		(
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['tstamp'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
         'letter' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['letter'],
             'sql'                     => "char(1) NOT NULL default ''"
         ),
 		'keyword' => array
 		(
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['keyword'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'sorting'                 => true,
@@ -159,6 +162,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		),
 		'alias' => array
 		(
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['alias'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -171,6 +175,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		),
         'search' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['search'],
             'exclude'                 => true,
             'filter'                  => true,
             'flag'                    => 1,
@@ -180,6 +185,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
         'keywords' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['keywords'],
             'exclude'                 => true,
             'inputType'               => 'listWizard',
             'eval'                    => array('doNotCopy'=>true, 'tl_class'=>'w50'),
@@ -187,6 +193,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
         'pageTitle' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['pageTitle'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -195,6 +202,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
         'description' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['description'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'textarea',
@@ -203,6 +211,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
 		'teaser' => array
 		(
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['teaser'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
@@ -211,6 +220,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		),
         'source' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['source'],
             'exclude'                 => true,
             'filter'                  => true,
             'inputType'               => 'radio',
@@ -221,6 +231,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
         'jumpTo' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['jumpTo'],
             'exclude'                 => true,
             'inputType'               => 'pageTree',
             'foreignKey'              => 'tl_page.title',
@@ -230,6 +241,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
         'articleId' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['articleId'],
             'exclude'                 => true,
             'inputType'               => 'select',
             'options_callback'        => array('tl_glossary_item', 'getArticleAlias'),
@@ -256,6 +268,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
         'cssClass' => array
         (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['cssClass'],
             'exclude'                 => true,
             'inputType'               => 'text',
             'eval'                    => array('tl_class'=>'w50'),
@@ -263,6 +276,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         ),
 		'published' => array
 		(
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['published'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'flag'                    => 1,
