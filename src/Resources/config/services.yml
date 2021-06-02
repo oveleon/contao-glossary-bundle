@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+
+    Oveleon\ContaoGlossaryBundle\Controller\GlossaryController:
+        arguments:
+            - '@contao.framework'
+        tags:
+            - controller.service_arguments
