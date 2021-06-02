@@ -52,8 +52,6 @@ class GlossaryController extends AbstractController
 
 		$arrResult = $objGlossaryItems->fetchAll();
 
-		//return new JsonResponse(['type' => $module, 'status' => 'OK']);
-		//return new JsonResponse(['type' => 'hello world']);
 		return new JsonResponse($arrResult);
 	}
 
