@@ -8,6 +8,7 @@
 
 namespace Oveleon\ContaoGlossaryBundle\Controller;
 
+use Contao\StringUtil;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,9 +57,21 @@ class GlossaryController extends AbstractController
 
 		while ($objGlossaryItems->next())
 		{
+			$strTerm = $objGlossaryItems->keyword;
+
+			$arrKeywords = StringUtil::deserialize($objGlossaryItems->keywords, true);
+
+			foreach($arrKeywords as $strKeyword)
+			{
+				if (!empty($strKeyword))
+				{
+					$strTerm .= ', ' . $strKeyword;
+				}
+			}
+
 			$arrResponse[] = array
 			(
-			  'term' => $objGlossaryItems->keyword,
+			  'term' => $strTerm,
 			  'description' => strip_tags($objGlossaryItems->teaser)
 			);
 		}
