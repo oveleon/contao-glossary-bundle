@@ -8,13 +8,10 @@
 
 namespace Oveleon\ContaoGlossaryBundle\Controller;
 
-use Contao\FrontendTemplate;
-use Contao\System;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -38,21 +35,35 @@ class GlossaryController extends AbstractController
 	/**
 	 * Runs the command scheduler. (prepare)
 	 *
-	 * @Route("/api/glossary", name="glossary_table")
+	 * @Route("/api/glossary/glossarizer", name="glossary_table")
 	 *
 	 * @param Request $request
 	 *
 	 * @return JsonResponse|string
 	 */
-	public function show(Request $request)
+	public function showGlossarizer(Request $request)
 	{
 		$this->framework->initialize();
 
 		$objGlossaryItems = GlossaryItemModel::findAll();
 
-		$arrResult = $objGlossaryItems->fetchAll();
+		$arrResponse = array();
 
-		return new JsonResponse($arrResult);
+		if ($objGlossaryItems === null)
+		{
+			return new JsonResponse($arrResponse);
+		}
+
+		while ($objGlossaryItems->next())
+		{
+			$arrResponse[] = array
+			(
+			  'term' => $objGlossaryItems->keyword,
+			  'description' => strip_tags($objGlossaryItems->teaser)
+			);
+		}
+
+		return new JsonResponse($arrResponse);
 	}
 
 	/**
