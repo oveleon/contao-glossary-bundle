@@ -53,6 +53,12 @@
       <trans-unit id="tl_glossary_item.teaser.1">
         <source>The glossary item teaser can be used in a tooltip or can be shown in a glossary list instead of the full article.</source>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.addImage.0">
+        <source>Add an image</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.addImage.1">
+        <source>Add an image to the glossary item.</source>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.source.0">
         <source>Redirect target</source>
       </trans-unit>
