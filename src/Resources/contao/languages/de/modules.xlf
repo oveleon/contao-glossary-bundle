@@ -10,7 +10,7 @@
         <source>Manage glossaries and display them in a glossary list</source>
         <target>Glossare verwalten und als Glossarliste ausgeben</target>
       </trans-unit>
-      <trans-unit id="FMD.glossary">
+      <trans-unit id="FMD.glossaries">
         <source>Glossaries</source>
         <target>Glossare</target>
       </trans-unit>

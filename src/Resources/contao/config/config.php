@@ -18,7 +18,7 @@ array_insert($GLOBALS['BE_MOD']['content'], 5, array
 // Front end modules
 array_insert($GLOBALS['FE_MOD'], 3, array
 (
-    'glossary' => array
+    'glossaries' => array
     (
         'glossary'        => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryList',
         'glossaryreader'  => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryReader',
