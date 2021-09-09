@@ -178,6 +178,10 @@
         <source>Redirect target</source>
         <target>Weiterleitungsziel</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.image_legend">
+        <source>Image settings</source>
+        <target>Bildeinstellungen</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.expert_legend">
         <source>Expert settings</source>
         <target>Experten-Einstellungen</target>

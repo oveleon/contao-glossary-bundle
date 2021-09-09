@@ -43,12 +43,20 @@
         <target>Die ausgewählte Gruppe wird angezeigt, wenn die Seite betreten wird und aktiv noch keine Gruppe ausgewählt wurde.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
-        <source>Glossary template</source>
-        <target>Glossar-Template</target>
+        <source>Glossary entry template</source>
+        <target>Glossareintrag-Template</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.1">
-        <source>Here you can select the glossary template.</source>
-        <target>Hier können Sie das Glossar-Template auswählen.</target>
+        <source>Here you can select the glossary entry template.</source>
+        <target>Hier können Sie das Glossareintrags-Template auswählen.</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_metaFields.0">
+        <source>Meta fields</source>
+        <target>Meta-Felder</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_metaFields.1">
+        <source>Here you can select the meta fields.</source>
+        <target>Hier können Sie die Meta-Felder auswählen.</target>
       </trans-unit>
     </body>
   </file>

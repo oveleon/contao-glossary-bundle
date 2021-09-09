@@ -131,6 +131,9 @@
       <trans-unit id="tl_glossary_item.source_legend">
         <source>Redirect target</source>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.image_legend">
+        <source>Image settings</source>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.expert_legend">
         <source>Expert settings</source>
       </trans-unit>

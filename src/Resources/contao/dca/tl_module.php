@@ -10,8 +10,8 @@
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'glossary_singleGroup';
 
 // Add palettes to tl_module
-$GLOBALS['TL_DCA']['tl_module']['palettes']['glossary']       = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule,glossary_hideEmptyGroups,glossary_singleGroup;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['glossaryreader'] = '{title_legend},name,headline,type;{config_legend},glossary_archives;{template_legend:hide},glossary_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['glossary']       = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule,glossary_hideEmptyGroups,glossary_singleGroup;{template_legend:hide},glossary_metaFields,glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['glossaryreader'] = '{title_legend},name,headline,type;{config_legend},glossary_archives;{template_legend:hide},glossary_metaFields,glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Add subpalettes to tl_module
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['glossary_singleGroup'] = 'glossary_letter';
@@ -37,6 +37,17 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = array
     'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
     'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
     'sql'                     => "int(10) unsigned NOT NULL default 0"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['glossary_metaFields'] = array
+(
+	//ToDo: Add options for meta fields
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'options'                 => array('1', '2', '3'),
+	'reference'               => &$GLOBALS['TL_LANG']['MSC'],
+	'eval'                    => array('multiple'=>true),
+	'sql'                     => "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_hideEmptyGroups'] = array
@@ -69,12 +80,15 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_letter'] = array
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_template'],
-    'exclude'                 => true,
-    'inputType'               => 'select',
-    'options_callback'        => array('tl_module_glossary', 'getGlossaryTemplates'),
-    'eval'                    => array('tl_class'=>'w50'),
-    'sql'                     => "varchar(64) NOT NULL default 'glossary_default'"
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_template'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options_callback' => static function ()
+	{
+		return \Contao\Controller::getTemplateGroup('glossary_');
+	},
+	'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
+	'sql'                     => "varchar(64) NOT NULL default ''"
 );
 
 
@@ -136,15 +150,5 @@ class tl_module_glossary extends Contao\Backend
         }
 
         return $arrModules;
-    }
-
-    /**
-     * Return all glossary templates as array
-     *
-     * @return array
-     */
-    public function getGlossaryTemplates()
-    {
-        return $this->getTemplateGroup('glossary_');
     }
 }
