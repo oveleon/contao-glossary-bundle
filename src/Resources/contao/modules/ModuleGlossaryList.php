@@ -8,12 +8,15 @@
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\BackendTemplate;
 use Contao\Config;
+use Contao\System;
+use Contao\StringUtil;
+use Patchwork\Utf8;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Database;
 use Contao\FrontendTemplate;
 use Model\Collection;
-use Patchwork\Utf8;
 
 /**
  * Front end module "glossary list".
@@ -25,6 +28,7 @@ use Patchwork\Utf8;
  * @property string   $glossary_letter
  *
  * @author Fabian Ekert <https://github.com/eki89>
+ * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 class ModuleGlossaryList extends ModuleGlossary
 {
@@ -41,10 +45,11 @@ class ModuleGlossaryList extends ModuleGlossary
 	 */
 	public function generate()
 	{
-		if (TL_MODE == 'BE')
-		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
+		if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
+		{
+			$objTemplate = new BackendTemplate('be_wildcard');
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossary'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
@@ -54,7 +59,7 @@ class ModuleGlossaryList extends ModuleGlossary
 			return $objTemplate->parse();
 		}
 
-		$this->glossary_archives = $this->sortOutProtected(\StringUtil::deserialize($this->glossary_archives, true));
+		$this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives));
 
 		// Return if there are no glossaries
 		if (empty($this->glossary_archives) || !\is_array($this->glossary_archives))
@@ -67,6 +72,8 @@ class ModuleGlossaryList extends ModuleGlossary
         {
             return $this->getFrontendModule($this->glossary_readerModule, $this->strColumn);
         }
+
+		//ToDo: Add symfony response tagger
 
 		return parent::generate();
 	}
@@ -116,7 +123,7 @@ class ModuleGlossaryList extends ModuleGlossary
                 // Clean the RTE output
                 if ($objItems->teaser != '')
                 {
-                    $arrItem['teaser'] = \StringUtil::encodeEmail(\StringUtil::toHtml5($objItems->teaser));
+                    $arrItem['teaser'] = StringUtil::encodeEmail(StringUtil::toHtml5($objItems->teaser));
                 }
 
                 $arrGroups[$group]['id'] = 'group'.$this->id.'_'.$group;
@@ -150,7 +157,7 @@ class ModuleGlossaryList extends ModuleGlossary
             return sprintf(
                 '<a href="%s" title="%s" itemprop="url"><span itemprop="headline">%s</span></a>',
                 GlossaryItem::generateUrl($objItem),
-                \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->keyword), true),
+                StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->keyword), true),
                 $strLink
             );
         }
@@ -158,7 +165,7 @@ class ModuleGlossaryList extends ModuleGlossary
         // Encode e-mail addresses
         if (0 === strncmp($objItem->url, 'mailto:', 7))
         {
-            $strArticleUrl = \StringUtil::encodeEmail($objItem->url);
+            $strArticleUrl = StringUtil::encodeEmail($objItem->url);
         }
 
         // Ampersand URIs
@@ -171,7 +178,7 @@ class ModuleGlossaryList extends ModuleGlossary
         return sprintf(
             '<a href="%s" title="%s"%s itemprop="url"><span itemprop="headline">%s</span></a>',
             $strArticleUrl,
-            \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
+            StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
             ($objItem->target ? ' target="_blank"' : ''),
             $strLink
         );

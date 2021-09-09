@@ -8,45 +8,54 @@
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\FrontendTemplate;
 use Contao\FrontendUser;
+use Contao\StringUtil;
+use Contao\System;
 
 /**
  * Parent class for glossary modules.
  *
+ * @property string $glossary_template
+ * @property mixed $glossary_metaFields
+ *
  * @author Fabian Ekert <https://github.com/eki89>
+ * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 abstract class ModuleGlossary extends \Module
 {
 	/**
 	 * Sort out protected glossaries
 	 *
-	 * @param array $arrGloassary
+	 * @param array $arrGlossaries
 	 *
 	 * @return array
 	 */
-	protected function sortOutProtected($arrGloassary)
+	protected function sortOutProtected($arrGlossaries)
 	{
-		if (empty($arrGloassary) || !\is_array($arrGloassary))
+		if (empty($arrGlossaries) || !\is_array($arrGlossaries))
 		{
-			return $arrGloassary;
+			return $arrGlossaries;
 		}
 
 		$this->import(FrontendUser::class, 'User');
-		$objGlossary = GlossaryModel::findMultipleByIds($arrGloassary);
-		$arrGloassary = array();
+		$objGlossary = GlossaryModel::findMultipleByIds($arrGlossaries);
+		$arrGlossaries = array();
 
 		if ($objGlossary !== null)
 		{
+			$blnFeUserLoggedIn = System::getContainer()->get('contao.security.token_checker')->hasFrontendUser();
+
 			while ($objGlossary->next())
 			{
 				if ($objGlossary->protected)
 				{
-					if (!FE_USER_LOGGED_IN || !\is_array($this->User->groups))
+					if (!$blnFeUserLoggedIn || !\is_array($this->User->groups))
 					{
 						continue;
 					}
 
-					$groups = \StringUtil::deserialize($objGlossary->groups);
+					$groups = StringUtil::deserialize($objGlossary->groups);
 
 					if (empty($groups) || !\is_array($groups) || !\count(array_intersect($groups, $this->User->groups)))
 					{
@@ -54,10 +63,26 @@ abstract class ModuleGlossary extends \Module
 					}
 				}
 
-				$arrGloassary[] = $objGlossary->id;
+				$arrGlossaries[] = $objGlossary->id;
 			}
 		}
 
-		return $arrGloassary;
+		return $arrGlossaries;
+	}
+
+	protected function parseGlossaryItem($objGlossaryItem, $objGlossary, $strClass='', $intCount=0)
+	{
+		/** @var FrontendTemplate|object $objTemplate */
+		$objTemplate = new FrontendTemplate($this->glossary_template);
+		$objTemplate->setData($objGlossaryItem->row());
+
+		if ($objGlossaryItem->cssClass != '')
+		{
+			$strClass = ' ' . $objGlossaryItem->cssClass . $strClass;
+		}
+
+		$objTemplate->class = $strClass;
+
+		//ToDo: Outsource template creation to parseGlossaryItem
 	}
 }

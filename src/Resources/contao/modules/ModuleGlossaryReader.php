@@ -8,8 +8,10 @@
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\BackendTemplate;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\System;
 use FOS\HttpCache\ResponseTagger;
 use Patchwork\Utf8;
 
@@ -19,6 +21,7 @@ use Patchwork\Utf8;
  * @property array  $glossary_archives
  *
  * @author Fabian Ekert <https://github.com/eki89>
+ * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 
 class ModuleGlossaryReader extends ModuleGlossary
@@ -38,10 +41,12 @@ class ModuleGlossaryReader extends ModuleGlossary
      */
     public function generate()
     {
-        if (TL_MODE == 'BE')
+	    $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
+        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
         {
-            $objTemplate = new \BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossaryreader'][0]) . ' ###';
+	        $objTemplate = new BackendTemplate('be_wildcard');
+	        $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossaryreader'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -62,12 +67,12 @@ class ModuleGlossaryReader extends ModuleGlossary
             return '';
         }
 
-        $this->glossary_archives = $this->sortOutProtected(\StringUtil::deserialize($this->glossary_archives, true));
+        $this->glossary_archives = $this->sortOutProtected(\StringUtil::deserialize($this->glossary_archives));
 
         // Return if there are no glossaries
         if (empty($this->glossary_archives) || !\is_array($this->glossary_archives))
         {
-            throw new InternalServerErrorException('The glossary reader ID ' . $this->id . ' has no archives specified.', $this->id);
+            throw new InternalServerErrorException('The glossary reader ID ' . $this->id . ' has no archives specified.');
         }
 
         return parent::generate();
