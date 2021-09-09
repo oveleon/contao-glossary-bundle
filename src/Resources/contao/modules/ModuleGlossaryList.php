@@ -109,6 +109,8 @@ class ModuleGlossaryList extends ModuleGlossary
 
         if ($objItems !== null)
         {
+			//ToDo: Add parseGlossaryItems
+
 		    while ($objItems->next())
             {
                 $group = strtoupper(substr($objItems->keyword, 0, 1));
@@ -141,6 +143,7 @@ class ModuleGlossaryList extends ModuleGlossary
 		$this->Template->groups = $arrGroups;
 	}
 
+	// ToDo: Move to ModuleGlossary
     /**
      * Generate a link and return it as string
      *

@@ -8,9 +8,12 @@
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\ArticleModel;
 use Contao\BackendTemplate;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\PageModel;
 use Contao\System;
 use FOS\HttpCache\ResponseTagger;
 use Patchwork\Utf8;
@@ -86,55 +89,90 @@ class ModuleGlossaryReader extends ModuleGlossary
         /** @var \PageModel $objPage */
         global $objPage;
 
+	    $this->Template->glossaryitem = '';
         $this->Template->referer = 'javascript:history.go(-1)';
         $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the glossary item
-        $objArticle = GlossaryItemModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->glossary_archives);
+        $objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->glossary_archives);
 
-        if (null === $objArticle || $objArticle->source != 'default')
+        if (null === $objGlossaryItem)
         {
             throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
         }
 
-        $this->Template->article = $this->parseArticle($objArticle);
+	    // Redirect if the glossary item has a target URL
+	    switch ($objGlossaryItem->source) {
+		    case 'internal':
+			    if ($page = PageModel::findPublishedById($objGlossaryItem->jumpTo))
+			    {
+				    throw new RedirectResponseException($page->getAbsoluteUrl(), 301);
+			    }
+
+			    throw new InternalServerErrorException('Invalid "jumpTo" value or target page not public');
+
+		    case 'article':
+			    if (($article = ArticleModel::findByPk($objGlossaryItem->articleId)) && ($page = PageModel::findPublishedById($article->pid)))
+			    {
+				    throw new RedirectResponseException($page->getAbsoluteUrl('/articles/' . ($article->alias ?: $article->id)), 301);
+			    }
+
+			    throw new InternalServerErrorException('Invalid "articleId" value or target page not public');
+
+		    case 'external':
+			    if ($objGlossaryItem->url)
+			    {
+				    throw new RedirectResponseException($objGlossaryItem->url, 301);
+			    }
+
+			    throw new InternalServerErrorException('Empty target URL');
+	    }
+
+		// Set the default template
+	    if (!$this->glossary_template)
+	    {
+		    $this->glossary_template = 'glossary_default';
+	    }
+
+		//ToDo: parse into array
+        $this->Template->glossaryitem = $this->parseGlossaryItem($objGlossaryItem);
 
         // Overwrite the page title (see #2853, #4955 and #87)
-        if ($objArticle->pageTitle)
+        if ($objGlossaryItem->pageTitle)
         {
-            $objPage->pageTitle = $objArticle->pageTitle;
+            $objPage->pageTitle = $objGlossaryItem->pageTitle;
         }
-        elseif ($objArticle->keyword)
+        elseif ($objGlossaryItem->keyword)
         {
-            $objPage->pageTitle = strip_tags(\StringUtil::stripInsertTags($objArticle->keyword));
+            $objPage->pageTitle = strip_tags(\StringUtil::stripInsertTags($objGlossaryItem->keyword));
         }
 
         // Overwrite the page description
-        if ($objArticle->description)
+        if ($objGlossaryItem->description)
         {
-            $objPage->description = $objArticle->description;
+            $objPage->description = $objGlossaryItem->description;
         }
-        elseif ($objArticle->teaser)
+        elseif ($objGlossaryItem->teaser)
         {
-            $objPage->description = $this->prepareMetaDescription($objArticle->teaser);
+            $objPage->description = $this->prepareMetaDescription($objGlossaryItem->teaser);
         }
     }
 
     /**
      * Parse an item and return it as string
      *
-     * @param GlossaryItemModel $objArticle
+     * @param GlossaryItemModel $objGlossaryItem
      *
      * @return string
      */
-    protected function parseArticle($objArticle)
+    protected function parseGlossaryItem($objGlossaryItem)
     {
         $objTemplate = new \FrontendTemplate($this->glossary_template ?: 'glossary_default');
-        $id = $objArticle->id;
+        $id = $objGlossaryItem->id;
 
-        $objTemplate->setData($objArticle->row());
+        $objTemplate->setData($objGlossaryItem->row());
 
-        $objTemplate->headline = $objArticle->keyword;
+        $objTemplate->headline = $objGlossaryItem->keyword;
         $objTemplate->text = function () use ($id)
         {
             $strText = '';
@@ -150,9 +188,9 @@ class ModuleGlossaryReader extends ModuleGlossary
 
             return $strText;
         };
-        $objTemplate->hasText = static function () use ($objArticle)
+        $objTemplate->hasText = static function () use ($objGlossaryItem)
         {
-            return \ContentModel::countPublishedByPidAndTable($objArticle->id, 'tl_glossary_item') > 0;
+            return \ContentModel::countPublishedByPidAndTable($objGlossaryItem->id, 'tl_glossary_item') > 0;
         };
 
         // Tag the response
@@ -160,8 +198,8 @@ class ModuleGlossaryReader extends ModuleGlossary
         {
             /** @var ResponseTagger $responseTagger */
             $responseTagger = \System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
-            $responseTagger->addTags(array('contao.db.tl_glossary_item.' . $objArticle->id));
-            $responseTagger->addTags(array('contao.db.tl_glossary.' . $objArticle->pid));
+            $responseTagger->addTags(array('contao.db.tl_glossary_item.' . $objGlossaryItem->id));
+            $responseTagger->addTags(array('contao.db.tl_glossary.' . $objGlossaryItem->pid));
         }
 
         return $objTemplate->parse();

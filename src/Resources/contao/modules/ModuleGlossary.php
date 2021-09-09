@@ -70,9 +70,9 @@ abstract class ModuleGlossary extends \Module
 		return $arrGlossaries;
 	}
 
-	protected function parseGlossaryItem($objGlossaryItem, $objGlossary, $strClass='', $intCount=0)
+	/*protected function parseGlossaryItem($objGlossaryItem, $objGlossary, $strClass='', $intCount=0)
 	{
-		/** @var FrontendTemplate|object $objTemplate */
+		@var FrontendTemplate|object $objTemplate
 		$objTemplate = new FrontendTemplate($this->glossary_template);
 		$objTemplate->setData($objGlossaryItem->row());
 
@@ -84,5 +84,5 @@ abstract class ModuleGlossary extends \Module
 		$objTemplate->class = $strClass;
 
 		//ToDo: Outsource template creation to parseGlossaryItem
-	}
+	}*/
 }
