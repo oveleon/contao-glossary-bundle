@@ -21,7 +21,17 @@ use Contao\Model\Collection;
  * @property string  $alias
  * @property string  $pageTitle
  * @property string  $description
+ * @property string  $subheadline
  * @property string  $teaser
+ * @property boolean $addImage
+ * @property string  $singleSRC
+ * @property string  $alt
+ * @property string  $size
+ * @property string  $imagemargin
+ * @property string  $imageUrl
+ * @property boolean $fullsize
+ * @property string  $caption
+ * @property string  $floating
  * @property string  $source
  * @property integer $jumpTo
  * @property integer $articleId
@@ -40,7 +50,17 @@ use Contao\Model\Collection;
  * @method static GlossaryItemModel|null findOneByAlias($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByPageTitle($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByDescription($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneBySubheadline($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByTeaser($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByAddImage($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneBySingleSRC($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByAlt($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneBySize($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByImagemargin($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByImageUrl($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByFullsize($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByCaption($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByFloating($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneBySource($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByJumpTo($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByArticleId($val, array $opt=array())
@@ -55,7 +75,17 @@ use Contao\Model\Collection;
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAlias($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByPageTitle($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByDescription($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySubheadline($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTeaser($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAddImage($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySingleSRC($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAlt($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySize($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByImagemargin($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByImageUrl($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByFullsize($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByCaption($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByFloating($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySource($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByJumpTo($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByArticleId($val, array $opt=array())
@@ -74,7 +104,17 @@ use Contao\Model\Collection;
  * @method static integer countByAlias($val, array $opt=array())
  * @method static integer countByPageTitle($val, array $opt=array())
  * @method static integer countByDescription($val, array $opt=array())
+ * @method static integer countBySubheadline($val, array $opt=array())
  * @method static integer countByTeaser($val, array $opt=array())
+ * @method static integer countByAddImage($val, array $opt=array())
+ * @method static integer countBySingleSRC($val, array $opt=array())
+ * @method static integer countByAlt($val, array $opt=array())
+ * @method static integer countBySize($val, array $opt=array())
+ * @method static integer countByImagemargin($val, array $opt=array())
+ * @method static integer countByImageUrl($val, array $opt=array())
+ * @method static integer countByFullsize($val, array $opt=array())
+ * @method static integer countByCaption($val, array $opt=array())
+ * @method static integer countByFloating($val, array $opt=array())
  * @method static integer countBySource($val, array $opt=array())
  * @method static integer countByJumpTo($val, array $opt=array())
  * @method static integer countByArticleId($val, array $opt=array())
