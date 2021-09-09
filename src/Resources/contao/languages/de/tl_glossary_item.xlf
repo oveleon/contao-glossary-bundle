@@ -23,12 +23,12 @@
         <target>Der Glossareintrag-Alias ist eine eindeutige Referenz, die anstelle der numerischen Glossareintrag-ID aufgerufen werden kann.</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.keywords.0">
-        <source>Additonal search keywords</source>
-        <target>Weiter Suchbegriffe</target>
+        <source>Search terms</source>
+        <target>Suchbegriffe</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.keywords.1">
-        <source>Here you can enter additional search keywords to be considered for automatic cross-references.</source>
-        <target>Hier können Sie weitere Suchbegriffe eingeben, die für automatische Querverweise berücksichtigt werden sollen.</target>
+        <source>Here you can enter search terms that are included in automatic cross-references.</source>
+        <target>Hier können Sie Suchbegriffe eingeben, die in automatische Querverweise einbezogen werden.</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.pageTitle.0">
         <source>Meta title</source>
@@ -166,7 +166,7 @@
         <source>Expert settings</source>
         <target>Experten-Einstellungen</target>
       </trans-unit>
-        <trans-unit id="tl_glossary_item.publish_legend">
+      <trans-unit id="tl_glossary_item.publish_legend">
         <source>Publish settings</source>
         <target>Veröffentlichung</target>
       </trans-unit>

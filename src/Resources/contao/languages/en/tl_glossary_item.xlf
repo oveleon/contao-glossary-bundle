@@ -2,6 +2,9 @@
 <xliff version="1.1">
   <file datatype="php" original="src/Resources/contao/languages/en/tl_glossary_item.php" source-language="en">
     <body>
+      <trans-unit id="tl_glossary_item.letter.0">
+        <source>Group</source>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.keyword.0">
         <source>Title</source>
       </trans-unit>
@@ -13,6 +16,12 @@
       </trans-unit>
       <trans-unit id="tl_glossary_item.alias.1">
         <source>The glossary item alias is a unique reference to the glossary item which can be called instead of its numeric ID.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keywords.0">
+        <source>Search terms</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keywords.1">
+        <source>Here you can enter search terms that are included in automatic cross-references.</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.pageTitle.0">
         <source>Meta title</source>
