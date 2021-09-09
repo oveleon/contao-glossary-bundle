@@ -115,7 +115,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('source'),
-		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords;{meta_legend},pageTitle,description;{teaser_legend},teaser;{source_legend:hide},source;{expert_legend:hide},cssClass;{publish_legend},published'
+		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords;{source_legend:hide},source;{meta_legend},pageTitle,description;{teaser_legend},teaser;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
     // Subpalettes
