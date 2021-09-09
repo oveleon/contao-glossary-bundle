@@ -5,6 +5,9 @@
  *
  * (c) https://www.oveleon.de/
  */
+	
+use Oveleon\ContaoGlossaryBundle\GlossaryItem;
+use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 
 System::loadLanguageFile('tl_content');
 
@@ -115,7 +118,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('source'),
-		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords;{source_legend:hide},source;{meta_legend},pageTitle,description;{teaser_legend},teaser;{expert_legend:hide},cssClass;{publish_legend},published'
+		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords;{source_legend:hide},source;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},subheadline,teaser;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
     // Subpalettes
@@ -190,6 +193,16 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
             'eval'                    => array('maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) NOT NULL default ''"
         ),
+		'robots' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['robots'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'select',
+			'options'                 => array('index,follow', 'index,nofollow', 'noindex,follow', 'noindex,nofollow'),
+			'eval'                    => array('tl_class'=>'w50', 'includeBlankOption' => true),
+			'sql'                     => "varchar(32) NOT NULL default ''"
+		),
         'description' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['description'],
@@ -199,6 +212,23 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
             'eval'                    => array('style'=>'height:60px', 'decodeEntities'=>true, 'tl_class'=>'clr'),
             'sql'                     => "text NULL"
         ),
+		'serpPreview' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['MSC']['serpPreview'],
+			'exclude'                 => true,
+			'inputType'               => 'serpPreview',
+			'eval'                    => array('url_callback'=>array('tl_glossary_item', 'getSerpUrl'), 'title_tag_callback'=>array('tl_glossary_item', 'getTitleTag'), 'titleFields'=>array('pageTitle', 'keyword'), 'descriptionFields'=>array('description', 'teaser')),
+			'sql'                     => null
+		),
+		'subheadline' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['subheadline'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'text',
+			'eval'                    => array('maxlength'=>255, 'tl_class'=>'long'),
+			'sql'                     => "varchar(255) NOT NULL default ''"
+		),
 		'teaser' => array
 		(
             'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['teaser'],
@@ -460,6 +490,55 @@ class tl_glossary_item extends Backend
         }
 
         return $varValue;
+	}
+	
+	/**
+	 * Return the SERP URL
+	 *
+	 * @param GlossaryItemModel $model
+	 *
+	 * @return string
+	 */
+	public function getSerpUrl(GlossaryItemModel $model)
+	{
+		return GlossaryItem::generateUrl($model, true);
+	}
+	
+	/**
+	 * Return the title tag from the associated page layout
+	 *
+	 * @param GlossaryItemModel $model
+	 *
+	 * @return string
+	 */
+	public function getTitleTag(GlossaryItemModel $model)
+	{
+		/** @var \Oveleon\ContaoGlossaryBundle\GlossaryModel $glossary */
+		if (!$glossary = $model->getRelated('pid'))
+		{
+			return '';
+		}
+		
+		/** @var Contao\PageModel $page */
+		if (!$page = $glossary->getRelated('jumpTo'))
+		{
+			return '';
+		}
+		
+		$page->loadDetails();
+		
+		/** @var Contao\LayoutModel $layout */
+		if (!$layout = $page->getRelated('layout'))
+		{
+			return '';
+		}
+		
+		global $objPage;
+		
+		// Set the global page object so we can replace the insert tags
+		$objPage = $page;
+		
+		return self::replaceInsertTags(str_replace('{{page::pageTitle}}', '%s', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}'));
 	}
 
 	/**

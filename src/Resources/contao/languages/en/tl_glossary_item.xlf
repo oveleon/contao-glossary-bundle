@@ -29,11 +29,23 @@
       <trans-unit id="tl_glossary_item.pageTitle.1">
         <source>Here you can add a custom meta title to overwrite the default page title.</source>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.robots.0">
+        <source>Robots tag</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.robots.1">
+        <source>Here you can overwrite how search engines handle the news item.</source>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.description.0">
         <source>Meta description</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.description.1">
         <source>Here you can add a custom meta description to overwrite the default page description.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.subheadline.0">
+        <source>Subheadline</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.subheadline.1">
+        <source>Here you can enter a subheadline.</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.teaser.0">
         <source>Glossary item teaser</source>
@@ -108,7 +120,7 @@
         <source>Meta data</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.teaser_legend">
-        <source>Teaser</source>
+        <source>Subheadline and teaser</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.source_legend">
         <source>Redirect target</source>

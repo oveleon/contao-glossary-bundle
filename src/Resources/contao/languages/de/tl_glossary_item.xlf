@@ -38,6 +38,14 @@
         <source>Here you can add a custom meta title to overwrite the default page title.</source>
         <target>Hier können Sie einen individuellen Meta-Titel eingeben, um den Standard-Seitentitel zu überschreiben.</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.robots.0">
+        <source>Robots tag</source>
+        <target>Robots-Tag</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.robots.1">
+        <source>Here you can overwrite how search engines handle the news item.</source>
+        <target>Hier legen Sie fest, wie Suchmaschinen den Beitrag behandeln.</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.description.0">
         <source>Meta description</source>
         <target>Meta-Beschreibung</target>
@@ -45,6 +53,14 @@
       <trans-unit id="tl_glossary_item.description.1">
         <source>Here you can add a custom meta description to overwrite the default page description.</source>
         <target>Hier können Sie eine individuelle Meta-Beschreibung eingeben, um die Standard-Seitenbeschreibung zu überschreiben.</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.subheadline.0">
+        <source>Subheadline</source>
+        <target>Unterüberschrift</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.subheadline.1">
+        <source>Here you can enter a subheadline.</source>
+        <target>Hier können Sie eine Unterüberschrift eingeben.</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.teaser.0">
         <source>Glossary item teaser</source>
@@ -147,8 +163,8 @@
         <target>Metadaten</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.teaser_legend">
-        <source>Teaser</source>
-        <target>Teaser</target>
+        <source>Subheadline and teaser</source>
+        <target>Unterüberschrift und Teaser</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.source_legend">
         <source>Redirect target</source>
