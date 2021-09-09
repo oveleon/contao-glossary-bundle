@@ -10,9 +10,9 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.4",
         "ext-json":"*",
-        "contao/core-bundle": "^4.4",
+        "contao/core-bundle": "^4.9",
         "symfony/http-foundation":"4.4.* || 5.2.*"
     },
     "conflict": {
@@ -27,6 +27,9 @@
         "symfony/phpunit-bridge": "4.4.*"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        },
         "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin",
         "symfony": {
             "require": "^4.4"
