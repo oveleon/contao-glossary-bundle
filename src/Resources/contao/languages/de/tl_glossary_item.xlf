@@ -126,14 +126,6 @@
         <source>Make the glossary item publicly visible on the website.</source>
         <target>Den Glossareitrag auf der Webseite anzeigen.</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.search.0">
-        <source>Set reference automatically</source>
-        <target>Verweise automatisch setzen</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.search.1">
-        <source>Replace all search terms occurring in texts by a link. Optionally a tooltip can be added to a link.</source>
-        <target>Alle in Texten vorkommenden Suchbegriffe durch einen Link ersetzen. Optional kann ein Link um ein Tooltip erweitert werden.</target>
-      </trans-unit>
       <trans-unit id="tl_glossary_item.tstamp.0">
         <source>Revision date</source>
         <target>Änderungsdatum</target>

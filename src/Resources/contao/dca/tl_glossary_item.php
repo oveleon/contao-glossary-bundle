@@ -115,7 +115,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('source'),
-		'default'                     => '{title_legend},keyword,alias,search;{keyword_legend:hide},keywords;{meta_legend},pageTitle,description;{teaser_legend},teaser;{source_legend:hide},source;{expert_legend:hide},cssClass;{publish_legend},published'
+		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords;{meta_legend},pageTitle,description;{teaser_legend},teaser;{source_legend:hide},source;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
     // Subpalettes
@@ -173,16 +173,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			),
 			'sql'                     => "varchar(255) BINARY NOT NULL default ''"
 		),
-        'search' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['search'],
-            'exclude'                 => true,
-            'filter'                  => true,
-            'flag'                    => 1,
-            'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12'),
-            'sql'                     => "char(1) NOT NULL default '1'"
-        ),
         'keywords' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['keywords'],
