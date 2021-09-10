@@ -104,7 +104,7 @@ class ModuleGlossaryList extends ModuleGlossary
         {
 		    while ($objItems->next())
             {
-                $group = strtoupper(substr($objItems->keyword, 0, 1));
+                $group = Utf8::strtoupper(mb_substr($objItems->keyword, 0, 1, 'UTF-8'));
 
                 $arrItem = $objItems->row();
 

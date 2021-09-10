@@ -6,6 +6,8 @@
  * (c) https://www.oveleon.de/
  */
 
+use Patchwork\Utf8;
+
 System::loadLanguageFile('tl_content');
 
 $GLOBALS['TL_DCA']['tl_glossary_item'] = array
@@ -433,7 +435,7 @@ class tl_glossary_item extends Backend
      */
     public function setGlossaryItemGroup(Contao\DataContainer $dc)
     {
-        $newGroup = strtoupper(substr($dc->activeRecord->keyword, 0, 1));
+        $newGroup = Utf8::strtoupper(mb_substr($dc->activeRecord->keyword, 0, 1), 'UTF-8');
 
         if ($dc->activeRecord->letter != $newGroup)
         {
