@@ -13,10 +13,6 @@ use Contao\Config;
 use Contao\System;
 use Contao\StringUtil;
 use Patchwork\Utf8;
-use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\Database;
-use Contao\FrontendTemplate;
-use Model\Collection;
 
 /**
  * Front end module "glossary list".
@@ -83,182 +79,21 @@ class ModuleGlossaryList extends ModuleGlossary
 	 */
 	protected function compile()
 	{
-	    $objItems = null;
+		$this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyGlossaryList'];
 
 	    if ($this->glossary_singleGroup)
         {
             // Get the current page
-            $id = 'page_n' . $this->id;
+            $id = 'page_g' . $this->id;
             $letter = \Input::get($id) ?? $this->glossary_letter;
 
-            $objItems = GlossaryItemModel::findPublishedByLetterAndPids($letter, $this->glossary_archives);
+	        $objGlossaryItems = GlossaryItemModel::findPublishedByLetterAndPids($letter, $this->glossary_archives);
         }
 	    else
         {
-            $objItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
+	        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
         }
 
-        $arrLetterRange = range('A', 'Z');
-		$availableGroups = array();
-		$arrGroups = array();
-
-		foreach ($arrLetterRange as $letter)
-        {
-            $availableGroups[$letter] = false;
-        }
-
-        if ($objItems !== null)
-        {
-			//ToDo: Add parseGlossaryItems
-
-		    while ($objItems->next())
-            {
-                $group = strtoupper(substr($objItems->keyword, 0, 1));
-
-                $arrItem = $objItems->row();
-
-                $arrItem['id'] = 'item'.$this->id.'_'.$objItems->id;
-                $arrItem['linkHeadline'] = $this->generateLink($objItems->keyword, $objItems);
-                $arrItem['more'] = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objItems);
-                $arrItem['item'] = sprintf('<a href="%s#item%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $objItems->id, $objItems->keyword);
-
-                // Clean the RTE output
-                if ($objItems->teaser != '')
-                {
-                    $arrItem['teaser'] = StringUtil::encodeEmail(StringUtil::toHtml5($objItems->teaser));
-                }
-
-                $arrGroups[$group]['id'] = 'group'.$this->id.'_'.$group;
-                $arrGroups[$group]['items'][] = $arrItem;
-
-                // Flag group as available
-                $availableGroups[$group] = true;
-            }
-        }
-
-        $this->generateGroupAnchors($availableGroups);
-
-        $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyGlossaryList'];
-		$this->Template->availableGroups = $availableGroups;
-		$this->Template->groups = $arrGroups;
+		$this->parseGlossaryGroups($objGlossaryItems, $this->Template, $this->glossary_singleGroup, $this->glossary_hideEmptyGroups);
 	}
-
-	// ToDo: Move to ModuleGlossary
-    /**
-     * Generate a link and return it as string
-     *
-     * @param string            $strLink
-     * @param GlossaryItemModel $objItem
-     *
-     * @return string
-     */
-    protected function generateLink($strLink, $objItem)
-    {
-        // Internal link
-        if ($objItem->source != 'external')
-        {
-            return sprintf(
-                '<a href="%s" title="%s" itemprop="url"><span itemprop="headline">%s</span></a>',
-                GlossaryItem::generateUrl($objItem),
-                StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->keyword), true),
-                $strLink
-            );
-        }
-
-        // Encode e-mail addresses
-        if (0 === strncmp($objItem->url, 'mailto:', 7))
-        {
-            $strArticleUrl = StringUtil::encodeEmail($objItem->url);
-        }
-
-        // Ampersand URIs
-        else
-        {
-            $strArticleUrl = ampersand($objItem->url);
-        }
-
-        // External link
-        return sprintf(
-            '<a href="%s" title="%s"%s itemprop="url"><span itemprop="headline">%s</span></a>',
-            $strArticleUrl,
-            StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
-            ($objItem->target ? ' target="_blank"' : ''),
-            $strLink
-        );
-    }
-
-    /**
-     * Generate group anchor links and return them as array
-     *
-     * @param array $availableGroups
-     */
-    protected function generateGroupAnchors(&$availableGroups)
-    {
-        if ($this->glossary_singleGroup)
-        {
-            $id = 'page_n' . $this->id;
-            $letter = \Input::get($id) ?? $this->glossary_letter;
-
-            $objItems = $this->Database->prepare("SELECT DISTINCT letter FROM tl_glossary_item WHERE pid IN(" . implode(',', array_map('\intval', $this->glossary_archives)) . ") AND published='1'")->execute();
-
-            while ($objItems->next())
-            {
-                $item = sprintf('<a href="%s?page_n%s=%s">%s</a>', explode('?', $this->Environment->get('request'), 2)[0], $this->id, $objItems->letter, $objItems->letter);
-
-                $availableGroups[$objItems->letter] = array
-                (
-                    'item' => $item,
-                    'class' => $objItems->letter == $letter ? 'active selected' : 'active'
-                );
-            }
-
-            foreach ($availableGroups as $group => $available)
-            {
-                if (!$available)
-                {
-                    if ($this->glossary_hideEmptyGroups)
-                    {
-                        unset($availableGroups[$group]);
-
-                        continue;
-                    }
-
-                    $item = sprintf('<span>%s</span>', $group);
-
-                    $availableGroups[$group] = array
-                    (
-                        'item' => $item,
-                        'class' => 'inactive'
-                    );
-                }
-            }
-        }
-        else
-        {
-            foreach ($availableGroups as $group => $available)
-            {
-                if ($available)
-                {
-                    $item = sprintf('<a href="%s#group%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $group, $group);
-                }
-                else
-                {
-                    if ($this->glossary_hideEmptyGroups)
-                    {
-                        unset($availableGroups[$group]);
-
-                        continue;
-                    }
-
-                    $item = sprintf('<span>%s</span>', $group);
-                }
-
-                $availableGroups[$group] = array
-                (
-                    'item' => $item,
-                    'class' => $available ? 'active' : 'inactive'
-                );
-            }
-        }
-    }
 }

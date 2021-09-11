@@ -10,16 +10,16 @@
     </ul>
   </div>
 
-  <?php if (empty($this->groups)): ?>
+  <?php if (empty($this->glossarygroups)): ?>
     <p class="empty"><?= $this->empty ?></p>
   <?php else: ?>
     <div class="glossary">
-      <?php foreach ($this->groups as $letter => $group): ?>
+      <?php foreach ($this->glossarygroups as $letter => $group): ?>
         <div class="group" id="<?= $group['id'] ?>">
           <div class="letter"><?= $letter ?></div>
           <ul>
             <?php foreach ($group['items'] as $item): ?>
-              <li class="item"><?= $item['linkHeadline'] ?></li>
+              <li class="item"><?= $item ?></li>
             <?php endforeach; ?>
           </ul>
         </div>

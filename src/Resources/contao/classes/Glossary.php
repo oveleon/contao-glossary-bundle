@@ -96,6 +96,7 @@ class Glossary extends \Frontend
                 $strUrl = $arrProcessed[$objGlossary->jumpTo];
 
                 // Get the items
+	            // ToDo:: add glossary items exempt from the sitemap
                 $objArticle = GlossaryItemModel::findPublishedDefaultByPid($objGlossary->id);
 
                 if ($objArticle !== null)
