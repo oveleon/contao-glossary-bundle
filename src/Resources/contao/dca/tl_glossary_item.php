@@ -5,9 +5,11 @@
  *
  * (c) https://www.oveleon.de/
  */
-	
-use Oveleon\ContaoGlossaryBundle\GlossaryItem;
+
+use Oveleon\ContaoGlossaryBundle\Glossary;
+use Oveleon\ContaoGlossaryBundle\GlossaryModel;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
+use Contao\CoreBundle\Exception\AccessDeniedException;
 use Patchwork\Utf8;
 
 System::loadLanguageFile('tl_content');
@@ -25,21 +27,29 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
         'markAsCopy'                  => 'keyword',
 		'onload_callback' => array
 		(
-			array('tl_glossary_item', 'checkPermission')
+			array('tl_glossary_item', 'checkPermission'),
+			array('tl_glossary_item', 'generateSitemap')
 		),
         'oncut_callback' => array
         (
-            array('tl_glossary_item', 'updateGlossaryIndex')
+            array('tl_glossary_item', 'updateGlossaryIndex'),
+	        array('tl_glossary_item', 'scheduleUpdate')
         ),
         'ondelete_callback' => array
         (
-            array('tl_glossary_item', 'updateGlossaryIndex')
+            array('tl_glossary_item', 'updateGlossaryIndex'),
+	        array('tl_glossary_item', 'scheduleUpdate')
         ),
         'onsubmit_callback' => array
         (
             array('tl_glossary_item', 'setGlossaryItemGroup'),
-            array('tl_glossary_item', 'updateGlossaryIndex')
+            array('tl_glossary_item', 'updateGlossaryIndex'),
+	        array('tl_glossary_item', 'scheduleUpdate')
         ),
+		'oninvalidate_cache_tags_callback' => array
+		(
+			array('tl_glossary_item', 'addSitemapCacheInvalidationTag'),
+		),
 		'sql' => array
 		(
 			'keys' => array
@@ -98,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			(
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
-				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
+				'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
@@ -414,8 +424,9 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
  * Provide miscellaneous methods that are used by the data configuration array.
  *
  * @author Fabian Ekert <https://github.com/eki89>
+ * @autho Sebastian Zoglowek <https://github.com/zoglo>
  */
-class tl_glossary_item extends Backend
+class tl_glossary_item extends Contao\Backend
 {
 	/**
 	 * Import the back end user object
@@ -423,13 +434,13 @@ class tl_glossary_item extends Backend
 	public function __construct()
 	{
 		parent::__construct();
-		$this->import('BackendUser', 'User');
+		$this->import('Contao\BackendUser', 'User');
 	}
 
 	/**
 	 * Check permissions to edit table tl_glossary_item
 	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 * @throws AccessDeniedException
 	 */
 	public function checkPermission()
 	{
@@ -448,38 +459,38 @@ class tl_glossary_item extends Backend
 			$root = $this->User->glossarys;
 		}
 
-		$id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
+		$id = strlen(Contao\Input::get('id')) ? Contao\Input::get('id') : CURRENT_ID;
 
 		// Check current action
-		switch (Input::get('act'))
+		switch (Contao\Input::get('act'))
 		{
 			case 'paste':
 			case 'select':
 				// Check CURRENT_ID here (see #247)
 				if (!in_array(CURRENT_ID, $root))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access glossary ID ' . $id . '.');
+					throw new AccessDeniedException('Not enough permissions to access glossary ID ' . $id . '.');
 				}
 				break;
 
 			case 'create':
-				if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root))
+				if (!Contao\Input::get('pid') || !in_array(Contao\Input::get('pid'), $root))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create glossary items in glossary ID ' . Input::get('pid') . '.');
+					throw new AccessDeniedException('Not enough permissions to create glossary items in glossary ID ' . Contao\Input::get('pid') . '.');
 				}
 				break;
 
 			case 'cut':
 			case 'copy':
-				if (Input::get('act') == 'cut' && Input::get('mode') == 1)
+				if (Contao\Input::get('act') == 'cut' && Contao\Input::get('mode') == 1)
 				{
 					$objGlossary = $this->Database->prepare("SELECT pid FROM tl_glossary_item WHERE id=?")
-												 ->limit(1)
-												 ->execute(Input::get('pid'));
+												  ->limit(1)
+												  ->execute(Input::get('pid'));
 
 					if ($objGlossary->numRows < 1)
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Invalid glossary item ID ' . Input::get('pid') . '.');
+						throw new AccessDeniedException('Invalid glossary item ID ' . Contao\Input::get('pid') . '.');
 					}
 
 					$pid = $objGlossary->pid;
@@ -491,7 +502,7 @@ class tl_glossary_item extends Backend
 
 				if (!in_array($pid, $root))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' glossary item ID ' . $id . ' to glossary ID ' . $pid . '.');
+					throw new AccessDeniedException('Not enough permissions to ' . Contao\Input::get('act') . ' glossary item ID ' . $id . ' to glossary ID ' . $pid . '.');
 				}
 				// no break
 
@@ -505,12 +516,12 @@ class tl_glossary_item extends Backend
 
 				if ($objGlossary->numRows < 1)
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Invalid glossary item ID ' . $id . '.');
+					throw new AccessDeniedException('Invalid glossary item ID ' . $id . '.');
 				}
 
 				if (!in_array($objGlossary->pid, $root))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' glossary item ID ' . $id . ' of glossary  ID ' . $objGlossary->pid . '.');
+					throw new AccessDeniedException('Not enough permissions to ' . Contao\Input::get('act') . ' glossary item ID ' . $id . ' of glossary  ID ' . $objGlossary->pid . '.');
 				}
 				break;
 
@@ -521,7 +532,7 @@ class tl_glossary_item extends Backend
 			case 'copyAll':
 				if (!in_array($id, $root))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access glossary ID ' . $id . '.');
+					throw new AccessDeniedException('Not enough permissions to access glossary ID ' . $id . '.');
 				}
 
 				$objGlossary = $this->Database->prepare("SELECT id FROM tl_glossary_item WHERE pid=?")
@@ -536,14 +547,14 @@ class tl_glossary_item extends Backend
 				break;
 
 			default:
-				if (strlen(Input::get('act')))
+				if (Contao\Input::get('act'))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "' . Input::get('act') . '".');
+					throw new AccessDeniedException('Invalid command "' . Contao\Input::get('act') . '".');
 				}
 
 				if (!in_array($id, $root))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access glossary ID ' . $id . '.');
+					throw new AccessDeniedException('Not enough permissions to access glossary ID ' . $id . '.');
 				}
 				break;
 		}
@@ -561,7 +572,7 @@ class tl_glossary_item extends Backend
         if ($dc->activeRecord->letter != $newGroup)
         {
             $this->Database->prepare("UPDATE tl_glossary_item SET letter=? WHERE id=?")
-                ->execute($newGroup, $dc->id);
+	                       ->execute($newGroup, $dc->id);
         }
     }
 
@@ -583,9 +594,13 @@ class tl_glossary_item extends Backend
         };
 
         // Generate alias if there is none
-        if ($varValue == '')
+        if (!$varValue)
         {
-            $varValue = Contao\System::getContainer()->get('contao.slug')->generate($dc->activeRecord->keyword, \Oveleon\ContaoGlossaryBundle\GlossaryModel::findByPk($dc->activeRecord->pid)->jumpTo, $aliasExists);
+            $varValue = Contao\System::getContainer()->get('contao.slug')->generate($dc->activeRecord->keyword, GlossaryModel::findByPk($dc->activeRecord->pid)->jumpTo, $aliasExists);
+        }
+        elseif (preg_match('/^[1-9]\d*$/', $varValue))
+        {
+	        throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $varValue));
         }
         elseif ($aliasExists($varValue))
         {
@@ -604,7 +619,7 @@ class tl_glossary_item extends Backend
 	 */
 	public function getSerpUrl(GlossaryItemModel $model)
 	{
-		return GlossaryItem::generateUrl($model, true);
+		return Glossary::generateUrl($model, true);
 	}
 	
 	/**
@@ -616,7 +631,7 @@ class tl_glossary_item extends Backend
 	 */
 	public function getTitleTag(GlossaryItemModel $model)
 	{
-		/** @var \Oveleon\ContaoGlossaryBundle\GlossaryModel $glossary */
+		/** @var GlossaryModel $glossary */
 		if (!$glossary = $model->getRelated('pid'))
 		{
 			return '';
@@ -654,6 +669,54 @@ class tl_glossary_item extends Backend
 	public function listGlossaryItems($arrRow)
 	{
 		return '<div class="tl_content_left">' . $arrRow['keyword'] . '</div>';
+	}
+
+	/**
+	 * Check for modified glossary items and update the XML files if necessary
+	 */
+	public function generateSitemap()
+	{
+		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		$objSession = Contao\System::getContainer()->get('session');
+
+		$session = $objSession->get('glossaryitems_updater');
+
+		if (empty($session) || !is_array($session))
+		{
+			return;
+		}
+
+		$this->import('Contao\Automator', 'Automator');
+		$this->Automator->generateSitemap();
+
+		$objSession->set('glossaryitems_updater', null);
+	}
+
+	/**
+	 * Schedule a glossary item update
+	 *
+	 * This method is triggered when a single glossary item or multiple glossary items
+	 * are modified (edit/editAll), moved (cut/cutAll) or deleted (delete/deleteAll).
+	 * Since duplicated items are unpublished by default, it is not necessary to
+	 * schedule updates on copyAll as well.
+	 *
+	 * @param Contao\DataContainer $dc
+	 */
+	public function scheduleUpdate(Contao\DataContainer $dc)
+	{
+		// Return if there is no ID
+		if (!$dc->activeRecord || !$dc->activeRecord->pid || Contao\Input::get('act') == 'copy')
+		{
+			return;
+		}
+
+		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		$objSession = Contao\System::getContainer()->get('session');
+
+		// Store the ID in the session
+		$session = $objSession->get('glossaryitems_updater');
+		$session[] = $dc->activeRecord->pid;
+		$objSession->set('glossaryitems_updater', array_unique($session));
 	}
 
     /**
@@ -742,7 +805,7 @@ class tl_glossary_item extends Backend
         }
 
         // Add the option currently set
-        if ($dc->activeRecord && $dc->activeRecord->source != '')
+        if ($dc->activeRecord && $dc->activeRecord->source)
         {
             $arrOptions[] = $dc->activeRecord->source;
             $arrOptions = array_unique($arrOptions);
@@ -834,9 +897,9 @@ class tl_glossary_item extends Backend
 	 */
 	public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (strlen(Input::get('tid')))
+		if (Contao\Input::get('tid'))
 		{
-			$this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
+			$this->toggleVisibility(Contao\Input::get('tid'), (Contao\Input::get('state') == 1), (func_num_args() <= 12 ? null : func_get_arg(12)));
 			$this->redirect($this->getReferer());
 		}
 
@@ -871,11 +934,11 @@ class tl_glossary_item extends Backend
 
 		if ($dc)
 		{
-			$dc->id = $intId; // see #8043
+			$dc->id = $intId;
 		}
 
 		// Trigger the onload_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onload_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onload_callback'] ?? null))
 		{
 			foreach ($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onload_callback'] as $callback)
 			{
@@ -894,27 +957,29 @@ class tl_glossary_item extends Backend
 		// Check the field access
 		if (!$this->User->hasAccess('tl_glossary_item::published', 'alexf'))
 		{
-			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish glossary item ID ' . $intId . '.');
+			throw new AccessDeniedException('Not enough permissions to publish/unpublish glossary item ID ' . $intId . '.');
 		}
 
 		// Set the current record
-		if ($dc)
-		{
-			$objRow = $this->Database->prepare("SELECT * FROM tl_glossary_item WHERE id=?")
-									 ->limit(1)
-									 ->execute($intId);
+		$objRow = $this->Database->prepare("SELECT * FROM tl_glossary_item WHERE id=?")
+								 ->limit(1)
+								 ->execute($intId);
 
-			if ($objRow->numRows)
-			{
-				$dc->activeRecord = $objRow;
-			}
+		if ($objRow->numRows < 1)
+		{
+			throw new AccessDeniedException('Invalid glossary item ID ' . $intId . '.');
 		}
 
-		$objVersions = new Versions('tl_glossary_item', $intId);
+		if ($dc)
+		{
+			$dc->activeRecord = $objRow;
+		}
+
+		$objVersions = new Contao\Versions('tl_glossary_item', $intId);
 		$objVersions->initialize();
 
 		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['fields']['published']['save_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['fields']['published']['save_callback'] ?? null))
 		{
 			foreach ($GLOBALS['TL_DCA']['tl_glossary_item']['fields']['published']['save_callback'] as $callback)
 			{
@@ -943,7 +1008,7 @@ class tl_glossary_item extends Backend
 		}
 
 		// Trigger the onsubmit_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onsubmit_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onsubmit_callback'] ?? null))
 		{
 			foreach ($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onsubmit_callback'] as $callback)
 			{
@@ -960,5 +1025,28 @@ class tl_glossary_item extends Backend
 		}
 
 		$objVersions->create();
+
+		if ($dc)
+		{
+			$dc->invalidateCacheTags();
+		}
+	}
+
+	/**
+	 * @param Contao\DataContainer $dc
+	 *
+	 * @return array
+	 */
+	public function addSitemapCacheInvalidationTag($dc, array $tags)
+	{
+		$archiveModel = GlossaryModel::findByPk($dc->activeRecord->pid);
+		$pageModel = Contao\PageModel::findWithDetails($archiveModel->jumpTo);
+
+		if ($pageModel === null)
+		{
+			return $tags;
+		}
+
+		return array_merge($tags, array('contao.sitemap.' . $pageModel->rootId));
 	}
 }

@@ -279,6 +279,7 @@ abstract class ModuleGlossary extends \Module
 		foreach ($objGlossaryItems as $objGlossaryItem)
 		{
 			// Transliterate letters to valid Ascii
+			//ToDo: Add Settings to module
 			$itemGroup = Utf8::toAscii($objGlossaryItem->letter);
 
 			$arrGlossaryGroups[$itemGroup]['id'] = 'group'.$this->id.'_'.$itemGroup;

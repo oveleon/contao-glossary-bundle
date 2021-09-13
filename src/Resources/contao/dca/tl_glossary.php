@@ -6,6 +6,10 @@
  * (c) https://www.oveleon.de/
  */
 
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 $GLOBALS['TL_DCA']['tl_glossary'] = array
 (
 	// Config
@@ -19,6 +23,18 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 		'onload_callback' => array
 		(
 			array('tl_glossary', 'checkPermission')
+		),
+		'oncreate_callback' => array
+		(
+			array('tl_glossary', 'adjustPermissions')
+		),
+		'oncopy_callback' => array
+		(
+			array('tl_glossary', 'adjustPermissions')
+		),
+		'oninvalidate_cache_tags_callback' => array
+		(
+			array('tl_glossary', 'addSitemapCacheInvalidationTag'),
 		),
 		'sql' => array
 		(
@@ -77,7 +93,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 			(
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
-				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
+				'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
 				'button_callback'     => array('tl_glossary', 'deleteArchive')
 			),
 			'show' => array
@@ -173,7 +189,7 @@ class tl_glossary extends Backend
 	/**
 	 * Check permissions to edit table tl_glossary
 	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 * @throws AccessDeniedException
 	 */
 	public function checkPermission()
 	{
@@ -200,89 +216,40 @@ class tl_glossary extends Backend
 			$GLOBALS['TL_DCA']['tl_glossary']['config']['closed'] = true;
 		}
 
-		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		/** @var SessionInterface $objSession */
 		$objSession = System::getContainer()->get('session');
 
 		// Check current action
-		switch (Input::get('act'))
+		switch (Contao\Input::get('act'))
 		{
-			case 'create':
 			case 'select':
 				// Allow
 				break;
 
-			case 'edit':
-				// Dynamically add the record to the user profile
-				if (!in_array(Input::get('id'), $root))
+			case 'create':
+				if (!$this->User->hasAccess('create', 'glossaryp'))
 				{
-					/** @var Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $objSessionBag */
-					$objSessionBag = $objSession->getBag('contao_backend');
-
-					$arrNew = $objSessionBag->get('new_records');
-
-					if (is_array($arrNew['tl_glossary']) && in_array(Input::get('id'), $arrNew['tl_glossary']))
-					{
-						// Add the permissions on group level
-						if ($this->User->inherit != 'custom')
-						{
-							$objGroup = $this->Database->execute("SELECT id, glossarys, glossaryp FROM tl_user_group WHERE id IN(" . implode(',', array_map('\intval', $this->User->groups)) . ")");
-
-							while ($objGroup->next())
-							{
-								$arrGlossaryp = StringUtil::deserialize($objGroup->glossaryp);
-
-								if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp))
-								{
-									$arrGlossarys = StringUtil::deserialize($objGroup->glossarys, true);
-									$arrGlossarys[] = Input::get('id');
-
-									$this->Database->prepare("UPDATE tl_user_group SET glossarys=? WHERE id=?")
-												   ->execute(serialize($arrGlossarys), $objGroup->id);
-								}
-							}
-						}
-
-						// Add the permissions on user level
-						if ($this->User->inherit != 'group')
-						{
-							$objUser = $this->Database->prepare("SELECT glossarys, glossaryp FROM tl_user WHERE id=?")
-													   ->limit(1)
-													   ->execute($this->User->id);
-
-							$arrGlossaryp = StringUtil::deserialize($objUser->glossaryp);
-
-							if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp))
-							{
-								$arrGlossarys = StringUtil::deserialize($objUser->glossarys, true);
-								$arrGlossarys[] = Input::get('id');
-
-								$this->Database->prepare("UPDATE tl_user SET glossarys=? WHERE id=?")
-											   ->execute(serialize($arrGlossarys), $this->User->id);
-							}
-						}
-
-						// Add the new element to the user object
-						$root[] = Input::get('id');
-						$this->User->glossarys = $root;
-					}
+					throw new AccessDeniedException('Not enough permissions to create glossaries.');
 				}
-				// no break
+				break;
 
+			case 'edit':
 			case 'copy':
 			case 'delete':
 			case 'show':
-				if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'glossaryp')))
+				if (!in_array(Contao\Input::get('id'), $root) || (Contao\Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'glossaryp')))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' glossary ID ' . Input::get('id') . '.');
+					throw new AccessDeniedException('Not enough permissions to ' . Contao\Input::get('act') . ' glossary ID ' . Contao\Input::get('id') . '.');
 				}
 				break;
 
 			case 'editAll':
 			case 'deleteAll':
 			case 'overrideAll':
+			case 'copyAll':
 				$session = $objSession->all();
 
-				if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'glossaryp'))
+				if (Contao\Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'glossaryp'))
 				{
 					$session['CURRENT']['IDS'] = array();
 				}
@@ -294,11 +261,97 @@ class tl_glossary extends Backend
 				break;
 
 			default:
-				if (strlen(Input::get('act')))
+				if (Contao\Input::get('act'))
 				{
-					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' glossary.');
+					throw new AccessDeniedException('Not enough permissions to ' . Contao\Input::get('act') . ' glossary.');
 				}
 				break;
+		}
+	}
+
+	/**
+	 * Add the news glossary to the permissions
+	 *
+	 * @param $insertId
+	 */
+	public function adjustPermissions($insertId)
+	{
+		// The oncreate_callback passes $insertId as second argument
+		if (func_num_args() == 4)
+		{
+			$insertId = func_get_arg(1);
+		}
+
+		if ($this->User->isAdmin)
+		{
+			return;
+		}
+
+		// Set root IDs
+		if (empty($this->User->glossarys) || !is_array($this->User->glossarys))
+		{
+			$root = array(0);
+		}
+		else
+		{
+			$root = $this->User->glossarys;
+		}
+
+		// The glossary is enabled already
+		if (in_array($insertId, $root))
+		{
+			return;
+		}
+
+		/** @var AttributeBagInterface $objSessionBag */
+		$objSessionBag = Contao\System::getContainer()->get('session')->getBag('contao_backend');
+
+		$arrNew = $objSessionBag->get('new_records');
+
+		if (is_array($arrNew['tl_glossary']) && in_array($insertId, $arrNew['tl_glossary']))
+		{
+			// Add the permissions on group level
+			if ($this->User->inherit != 'custom')
+			{
+				$objGroup = $this->Database->execute("SELECT id, glossarys, glossaryp FROM tl_user_group WHERE id IN(" . implode(',', array_map('\intval', $this->User->groups)) . ")");
+
+				while ($objGroup->next())
+				{
+					$arrGlossaryp = Contao\StringUtil::deserialize($objGroup->glossaryp);
+
+					if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp))
+					{
+						$arrGlossarys = Contao\StringUtil::deserialize($objGroup->news, true);
+						$arrGlossarys[] = $insertId;
+
+						$this->Database->prepare("UPDATE tl_user_group SET glossarys=? WHERE id=?")
+							->execute(serialize($arrGlossarys), $objGroup->id);
+					}
+				}
+			}
+
+			// Add the permissions on user level
+			if ($this->User->inherit != 'group')
+			{
+				$objUser = $this->Database->prepare("SELECT glossarys, glossaryp FROM tl_user WHERE id=?")
+										  ->limit(1)
+										  ->execute($this->User->id);
+
+				$arrGlossaryp = Contao\StringUtil::deserialize($objUser->glossaryp);
+
+				if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp))
+				{
+					$arrGlossarys = Contao\StringUtil::deserialize($objUser->glossarys, true);
+					$arrGlossarys[] = $insertId;
+
+					$this->Database->prepare("UPDATE tl_user SET glossarys=? WHERE id=?")
+								   ->execute(serialize($arrGlossarys), $this->User->id);
+				}
+			}
+
+			// Add the new element to the user object
+			$root[] = $insertId;
+			$this->User->glossarys = $root;
 		}
 	}
 
@@ -316,7 +369,7 @@ class tl_glossary extends Backend
 	 */
 	public function editHeader($row, $href, $label, $title, $icon, $attributes)
 	{
-		return $this->User->canEditFieldsOf('tl_glossary') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+		return $this->User->canEditFieldsOf('tl_glossary') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Contao\Image::getHtml($icon, $label) . '</a> ' : Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
 	}
 
 	/**
@@ -333,7 +386,7 @@ class tl_glossary extends Backend
 	 */
 	public function copyArchive($row, $href, $label, $title, $icon, $attributes)
 	{
-		return $this->User->hasAccess('create', 'glossaryp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+		return $this->User->hasAccess('create', 'glossaryp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Contao\Image::getHtml($icon, $label) . '</a> ' : Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
 	}
 
 	/**
@@ -350,6 +403,23 @@ class tl_glossary extends Backend
 	 */
 	public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
 	{
-		return $this->User->hasAccess('delete', 'glossaryp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+		return $this->User->hasAccess('delete', 'glossaryp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Contao\Image::getHtml($icon, $label) . '</a> ' : Contao\Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+	}
+
+	/**
+	 * @param DataContainer $dc
+	 *
+	 * @return array
+	 */
+	public function addSitemapCacheInvalidationTag($dc, array $tags)
+	{
+		$pageModel = Contao\PageModel::findWithDetails($dc->activeRecord->jumpTo);
+
+		if ($pageModel === null)
+		{
+			return $tags;
+		}
+
+		return array_merge($tags, array('contao.sitemap.' . $pageModel->rootId));
 	}
 }

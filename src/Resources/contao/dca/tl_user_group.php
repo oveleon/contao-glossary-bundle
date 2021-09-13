@@ -6,10 +6,12 @@
  * (c) https://www.oveleon.de/
  */
 
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
 // Extend the default palette
-Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-	->addLegend('glossary_legend', 'amg_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_BEFORE)
-	->addField(array('glossarys', 'glossaryp'), 'glossary_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+PaletteManipulator::create()
+	->addLegend('glossary_legend', 'amg_legend', PaletteManipulator::POSITION_BEFORE)
+	->addField(array('glossarys', 'glossaryp'), 'glossary_legend', PaletteManipulator::POSITION_APPEND)
 	->applyToPalette('default', 'tl_user_group')
 ;
 
