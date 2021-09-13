@@ -194,13 +194,11 @@ abstract class ModuleGlossary extends \Module
 			}
 		}
 
-		// ToDo: Check and test tagging
-		// Tag the glossary item
+		// Tag glossary items
 		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
 		{
 			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
 			$responseTagger->addTags(array('contao.db.tl_glossary_item.' . $objGlossaryItem->id));
-			//$responseTagger->addTags(array('contao.db.tl_glossary.' . $objGlossaryItem->pid));
 		}
 
 		return $objTemplate->parse();

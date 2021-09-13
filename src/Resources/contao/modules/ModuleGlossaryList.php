@@ -69,7 +69,12 @@ class ModuleGlossaryList extends ModuleGlossary
             return $this->getFrontendModule($this->glossary_readerModule, $this->strColumn);
         }
 
-		//ToDo: Add symfony response tagger
+		// Tag glossary archives
+		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+		{
+			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+			$responseTagger->addTags(array_map(static function ($id) { return 'contao.db.tl_glossary.' . $id; }, $this->glossary_archives));
+		}
 
 		return parent::generate();
 	}
