@@ -15,6 +15,11 @@ namespace Oveleon\ContaoGlossaryBundle;
  */
 class Glossary extends \Frontend
 {
+	/**
+	 * URL cache array
+	 * @var array
+	 */
+	private static $arrUrlCache = array();
 
     /**
      * Add glossary items to the indexer
@@ -35,7 +40,7 @@ class Glossary extends \Frontend
         }
 
         $arrProcessed = array();
-        $time = \Date::floorToMinute();
+        $time = time();
 
         // Get all glossaries
         $objGlossary = GlossaryModel::findByProtected('');
@@ -69,7 +74,7 @@ class Glossary extends \Frontend
                     }
 
                     // The target page has not been published (see #5520)
-                    if (!$objParent->published || ($objParent->start != '' && $objParent->start > $time) || ($objParent->stop != '' && $objParent->stop <= ($time + 60)))
+                    if (!$objParent->published || ($objParent->start && $objParent->start > $time) || ($objParent->stop && $objParent->stop <= $time))
                     {
                         continue;
                     }
@@ -96,7 +101,6 @@ class Glossary extends \Frontend
                 $strUrl = $arrProcessed[$objGlossary->jumpTo];
 
                 // Get the items
-	            // ToDo:: add glossary items exempt from the sitemap
                 $objArticle = GlossaryItemModel::findPublishedDefaultByPid($objGlossary->id);
 
                 if ($objArticle !== null)
@@ -111,6 +115,82 @@ class Glossary extends \Frontend
 
         return $arrPages;
     }
+
+	/**
+	 * Generate a URL and return it as string
+	 *
+	 * @param GlossaryItemModel $objItem
+	 * @param boolean           $blnAbsolute
+	 *
+	 * @return string
+	 */
+	public static function generateUrl($objItem, $blnAbsolute=false)
+	{
+		$strCacheKey = 'id_' . $objItem->id . ($blnAbsolute ? '_absolute' : '');
+
+		// Load the URL from cache
+		if (isset(self::$arrUrlCache[$strCacheKey]))
+		{
+			return self::$arrUrlCache[$strCacheKey];
+		}
+
+		// Initialize the cache
+		self::$arrUrlCache[$strCacheKey] = null;
+
+		switch ($objItem->source)
+		{
+			// Link to an external page
+			case 'external':
+				if (0 === strncmp($objItem->url, 'mailto:', 7))
+				{
+					self::$arrUrlCache[$strCacheKey] = \StringUtil::encodeEmail($objItem->url);
+				}
+				else
+				{
+					self::$arrUrlCache[$strCacheKey] = ampersand($objItem->url);
+				}
+				break;
+
+			// Link to an internal page
+			case 'internal':
+				if (($objTarget = $objItem->getRelated('jumpTo')) instanceof \PageModel)
+				{
+					/** @var \PageModel $objTarget */
+					self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objTarget->getAbsoluteUrl() : $objTarget->getFrontendUrl());
+				}
+				break;
+
+			// Link to an article
+			case 'article':
+				if (($objArticle = \ArticleModel::findByPk($objItem->articleId)) instanceof \ArticleModel && ($objPid = $objArticle->getRelated('pid')) instanceof \PageModel)
+				{
+					$params = '/articles/' . ($objArticle->alias ?: $objArticle->id);
+
+					/** @var \PageModel $objPid */
+					self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params));
+				}
+				break;
+		}
+
+		// Link to the default page
+		if (self::$arrUrlCache[$strCacheKey] === null)
+		{
+			$objPage = \PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
+
+			if (!$objPage instanceof \PageModel)
+			{
+				self::$arrUrlCache[$strCacheKey] = ampersand(\Environment::get('request'));
+			}
+			else
+			{
+				$params = (\Config::get('useAutoItem') ? '/' : '/items/') . ($objItem->alias ?: $objItem->id);
+
+				self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
+			}
+		}
+
+		return self::$arrUrlCache[$strCacheKey];
+	}
 
     /**
      * Return the link of a glossary item
