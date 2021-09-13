@@ -14,30 +14,23 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^7.4 || ^8.0",
         "ext-json":"*",
         "contao/core-bundle": "^4.9",
-        "symfony/http-foundation":"4.4.* || 5.2.*"
+        "symfony/http-foundation":"4.4.* || ^5.2"
     },
     "conflict": {
         "contao/core": "*",
         "contao/manager-plugin": "<2.0 || >=3.0"
     },
     "require-dev": {
-        "contao/manager-plugin": "^2.3.1",
-        "contao/test-case": "^4.0",
-        "phpunit/phpunit": "^8.4",
-        "symfony/http-client": "4.4.*",
-        "symfony/phpunit-bridge": "4.4.*"
+        "contao/manager-plugin": "^2.3.1"
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.1.x-dev"
         },
-        "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin",
-        "symfony": {
-            "require": "^4.4"
-        }
+        "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin"
     },
     "autoload": {
         "psr-4": {
