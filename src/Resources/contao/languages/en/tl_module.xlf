@@ -38,17 +38,17 @@
       <trans-unit id="tl_module.glossary_utf8Transliteration.1">
         <source>Convert umlauts and special characters for first letters to valid letters (UTF8 to ASCII).</source>
       </trans-unit>
+      <trans-unit id="tl_module.glossary_quickLinks.0">
+        <source>Glossary quicklinks</source>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_quickLinks.1">
+        <source>Adds quicklinks to all glossary entries that are displayed on the page.</source>
+      </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
         <source>Glossary entry template</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.1">
         <source>Here you can select the glossary entry template.</source>
-      </trans-unit>
-      <trans-unit id="tl_module.glossary_metaFields.0">
-        <source>Meta fields</source>
-      </trans-unit>
-      <trans-unit id="tl_module.glossary_metaFields.1">
-        <source>Here you can select the meta fields.</source>
       </trans-unit>
     </body>
   </file>

@@ -102,7 +102,7 @@ class ModuleGlossaryReader extends ModuleGlossary
 		// Set the default template
 	    if (!$this->glossary_template)
 	    {
-		    $this->glossary_template = 'glossary_default';
+		    $this->glossary_template = 'glossary_full';
 	    }
 
 	    $arrGlossaryItem = $this->parseGlossaryItem($objGlossaryItem);

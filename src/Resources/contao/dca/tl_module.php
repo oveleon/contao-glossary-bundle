@@ -10,8 +10,8 @@
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'glossary_singleGroup';
 
 // Add palettes to tl_module
-$GLOBALS['TL_DCA']['tl_module']['palettes']['glossary']       = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule,glossary_hideEmptyGroups,glossary_singleGroup,glossary_utf8Transliteration;{template_legend:hide},glossary_metaFields,glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['glossaryreader'] = '{title_legend},name,headline,type;{config_legend},glossary_archives;{template_legend:hide},glossary_metaFields,glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['glossary']       = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule,glossary_hideEmptyGroups,glossary_singleGroup,glossary_utf8Transliteration;{template_legend},glossary_quickLinks,glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['glossaryreader'] = '{title_legend},name,headline,type;{config_legend},glossary_archives;{template_legend:hide},glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Add subpalettes to tl_module
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['glossary_singleGroup'] = 'glossary_letter';
@@ -37,17 +37,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = array
     'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
     'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
     'sql'                     => "int(10) unsigned NOT NULL default 0"
-);
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['glossary_metaFields'] = array
-(
-	//ToDo: Add options for meta fields
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'options'                 => array('1', '2', '3'),
-	'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-	'eval'                    => array('multiple'=>true),
-	'sql'                     => "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_hideEmptyGroups'] = array
@@ -88,6 +77,15 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_utf8Transliteration'] = arra
 	'sql'                     => "char(1) NOT NULL default '1'"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['glossary_quickLinks'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_quickLinks'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50'),
+	'sql'                     => "char(1) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['glossary_template'],
@@ -97,7 +95,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = array
 	{
 		return \Contao\Controller::getTemplateGroup('glossary_');
 	},
-	'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
+	'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50 clr'),
 	'sql'                     => "varchar(64) NOT NULL default ''"
 );
 

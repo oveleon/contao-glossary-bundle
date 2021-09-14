@@ -1,0 +1,18 @@
+
+<div id="g_entry_<?= $this->id ?>" class="layout_latest item glossary_<?= $this->glossary->id ?> block<?= $this->class ?>">
+
+  <h4><?= $this->linkHeadline ?></h4>
+
+	<?php if ($this->addImage): ?>
+		<?php $this->insert('image', $this->arrData); ?>
+	<?php endif; ?>
+
+  <div class="ce_text block">
+	  <?= $this->teaser ?>
+  </div>
+
+	<?php if ($this->hasText || $this->hasTeaser): ?>
+      <p class="more"><?= $this->more ?></p>
+	<?php endif; ?>
+
+</div>

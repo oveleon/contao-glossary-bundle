@@ -88,7 +88,7 @@ abstract class ModuleGlossary extends \Module
 	protected function parseGlossaryItem($objGlossaryItem, $strClass='')
 	{
 
-		$objTemplate = new FrontendTemplate($this->glossary_template ?: 'glossary_simple');
+		$objTemplate = new FrontendTemplate($this->glossary_template ?: 'glossary_latest');
 		$objTemplate->setData($objGlossaryItem->row());
 
 		if ($objGlossaryItem->cssClass)
@@ -102,6 +102,7 @@ abstract class ModuleGlossary extends \Module
 		$objTemplate->hasSubHeadline = $objGlossaryItem->subheadline ? true : false;
 		$objTemplate->linkHeadline = $this->generateLink($objGlossaryItem->keyword, $objGlossaryItem);
 		$objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objGlossaryItem, true);
+		$objTemplate->glossary = $objGlossaryItem->getRelated('pid');
 		$objTemplate->text = '';
 		$objTemplate->hasText = false;
 		$objTemplate->hasTeaser = false;
@@ -209,10 +210,12 @@ abstract class ModuleGlossary extends \Module
 	 * @param object            $objTemplate
 	 * @param boolean           $blnSingleGroup
 	 * @param boolean           $blnHideEmptyGroups
+	 * @param boolean           $blnTransliteration
+	 * @param boolean           $blnQuickLinks
 	 *
 	 * @return void
 	 */
-	protected function parseGlossaryGroups($objGlossaryItems, &$objTemplate, $blnSingleGroup=false, $blnHideEmptyGroups=false, $blnTransliteration=true)
+	protected function parseGlossaryGroups($objGlossaryItems, &$objTemplate, $blnSingleGroup=false, $blnHideEmptyGroups=false, $blnTransliteration=true, $blnQuickLinks=false)
 	{
 		$availableGroups = array();
 
@@ -256,6 +259,11 @@ abstract class ModuleGlossary extends \Module
 
 		$arrGlossaryGroups = array();
 
+		if($blnQuickLinks)
+		{
+			$arrQuickLinks = array();
+		}
+
 		$limit = $objGlossaryItems->count();
 
 		if ($limit < 1)
@@ -289,6 +297,11 @@ abstract class ModuleGlossary extends \Module
 				'item' => $this->generateGroupAnchorLink($itemGroup, $blnSingleGroup),
 				'class' => $blnSingleGroup ? 'active selected' : 'active'
 			);
+
+			if($blnQuickLinks)
+			{
+				$arrQuickLinks[] = $this->generateAnchorLink($objGlossaryItem->keyword, $objGlossaryItem);;
+			}
 		}
 
 		// Sort available groups
@@ -296,6 +309,13 @@ abstract class ModuleGlossary extends \Module
 
 		$objTemplate->availableGroups = $availableGroups;
 		$objTemplate->glossarygroups = $arrGlossaryGroups;
+		$objTemplate->hasQuickLinks = false;
+
+		if($blnQuickLinks)
+		{
+			$objTemplate->hasQuickLinks = true;
+			$objTemplate->quickLinks = $arrQuickLinks;
+		}
 	}
 
 	/**
@@ -314,6 +334,24 @@ abstract class ModuleGlossary extends \Module
 		}
 
 		return sprintf('<a href="%s#group%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $letter, $letter);
+	}
+
+	/**
+	 * Generate an anchor link and return it as string
+	 *
+	 * @param string            $strLink
+	 * @param GlossaryItemModel $objGlossaryItem
+	 *
+	 * @return string
+	 */
+	protected function generateAnchorLink($strLink, $objGlossaryItem)
+	{
+		return sprintf(
+			'<a href="%s#g_entry_%s">%s</a>',
+			$this->Environment->get('request'),
+			$objGlossaryItem->id,
+			$strLink
+		);
 	}
 
 	/**

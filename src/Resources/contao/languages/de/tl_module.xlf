@@ -50,6 +50,14 @@
         <source>Convert umlauts and special characters for first letters to valid letters (UTF8 to ASCII).</source>
         <target>Umlaute und Sonderzeichen für Anfangsbuchstaben in valide Buchstaben konvertieren (UTF8 zu ASCII).</target>
       </trans-unit>
+      <trans-unit id="tl_module.glossary_quickLinks.0">
+        <source>Glossary quicklinks</source>
+        <target>Glossar Quicklinks</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_quickLinks.1">
+        <source>Adds quicklinks to all glossary entries that are displayed on the page.</source>
+        <target>Fügt Quicklinks zu allen Glossareinträgen hinzu, die auf der Seite angezeigt werden.</target>
+      </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
         <source>Glossary entry template</source>
         <target>Glossareintrag-Template</target>
@@ -57,14 +65,6 @@
       <trans-unit id="tl_module.glossary_template.1">
         <source>Here you can select the glossary entry template.</source>
         <target>Hier können Sie das Glossareintrags-Template auswählen.</target>
-      </trans-unit>
-      <trans-unit id="tl_module.glossary_metaFields.0">
-        <source>Meta fields</source>
-        <target>Meta-Felder</target>
-      </trans-unit>
-      <trans-unit id="tl_module.glossary_metaFields.1">
-        <source>Here you can select the meta fields.</source>
-        <target>Hier können Sie die Meta-Felder auswählen.</target>
       </trans-unit>
     </body>
   </file>

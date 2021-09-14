@@ -1,0 +1,14 @@
+
+<div id="g_entry_<?= $this->id ?>" class="layout_short item glossary_<?= $this->glossary->id ?> block<?= $this->class ?>">
+
+  <h4><?= $this->linkHeadline ?></h4>
+
+  <div class="ce_text block">
+	  <?= $this->teaser ?>
+  </div>
+
+	<?php if ($this->hasText || $this->hasTeaser): ?>
+      <p class="more"><?= $this->more ?></p>
+	<?php endif; ?>
+
+</div>
