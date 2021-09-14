@@ -15,10 +15,10 @@
         <source>Automatically switch to the glossary reader if an item has been selected.</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_singleGroup.0">
-        <source>Limit to one group</source>
+        <source>Glossary pagination</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_singleGroup.1">
-        <source>Restricts the glossary to the output of only one group. This setting should be activated for extensive glossaries.</source>
+        <source>Restricts the output of glossary entries to an initial letter. Other glossary entries can be accessed via the glossary navigation.</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_hideEmptyGroups.0">
         <source>Hide empty groups</source>
@@ -27,10 +27,10 @@
         <source>Hide groups if there are no glossary items.</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_letter.0">
-        <source>Default group</source>
+        <source>Default letter</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_letter.1">
-        <source>The selected group is displayed when the page is entered and no group has been actively selected.</source>
+        <source>Displays the glossary entries for that letter first when you enter the page.</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
         <source>Glossary entry template</source>

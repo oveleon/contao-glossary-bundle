@@ -27,20 +27,20 @@
         <target>Gruppen ausblenden, für die keine Glossareinträge vorhanden sind.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_singleGroup.0">
-        <source>Limit to one group</source>
-        <target>Auf eine Gruppe beschränken</target>
+        <source>Glossary pagination</source>
+        <target>Glossar-Paginierung</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_singleGroup.1">
-        <source>Restricts the glossary to the output of only one group. This setting should be activated for extensive glossaries.</source>
-        <target>Beschränkt das Glossar auf die Ausgabe lediglich einer Gruppe. Diese Einstellung sollte für Umfangreiche Glossare aktiviert werden.</target>
+        <source>Restricts the output of glossary entries to an initial letter. Other glossary entries can be accessed via the glossary navigation.</source>
+        <target>Beschränkt die Ausgabe der Glossareinträge auf einen Anfangsbuchstaben. Andere Glossareinträge können über die Glossarnavigation angesteuert werden.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_letter.0">
-        <source>Default group</source>
-        <target>Standard-Gruppe</target>
+        <source>Default letter</source>
+        <target>Standard-Buchstabe</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_letter.1">
-        <source>The selected group is displayed when the page is entered and no group has been actively selected.</source>
-        <target>Die ausgewählte Gruppe wird angezeigt, wenn die Seite betreten wird und aktiv noch keine Gruppe ausgewählt wurde.</target>
+        <source>Displays the glossary entries for that letter first when you enter the page.</source>
+        <target>Zeigt beim Betreten der Seite die Glossar-Einträge für diesen Buchstaben zuerst an.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
         <source>Glossary entry template</source>
