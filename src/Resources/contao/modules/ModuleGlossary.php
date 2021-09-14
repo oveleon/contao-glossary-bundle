@@ -212,7 +212,7 @@ abstract class ModuleGlossary extends \Module
 	 *
 	 * @return void
 	 */
-	protected function parseGlossaryGroups($objGlossaryItems, &$objTemplate, $blnSingleGroup=false, $blnHideEmptyGroups=false)
+	protected function parseGlossaryGroups($objGlossaryItems, &$objTemplate, $blnSingleGroup=false, $blnHideEmptyGroups=false, $blnTransliteration=true)
 	{
 		$availableGroups = array();
 
@@ -224,7 +224,7 @@ abstract class ModuleGlossary extends \Module
 			foreach ($objAvailableGlossaryItems as $item)
 			{
 				// Transliterate letters to valid Ascii
-				$itemGroup = Utf8::toAscii($item->letter);
+				$itemGroup = $blnTransliteration ? Utf8::toAscii($item->letter) : $item->letter;
 
 				$availableGroups[$itemGroup] = array
 				(
@@ -279,8 +279,7 @@ abstract class ModuleGlossary extends \Module
 		foreach ($objGlossaryItems as $objGlossaryItem)
 		{
 			// Transliterate letters to valid Ascii
-			//ToDo: Add Settings to module
-			$itemGroup = Utf8::toAscii($objGlossaryItem->letter);
+			$itemGroup = $blnTransliteration ? Utf8::toAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
 
 			$arrGlossaryGroups[$itemGroup]['id'] = 'group'.$this->id.'_'.$itemGroup;
 			$arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem);
@@ -293,7 +292,7 @@ abstract class ModuleGlossary extends \Module
 		}
 
 		// Sort available groups
-		ksort($availableGroups);
+		uksort($availableGroups, 'strnatcasecmp');
 
 		$objTemplate->availableGroups = $availableGroups;
 		$objTemplate->glossarygroups = $arrGlossaryGroups;

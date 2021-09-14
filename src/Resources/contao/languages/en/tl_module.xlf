@@ -32,6 +32,12 @@
       <trans-unit id="tl_module.glossary_letter.1">
         <source>Displays the glossary entries for that letter first when you enter the page.</source>
       </trans-unit>
+      <trans-unit id="tl_module.glossary_utf8Transliteration.0">
+        <source>Convert special characters</source>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_utf8Transliteration.1">
+        <source>Convert umlauts and special characters for first letters to valid letters (UTF8 to ASCII).</source>
+      </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
         <source>Glossary entry template</source>
       </trans-unit>

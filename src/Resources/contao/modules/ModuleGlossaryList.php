@@ -21,6 +21,7 @@ use Patchwork\Utf8;
  * @property integer  $glossary_readerModule
  * @property boolean  $glossary_hideEmptyGroups
  * @property boolean  $glossary_singleGroup
+ * @property boolean  $glossary_utf8Transliteration
  * @property string   $glossary_letter
  *
  * @author Fabian Ekert <https://github.com/eki89>
@@ -99,6 +100,6 @@ class ModuleGlossaryList extends ModuleGlossary
 	        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
         }
 
-		$this->parseGlossaryGroups($objGlossaryItems, $this->Template, $this->glossary_singleGroup, $this->glossary_hideEmptyGroups);
+		$this->parseGlossaryGroups($objGlossaryItems, $this->Template, $this->glossary_singleGroup, $this->glossary_hideEmptyGroups, $this->glossary_utf8Transliteration);
 	}
 }

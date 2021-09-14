@@ -42,6 +42,14 @@
         <source>Displays the glossary entries for that letter first when you enter the page.</source>
         <target>Zeigt beim Betreten der Seite die Glossar-Einträge für diesen Buchstaben zuerst an.</target>
       </trans-unit>
+      <trans-unit id="tl_module.glossary_utf8Transliteration.0">
+        <source>Convert special characters</source>
+        <target>Sonderzeichen konvertieren</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_utf8Transliteration.1">
+        <source>Convert umlauts and special characters for first letters to valid letters (UTF8 to ASCII).</source>
+        <target>Umlaute und Sonderzeichen für Anfangsbuchstaben in valide Buchstaben konvertieren (UTF8 zu ASCII).</target>
+      </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
         <source>Glossary entry template</source>
         <target>Glossareintrag-Template</target>
