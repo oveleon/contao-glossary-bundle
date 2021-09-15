@@ -104,7 +104,8 @@ class ModuleGlossaryList extends ModuleGlossary
         {
 		    while ($objItems->next())
             {
-                $group = Utf8::strtoupper(mb_substr($objItems->keyword, 0, 1, 'UTF-8'));
+				// Transliterate umlauts to ascii
+                $group = Utf8::toAscii($objItems->letter);
 
                 $arrItem = $objItems->row();
 
