@@ -11,7 +11,7 @@ namespace Oveleon\ContaoGlossaryBundle\Controller;
 use Contao\ContentModel;
 use Contao\Controller;
 use Contao\StringUtil;
-use Oveleon\ContaoGlossaryBundle\GlossaryItem;
+use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -85,7 +85,7 @@ class GlossaryController extends AbstractController
 	/**
 	 * Runs the command scheduler. (prepare)
 	 *
-	 * @Route("/api/glossary/{id}", name="glossary_item")
+	 * @Route("/api/glossary/item/{id}", name="glossary_item")
 	 *
 	 * @param Request $request
 	 * @param $id
@@ -101,7 +101,7 @@ class GlossaryController extends AbstractController
 
 		$arrResponse = array(
 		  	'title' 	=> $objGlossaryItem->keyword,
-			'url'		=> GlossaryItem::generateUrl($objGlossaryItem, true),
+			'url'		=> Glossary::generateUrl($objGlossaryItem, true),
 			'teaser'	=> $objGlossaryItem->teaser,
 			'class'		=> $objGlossaryItem->cssClass
 		);
@@ -123,6 +123,7 @@ class GlossaryController extends AbstractController
 
 		$arrResponse['items'] = $arrContent;
 
+		// ToDo: return XMLHttpResponse
 		return new JsonResponse($arrResponse);
 	}
 
