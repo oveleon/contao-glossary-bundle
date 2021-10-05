@@ -70,6 +70,14 @@
         <source>The glossary item teaser can be used in a tooltip or can be shown in a glossary list instead of the full article.</source>
         <target>Der Teasertext kann in einem Tooltip angezeigt werden, oder in einer Glossarliste anstatt des ganzen Beitrags angezeigt werden.</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.glossaryTooltipTemplate.0">
+        <source>Tooltip template</source>
+        <target>Tooltip-Template</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.glossaryTooltipTemplate.1">
+        <source>Here you can override the tooltip template.</source>
+        <target>Hier können Sie das Tooltip-Template überschreiben.</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.addImage.0">
         <source>Add an image</source>
         <target>Ein Bild hinzufügen</target>
@@ -177,6 +185,10 @@
       <trans-unit id="tl_glossary_item.source_legend">
         <source>Redirect target</source>
         <target>Weiterleitungsziel</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.template_legend">
+        <source>Template settings</source>
+        <target>Template-Einstellungen</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.image_legend">
         <source>Image settings</source>

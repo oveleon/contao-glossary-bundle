@@ -108,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('protected'),
-		'default'                     => '{title_legend},title,jumpTo;{protected_legend:hide},protected'
+		'default'                     => '{title_legend},title,jumpTo;{template_legend},glossaryTooltipTemplate;{protected_legend:hide},protected'
 	),
 
 	// Subpalettes
@@ -147,6 +147,19 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 			'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
+		),
+		'glossaryTooltipTemplate' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['glossaryTooltipTemplate'],
+			'default'                 => 'tooltip_glossary_default',
+			'exclude'                 => true,
+			'inputType'               => 'select',
+			'options_callback' => static function ()
+			{
+				return \Contao\Controller::getTemplateGroup('tooltip_glossary_');
+			},
+			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'tl_class'=>'w50 clr'),
+			'sql'                     => "varchar(64) NOT NULL default 'tooltip_glossary_default'"
 		),
 		'protected' => array
 		(

@@ -53,6 +53,12 @@
       <trans-unit id="tl_glossary_item.teaser.1">
         <source>The glossary item teaser can be used in a tooltip or can be shown in a glossary list instead of the full article.</source>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.glossaryTooltipTemplate.0">
+        <source>Tooltip template</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.glossaryTooltipTemplate.1">
+        <source>Here you can override the tooltip template.</source>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.addImage.0">
         <source>Add an image</source>
       </trans-unit>
@@ -130,6 +136,9 @@
       </trans-unit>
       <trans-unit id="tl_glossary_item.source_legend">
         <source>Redirect target</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.template_legend">
+        <source>Template settings</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.image_legend">
         <source>Image settings</source>

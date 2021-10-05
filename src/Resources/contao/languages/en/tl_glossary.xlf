@@ -14,6 +14,12 @@
       <trans-unit id="tl_glossary.jumpTo.1">
         <source>Please choose the glossary reader page to which visitors will be redirected when clicking a glossary item.</source>
       </trans-unit>
+      <trans-unit id="tl_glossary.glossaryTooltipTemplate.0">
+        <source>Glossary tooltip template</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary.glossaryTooltipTemplate.1">
+        <source>Here you can select the glossary tooltip template.</source>
+      </trans-unit>
       <trans-unit id="tl_glossary.protected.0">
         <source>Protect glossary</source>
       </trans-unit>
@@ -34,6 +40,9 @@
       </trans-unit>
       <trans-unit id="tl_glossary.title_legend">
         <source>Title and redirect page</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary.template_legend">
+        <source>Template settings</source>
       </trans-unit>
       <trans-unit id="tl_glossary.protected_legend">
         <source>Access protection</source>
