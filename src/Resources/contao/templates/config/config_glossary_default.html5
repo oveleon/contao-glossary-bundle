@@ -1,0 +1,19 @@
+<?php
+  // TL_CSS
+ // TL_JAVASCRIPT
+?>
+
+<script>
+  new Glossary({
+      'route': '/glossary/item/',
+      'selector': '#main',
+      'markup': '<div>',
+      'popup': {
+          'maxWidth': 500,
+          'position': 'auto', // center
+          'showEvent': 'mouseenter',
+          'hideEvent': 'mouseleave',
+      }
+      'config': <?= $this->glossaryConfig ?>
+  });
+</script>
