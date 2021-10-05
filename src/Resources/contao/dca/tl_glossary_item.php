@@ -32,18 +32,15 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 		),
         'oncut_callback' => array
         (
-            array('tl_glossary_item', 'updateGlossaryIndex'),
 	        array('tl_glossary_item', 'scheduleUpdate')
         ),
         'ondelete_callback' => array
         (
-            array('tl_glossary_item', 'updateGlossaryIndex'),
 	        array('tl_glossary_item', 'scheduleUpdate')
         ),
         'onsubmit_callback' => array
         (
             array('tl_glossary_item', 'setGlossaryItemGroup'),
-            array('tl_glossary_item', 'updateGlossaryIndex'),
 	        array('tl_glossary_item', 'scheduleUpdate')
         ),
 		'oninvalidate_cache_tags_callback' => array
@@ -824,65 +821,6 @@ class tl_glossary_item extends Contao\Backend
         }
 
         return $arrOptions;
-    }
-
-    /**
-     * Update the glossary index update
-     *
-     * @param Contao\DataContainer $dc
-     */
-    public function updateGlossaryIndex(Contao\DataContainer $dc)
-    {
-        // Return if there is no ID
-        if (!$dc->activeRecord || !$dc->activeRecord->id)
-        {
-            return;
-        }
-
-        $arrKeywords = \StringUtil::deserialize($dc->activeRecord->keywords, true);
-
-        foreach ($arrKeywords as $i => $keyword)
-        {
-            if (empty($keyword))
-            {
-                unset($arrKeywords[$i]);
-            }
-        }
-
-        array_unshift($arrKeywords, $dc->activeRecord->keyword);
-
-        $objIndex = $this->Database->prepare("SELECT id, word FROM tl_glossary_index WHERE pid=?")
-            ->execute($dc->activeRecord->id);
-
-        while ($objIndex->next())
-        {
-            if (($index = array_search($objIndex->word, $arrKeywords)) !== false)
-            {
-                unset($arrKeywords[$index]);
-            }
-            else
-            {
-                $this->Database->prepare("DELETE FROM tl_glossary_index WHERE id=?")
-                    ->execute($objIndex->id);
-            }
-
-            if (\Input::get('act') === 'delete')
-            {
-                $this->Database->prepare("DELETE FROM tl_glossary_index WHERE id=?")
-                    ->execute($objIndex->id);
-            }
-        }
-
-        foreach ($arrKeywords as $keyword)
-        {
-            $arrSet = array
-            (
-                'pid'  => $dc->activeRecord->id,
-                'word' => $keyword
-            );
-
-            $this->Database->prepare("INSERT INTO tl_glossary_index %s")->set($arrSet)->execute();
-        }
     }
 
     /**
