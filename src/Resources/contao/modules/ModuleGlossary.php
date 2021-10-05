@@ -372,7 +372,7 @@ abstract class ModuleGlossary extends \Module
 	{
 		$blnIsInternal = $objGlossaryItem->source != 'external';
 		$strReadMore = $blnIsInternal ? $GLOBALS['TL_LANG']['MSC']['readMore'] : $GLOBALS['TL_LANG']['MSC']['open'];
-		$strGlossaryItemUrl = $this->generateGlossaryItemUrl($objGlossaryItem);
+		$strGlossaryItemUrl = Glossary::generateUrl($objGlossaryItem);
 
 		return sprintf(
 			'<a href="%s" title="%s"%s itemprop="url">%s%s</a>',
@@ -382,81 +382,5 @@ abstract class ModuleGlossary extends \Module
 			($blnIsReadMore ? $strLink : '<span itemprop="headline">' . $strLink . '</span>'),
 			($blnIsReadMore && $blnIsInternal ? '<span class="invisible"> ' . $objGlossaryItem->keyword . '</span>' : '')
 		);
-	}
-
-	/**
-	 * Generate a URL and return it as string
-	 *
-	 * @param GlossaryItemModel $objGlossaryItem
-	 * @param boolean           $blnAbsolute
-	 *
-	 * @return string
-	 */
-	public static function generateGlossaryItemUrl($objGlossaryItem, $blnAbsolute=false)
-	{
-		$strCacheKey = 'id_' . $objGlossaryItem->id;
-
-		// Load the URL from cache
-		if (isset(self::$arrUrlCache[$strCacheKey]))
-		{
-			return self::$arrUrlCache[$strCacheKey];
-		}
-
-		// Initialize the cache
-		self::$arrUrlCache[$strCacheKey] = null;
-
-		switch ($objGlossaryItem->source)
-		{
-			// Link to an external page
-			case 'external':
-				if (0 === strncmp($objGlossaryItem->url, 'mailto:', 7))
-				{
-					self::$arrUrlCache[$strCacheKey] = StringUtil::encodeEmail($objGlossaryItem->url);
-				}
-				else
-				{
-					self::$arrUrlCache[$strCacheKey] = ampersand($objGlossaryItem->url);
-				}
-				break;
-
-			// Link to an internal page
-			case 'internal':
-				if (($objTarget = $objGlossaryItem->getRelated('jumpTo')) instanceof PageModel)
-				{
-					/** @var PageModel $objTarget */
-					self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objTarget->getAbsoluteUrl() : $objTarget->getFrontendUrl());
-				}
-				break;
-
-			// Link to an article
-			case 'article':
-				if (($objArticle = ArticleModel::findByPk($objGlossaryItem->articleId)) instanceof ArticleModel && ($objPid = $objArticle->getRelated('pid')) instanceof PageModel)
-				{
-					$params = '/articles/' . ($objArticle->alias ?: $objArticle->id);
-
-					/** @var PageModel $objPid */
-					self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params));
-				}
-				break;
-		}
-
-		// Link to the default page
-		if (self::$arrUrlCache[$strCacheKey] === null)
-		{
-			$objPage = PageModel::findByPk($objGlossaryItem->getRelated('pid')->jumpTo);
-
-			if (!$objPage instanceof PageModel)
-			{
-				self::$arrUrlCache[$strCacheKey] = ampersand(Environment::get('request'));
-			}
-			else
-			{
-				$params = (Config::get('useAutoItem') ? '/' : '/items/') . ($objGlossaryItem->alias ?: $objGlossaryItem->id);
-
-				self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
-			}
-		}
-
-		return self::$arrUrlCache[$strCacheKey];
 	}
 }

@@ -8,6 +8,12 @@
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\ArticleModel;
+use Contao\Config;
+use Contao\Environment;
+use Contao\PageModel;
+use Contao\StringUtil;
+
 /**
  * Provide methods regarding glossaries.
  *
@@ -143,7 +149,7 @@ class Glossary extends \Frontend
 			case 'external':
 				if (0 === strncmp($objItem->url, 'mailto:', 7))
 				{
-					self::$arrUrlCache[$strCacheKey] = \StringUtil::encodeEmail($objItem->url);
+					self::$arrUrlCache[$strCacheKey] = StringUtil::encodeEmail($objItem->url);
 				}
 				else
 				{
@@ -153,20 +159,20 @@ class Glossary extends \Frontend
 
 			// Link to an internal page
 			case 'internal':
-				if (($objTarget = $objItem->getRelated('jumpTo')) instanceof \PageModel)
+				if (($objTarget = $objItem->getRelated('jumpTo')) instanceof PageModel)
 				{
-					/** @var \PageModel $objTarget */
+					/** @var PageModel $objTarget */
 					self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objTarget->getAbsoluteUrl() : $objTarget->getFrontendUrl());
 				}
 				break;
 
 			// Link to an article
 			case 'article':
-				if (($objArticle = \ArticleModel::findByPk($objItem->articleId)) instanceof \ArticleModel && ($objPid = $objArticle->getRelated('pid')) instanceof \PageModel)
+				if (($objArticle = ArticleModel::findByPk($objItem->articleId)) instanceof ArticleModel && ($objPid = $objArticle->getRelated('pid')) instanceof PageModel)
 				{
 					$params = '/articles/' . ($objArticle->alias ?: $objArticle->id);
 
-					/** @var \PageModel $objPid */
+					/** @var PageModel $objPid */
 					self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params));
 				}
 				break;
@@ -175,15 +181,15 @@ class Glossary extends \Frontend
 		// Link to the default page
 		if (self::$arrUrlCache[$strCacheKey] === null)
 		{
-			$objPage = \PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
+			$objPage = PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
 
-			if (!$objPage instanceof \PageModel)
+			if (!$objPage instanceof PageModel)
 			{
-				self::$arrUrlCache[$strCacheKey] = ampersand(\Environment::get('request'));
+				self::$arrUrlCache[$strCacheKey] = ampersand(Environment::get('request'));
 			}
 			else
 			{
-				$params = (\Config::get('useAutoItem') ? '/' : '/items/') . ($objItem->alias ?: $objItem->id);
+				$params = (Config::get('useAutoItem') ? '/' : '/items/') . ($objItem->alias ?: $objItem->id);
 
 				self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
 			}
