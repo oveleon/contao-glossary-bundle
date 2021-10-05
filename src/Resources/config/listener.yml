@@ -6,3 +6,11 @@ services:
         tags:
           - { name: contao.hook, hook: replaceInsertTags }
         public: true
+
+    contao_glossary.listener.generate_page:
+        class: Oveleon\ContaoGlossaryBundle\EventListener\GeneratePageListener
+        arguments:
+            - '@contao.framework'
+        tags:
+            - { name: contao.hook, hook: generatePage }
+        public: true
