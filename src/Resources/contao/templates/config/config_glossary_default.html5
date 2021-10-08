@@ -1,19 +1,18 @@
 <?php
-  // TL_CSS
- // TL_JAVASCRIPT
+  $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/contaoglossary/scripts/dist/main.js|static';
+ // $GLOBALS['TL_CSS'][] = 'bundles/contaoglossary/styles/*.css';
 ?>
 
 <script>
-  new Glossary({
+  const GN = new Glossary({
       'route': '/glossary/item/',
-      'selector': '#main',
-      'markup': '<div>',
-      'popup': {
+      'markup': 'mark',
+      'tooltip': {
           'maxWidth': 500,
           'position': 'auto', // center
           'showEvent': 'mouseenter',
           'hideEvent': 'mouseleave',
-      }
+      },
       'config': <?= $this->glossaryConfig ?>
   });
 </script>
