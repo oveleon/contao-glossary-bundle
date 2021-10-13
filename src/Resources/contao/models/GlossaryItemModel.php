@@ -18,6 +18,7 @@ use Contao\Model\Collection;
  * @property integer $pid
  * @property integer $tstamp
  * @property string  $keyword
+ * @property boolean $sensitiveSearch
  * @property string  $alias
  * @property string  $pageTitle
  * @property string  $description
@@ -47,6 +48,7 @@ use Contao\Model\Collection;
  * @method static GlossaryItemModel|null findOneByPid($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByTstamp($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByKeyword($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneBySensitiveSearch($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByAlias($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByPageTitle($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByDescription($val, array $opt=array())
@@ -72,6 +74,7 @@ use Contao\Model\Collection;
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByPid($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTstamp($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByKeyword($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySensitiveSearch($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAlias($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByPageTitle($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByDescription($val, array $opt=array())
@@ -101,6 +104,7 @@ use Contao\Model\Collection;
  * @method static integer countByPid($val, array $opt=array())
  * @method static integer countByTstamp($val, array $opt=array())
  * @method static integer countByKeyword($val, array $opt=array())
+ * @method static integer countBySensitiveSearch($val, array $opt=array())
  * @method static integer countByAlias($val, array $opt=array())
  * @method static integer countByPageTitle($val, array $opt=array())
  * @method static integer countByDescription($val, array $opt=array())

@@ -13,6 +13,14 @@
         <source>Enable glossary tooltips for this and its subpages.</source>
         <target>Aktivieren Sie die Glossar Tooltips für diese und dessen Unterseiten.</target>
       </trans-unit>
+      <trans-unit id="tl_page.excludeGlossaryTooltips.0">
+        <source>Disable glossary tooltips</source>
+        <target>Glossar Tooltips deaktivieren</target>
+      </trans-unit>
+      <trans-unit id="tl_page.excludeGlossaryTooltips.1">
+        <source>Disable glossary tooltips for this page.</source>
+        <target>Glossar Tooltips für diese Seite deaktivieren.</target>
+      </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.0">
         <source>Glossaries</source>
         <target>Glossare</target>

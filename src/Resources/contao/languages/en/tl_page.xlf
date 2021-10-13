@@ -10,6 +10,12 @@
       <trans-unit id="tl_page.activateGlossaryTooltips.1">
         <source>Enable glossary tooltips for this and its subpages.</source>
       </trans-unit>
+      <trans-unit id="tl_page.excludeGlossaryTooltips.0">
+        <source>Disable glossary tooltips</source>
+      </trans-unit>
+      <trans-unit id="tl_page.excludeGlossaryTooltips.1">
+        <source>Disable glossary tooltips for this page.</source>
+      </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.0">
         <source>Glossaries</source>
       </trans-unit>
