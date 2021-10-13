@@ -85,8 +85,10 @@ class GeneratePageListener
 				$arrGlossaryItems[] = [
 					'id'        => $objGlossaryItem->id,
 					'keywords'  => $arrKeywords,
-					//'template'  => $getTemplate($objGlossaryItem),
-					'url'       => Glossary::generateUrl($objGlossaryItem)
+					'url'       => Glossary::generateUrl($objGlossaryItem),
+
+					// Case-sensitive search
+					'cs'        => $objGlossaryItem->sensitiveSearch ? 1 : 0
 				];
 			}
 		}

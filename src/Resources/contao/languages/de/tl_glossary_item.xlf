@@ -30,6 +30,14 @@
         <source>Here you can enter search terms that are included in automatic cross-references.</source>
         <target>Hier können Sie Suchbegriffe eingeben, die in automatische Querverweise einbezogen werden.</target>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.sensitiveSearch.0">
+        <source>Case-sensitive markup</source>
+        <target>Groß- und Kleinschreibung bei der Markierung beachten</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.sensitiveSearch.1">
+        <source>Here you can select if the search for keywords should be case-sensitive.</source>
+        <target>Hier können Sie auswählen, ob bei der Suche nach Schlüsselwörtern die Groß- und Kleinschreibung beachtet werden soll.</target>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.pageTitle.0">
         <source>Meta title</source>
         <target>Meta-Titel</target>

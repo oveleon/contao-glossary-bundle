@@ -126,7 +126,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('source', 'addImage', 'overwriteMeta'),
-		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords;{source_legend:hide},source;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},subheadline,teaser;{template_legend:hide},glossaryTooltipTemplate;{image_legend},addImage;{expert_legend:hide},cssClass;{publish_legend},published'
+		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords,sensitiveSearch;{source_legend:hide},source;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},subheadline,teaser;{template_legend:hide},glossaryTooltipTemplate;{image_legend},addImage;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
     // Subpalettes
@@ -194,6 +194,14 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
             'eval'                    => array('doNotCopy'=>true, 'tl_class'=>'w50'),
             'sql'                     => "blob NULL"
         ),
+		'sensitiveSearch' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['sensitiveSearch'],
+			'exclude'                 => true,
+			'inputType'               => 'checkbox',
+			'eval'                    => array('tl_class'=>'w50 clr m12'),
+			'sql'                     => "char(1) NOT NULL default ''"
+		),
         'pageTitle' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['pageTitle'],
