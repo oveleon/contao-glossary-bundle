@@ -5,14 +5,18 @@
 
 <script>
   const GN = new Glossary({
-      'route': '/glossary/item/',
-      'markup': 'mark',
+      'entrySelector': '.c_text, .ce_text',
+      'markup': 'a',
+      'markupAttr': {
+          'class': 'gl-item'
+      },
       'tooltip': {
           'maxWidth': 500,
           'position': 'auto', // center
           'showEvent': 'mouseenter',
           'hideEvent': 'mouseleave',
       },
-      'config': <?= $this->glossaryConfig ?>
+      'config': <?= $this->glossaryConfig ?>,
+      'route': '/glossary/item/'
   });
 </script>

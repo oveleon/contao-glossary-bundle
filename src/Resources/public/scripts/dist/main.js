@@ -60,7 +60,7 @@ class Glossary {
             entrySelector: '#wrapper',
             markup: 'mark',
             markupAttr: {
-                'class': 'gl-item'
+                'class': null
             },
             tooltip: {
                 maxWidth: 500,
@@ -70,7 +70,7 @@ class Glossary {
             },
             includes: [
                 'body',
-                'div,p',
+                'div,span,p',
                 'main,section,article',
                 'h1,h2,h3,h4,h5,h6,strong',
                 'ol,ul,li',
@@ -83,22 +83,18 @@ class Glossary {
             config: []
         }, options || {})
 
-        console.log(this.options.config)
-
         this.contentNodes = document.querySelectorAll(this.options.entrySelector)
-        this._parseNodes();
+        this._parseNodes(this.contentNodes, 0);
+        this._bindEvents();
     }
 
     /**
      * Parse all nodes within an entry selector
      * @private
      */
-    _parseNodes(nodes)
+    _parseNodes(_nodes)
     {
-        if(typeof nodes === "undefined")
-        {
-            nodes = this.contentNodes
-        }
+        const nodes = Array.from(_nodes);
 
         for(const node of nodes)
         {
@@ -122,47 +118,93 @@ class Glossary {
         if(!node.textContent.trim())
             return
 
+        let termCache = [];
 
         for (const term of this.options.config)
         {
-            const rgx = new RegExp("\\b(" + term.keywords.join('|') + ")\\b", 'gi')
+            // Case-sensitive search from term via config
+            const rgx = new RegExp("(?<=\\s|>|^)(" + term.keywords.join('|') + ")\\b", term.cs ? 'gu' : 'giu')
             const matches = node.textContent.match(rgx)
 
             if(null !== matches)
             {
-                // ToDo: 1. Check case sensitive terms
                 const filteredMatches = matches.filter((v, i, a) => a.indexOf(v) === i)
 
-                for (const match in filteredMatches)
+                for (let match of filteredMatches)
                 {
-                    const el = this._createTermMarkup(match);
+                    if(termCache.includes(match))
+                        continue
+
+                    termCache.push(match)
+
+                    const elementMarkup = this._createTermMarkup(match, term)
+                    const matchRgx = new RegExp("(?<=\\s|>|^)(" + match + ")\\b", 'gu')
+
+                    node.textContent = node.textContent.replace(matchRgx, elementMarkup)
                 }
             }
         }
 
+        const wrap = document.createElement('span')
+        wrap.innerHTML = node.textContent
 
-        //const replaceContent = node.textContent.replaceAll('')
-        //node.textContent = "Replaced Term"
+        node.replaceWith(wrap)
+
+        wrap.outerHTML = wrap.innerHTML
     }
 
-    _createTermMarkup(text)
+    _createTermMarkup(text, term)
     {
-        // ToDo: 2. Create markup
         const el = document.createElement(this.options.markup)
 
         el.innerText = text
-        el.glossary = true
 
-        // Todo: set attributes
-        // ToDo: 3. Bind eventListeners with fetch via api
-        // ToDo: 4. Create markup
+        if(null !== this.options.markupAttr.class)
+            el.className = this.options.markupAttr.class
 
-        return el;
+        el.dataset.glossaryId = term.id
+
+        if(this.options.markup === 'a')
+        {
+            el.title = text
+            el.href = term.url
+        }
+
+        return el.outerHTML;
+    }
+
+    _bindEvents()
+    {
+        const glossaryElements = document.querySelectorAll('[data-glossary-id]');
+
+        if(glossaryElements)
+        {
+            for(const element of glossaryElements)
+            {
+                element.addEventListener(this.options.tooltip.showEvent, (e) => this._onShowTooltip(e))
+                element.addEventListener(this.options.tooltip.hideEvent, (e) => this._onHideTooltip(e))
+            }
+        }
+    }
+
+    _onShowTooltip(event)
+    {
+
+        const id = event.target.dataset.glossaryId;
+
+        //ToDO: Fetch via API
+        // Implement Cache
+
+    }
+
+    _onHideTooltip()
+    {
+
     }
 
     _isValid(node)
     {
-        return node.nodeType === Node.TEXT_NODE || (node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')));
+        return node.nodeType === Node.TEXT_NODE || (node.glossary !== true && node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')));
     }
 
     /**
