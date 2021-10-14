@@ -79,13 +79,13 @@ class Glossary {
                 'mark,abbr',
                 'sub,sup'
             ],
-            route: '/glossary/item/',
+            route: '/api/glossary/item/',
             config: []
         }, options || {})
 
         this.contentNodes = document.querySelectorAll(this.options.entrySelector)
-        this._parseNodes(this.contentNodes, 0);
-        this._bindEvents();
+        this._parseNodes(this.contentNodes, 0)
+        this._bindEvents()
     }
 
     /**
@@ -189,17 +189,70 @@ class Glossary {
 
     _onShowTooltip(event)
     {
+        this.currentElement = event.target;
 
-        const id = event.target.dataset.glossaryId;
+        const id = this.currentElement.dataset.glossaryId;
 
-        //ToDO: Fetch via API
-        // Implement Cache
+        // Fetch data
 
+        // Cache implementation
+        const cachedResponse = this._getItemCached(id)
+
+        if(cachedResponse)
+        {
+            this._buildTooltip(cachedResponse);
+            return
+        }
+
+        this._fetchGlossaryItem(id)
     }
 
     _onHideTooltip()
     {
+        if(this?.abortController)
+        {
+            this.abortController.abort();
+        }
+    }
 
+    async _fetchGlossaryItem(id)
+    {
+        this.abortController = new AbortController()
+
+        await fetch(this.options.route + id + '/html', {signal: this.abortController.signal})
+            .then((response) => {
+                if(response.status >= 300)
+                    throw new Error(response.statusText)
+
+                //result = await fetched.json()
+                response.text().then((htmlContent) => {
+                    // Write into cache
+                    this._setItemCache(id, htmlContent);
+
+                    // Build tooltip
+                    this._buildTooltip(htmlContent);
+                })
+
+            }).catch((e) => {})
+    }
+
+    _buildTooltip(response)
+    {
+        // ToDo: Build Tooltip
+    }
+
+    _setItemCache(id, htmlContent)
+    {
+        let bag = sessionStorage.getItem('glossaryCache');
+        sessionStorage.setItem('glossaryCache', JSON.stringify({...(bag ? JSON.parse(bag) : {}), ...{[id]: htmlContent}}))
+    }
+
+    _getItemCached(id)
+    {
+        let bag = sessionStorage.getItem('glossaryCache');
+        bag = JSON.parse(bag)
+
+        return (bag && bag[id]) ? bag[id] : null
     }
 
     _isValid(node)

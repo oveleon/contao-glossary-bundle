@@ -17,6 +17,6 @@
           'hideEvent': 'mouseleave',
       },
       'config': <?= $this->glossaryConfig ?>,
-      'route': '/glossary/item/'
+      'route': '/api/glossary/item/'
   });
 </script>
