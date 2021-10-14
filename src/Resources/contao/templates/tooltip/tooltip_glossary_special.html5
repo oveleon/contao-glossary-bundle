@@ -1,7 +1,7 @@
 
-<div id="g_entry_<?= $this->id ?>" class="layout_latest item glossary_<?= $this->glossary->id ?> block<?= $this->class ?>">
+<div id="g_tooltip_<?= $this->id ?>" class="g_tooltip_special item">
 
-  <h4><?= $this->linkHeadline ?></h4>
+  <strong><?= $this->headline ?></strong>
 
 	<?php if ($this->addImage): ?>
 		<?php $this->insert('image', $this->arrData); ?>
