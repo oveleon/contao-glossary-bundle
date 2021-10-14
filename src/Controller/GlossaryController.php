@@ -12,9 +12,11 @@ use Contao\ContentModel;
 use Contao\Controller;
 use Contao\StringUtil;
 use Oveleon\ContaoGlossaryBundle\Glossary;
+use Oveleon\ContaoGlossaryBundle\GlossaryModel;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\Routing\Annotation\Route;
@@ -85,19 +87,22 @@ class GlossaryController extends AbstractController
 	/**
 	 * Runs the command scheduler. (prepare)
 	 *
-	 * @Route("/api/glossary/item/{id}", name="glossary_item")
+	 * @Route("/api/glossary/item/{id}/json", name="glossary_item_json")
 	 *
 	 * @param Request $request
 	 * @param $id
 	 *
 	 * @return JsonResponse|string
 	 */
-	public function getGlossaryContent(Request $request, $id)
+	public function getGlossaryItem(Request $request, $id)
 	{
 		$this->framework->initialize();
 
-		$objGlossaryItem = GlossaryItemModel::findByPk($id);
-		$objContentElements = ContentModel::findPublishedByPidAndTable($id,'tl_glossary_item');
+		$objGlossaryItem = GlossaryItemModel::findPublishedById($id);
+
+		if(null === $objGlossaryItem) {
+			return $this->error('No result found', 404);
+		}
 
 		$arrResponse = array(
 		  	'title' 	=> $objGlossaryItem->keyword,
@@ -105,6 +110,8 @@ class GlossaryController extends AbstractController
 			'teaser'	=> $objGlossaryItem->teaser,
 			'class'		=> $objGlossaryItem->cssClass
 		);
+
+		$objContentElements = ContentModel::findPublishedByPidAndTable($id,'tl_glossary_item');
 
 		if ($objContentElements === null)
 		{
@@ -123,19 +130,47 @@ class GlossaryController extends AbstractController
 
 		$arrResponse['items'] = $arrContent;
 
-		// ToDo: return XMLHttpResponse
 		return new JsonResponse($arrResponse);
 	}
 
 	/**
-	 * Return error
+	 * Runs the command scheduler. (prepare)
 	 *
-	 * @param $msg
+	 * @Route("/api/glossary/item/{id}/html", name="glossary_item_html")
 	 *
-	 * @return JsonResponse
+	 * @param Request $request
+	 * @param $id
+	 *
+	 * @return Response|string
 	 */
-	private function error($msg)
+	public function getGlossaryItemContent(Request $request, $id)
 	{
-		return new JsonResponse(['error' => 1, 'message' => $msg]);
+		$this->framework->initialize();
+
+		$objGlossaryItem = GlossaryItemModel::findPublishedById($id);
+
+		if(null === $objGlossaryItem) {
+			return $this->error('No result found', 404);
+		}
+
+		// Check for template in item, otherwise get archive template
+		if(!!$objGlossaryItem->glossaryTooltipTemplate)
+		{
+			$tooltipTemplate = $objGlossaryItem->glossaryTooltipTemplate;
+		}
+		else
+		{
+			$tooltipTemplate = GlossaryModel::findByPk($objGlossaryItem->pid)->glossaryTooltipTemplate;
+		}
+
+		return new Response(Glossary::parseGlossaryItem($objGlossaryItem, $tooltipTemplate, null));
+	}
+
+	/**
+	 * Return error
+	 */
+	private function error(string $msg, int $status): JsonResponse
+	{
+		return new JsonResponse(['message' => $msg, 'status' => $status], $status);
 	}
 }
