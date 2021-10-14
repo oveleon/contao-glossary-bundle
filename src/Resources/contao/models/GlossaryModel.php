@@ -18,6 +18,7 @@ use Contao\Model\Collection;
  * @property integer $tstamp
  * @property string  $title
  * @property integer $jumpTo
+ * @property string  $glossaryTooltipTemplate
  * @property boolean $protected
  * @property string  $groups
  *
@@ -27,12 +28,14 @@ use Contao\Model\Collection;
  * @method static GlossaryModel|null findOneByTstamp($val, array $opt=array())
  * @method static GlossaryModel|null findOneByTitle($val, array $opt=array())
  * @method static GlossaryModel|null findOneByJumpTo($val, array $opt=array())
+ * @method static GlossaryModel|null findOneByGlossaryTooltipTemplate($val, array $opt=array())
  * @method static GlossaryModel|null findOneByProtected($val, array $opt=array())
  * @method static GlossaryModel|null findOneByGroups($val, array $opt=array())
  *
  * @method static Collection|GlossaryModel[]|GlossaryModel|null findByTstamp($val, array $opt=array())
  * @method static Collection|GlossaryModel[]|GlossaryModel|null findByTitle($val, array $opt=array())
  * @method static Collection|GlossaryModel[]|GlossaryModel|null findByJumpTo($val, array $opt=array())
+ * @method static Collection|GlossaryModel[]|GlossaryModel|null findByGlossaryTooltipTemplate($val, array $opt=array())
  * @method static Collection|GlossaryModel[]|GlossaryModel|null findByProtected($val, array $opt=array())
  * @method static Collection|GlossaryModel[]|GlossaryModel|null findByGroups($val, array $opt=array())
  * @method static Collection|GlossaryModel[]|GlossaryModel|null findMultipleByIds($val, array $opt=array())
@@ -47,6 +50,7 @@ use Contao\Model\Collection;
  * @method static integer countByGroups($val, array $opt=array())
  *
  * @author Fabian Ekert <https://github.com/eki89>
+ * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 class GlossaryModel extends Model
 {
@@ -55,4 +59,6 @@ class GlossaryModel extends Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_glossary';
+
+
 }

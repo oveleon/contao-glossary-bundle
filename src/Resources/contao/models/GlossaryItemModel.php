@@ -24,6 +24,7 @@ use Contao\Model\Collection;
  * @property string  $description
  * @property string  $subheadline
  * @property string  $teaser
+ * @property string  $glossaryTooltipTemplate
  * @property boolean $addImage
  * @property string  $singleSRC
  * @property string  $alt
@@ -54,6 +55,7 @@ use Contao\Model\Collection;
  * @method static GlossaryItemModel|null findOneByDescription($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneBySubheadline($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByTeaser($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByGlossaryTooltipTemplate($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByAddImage($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneBySingleSRC($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByAlt($val, array $opt=array())
@@ -80,6 +82,7 @@ use Contao\Model\Collection;
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByDescription($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySubheadline($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTeaser($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByGlossaryTooltipTemplate($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAddImage($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySingleSRC($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAlt($val, array $opt=array())
@@ -128,6 +131,7 @@ use Contao\Model\Collection;
  * @method static integer countByPublished($val, array $opt=array())
  *
  * @author Fabian Ekert <https://github.com/eki89>
+ * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 class GlossaryItemModel extends Model
 {
@@ -136,6 +140,28 @@ class GlossaryItemModel extends Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_glossary_item';
+
+
+	/**
+	 * Find a published glossary item by its ID
+	 *
+	 * @param integer $intId      The glossary item ID
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return GlossaryItemModel|null The model or null if there are no glossary items
+	 */
+	public static function findPublishedById($intId, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$arrColumns = array("$t.id=?");
+
+		if (!static::isPreviewMode($arrOptions))
+		{
+			$arrColumns[] = "$t.published='1'";
+		}
+
+		return static::findOneBy($arrColumns, $intId, $arrOptions);
+	}
 
     /**
      * Find a published glossary item from one or more glossaries by its ID or alias
