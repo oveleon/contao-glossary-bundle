@@ -2,7 +2,7 @@
     "name": "oveleon/contao-glossary-bundle",
     "type": "contao-bundle",
     "description": "Adds glossary functionality to Contao",
-    "license": "MIT",
+    "license":"AGPL-3.0-or-later",
     "authors": [
         {
             "name": "Fabian Ekert",
