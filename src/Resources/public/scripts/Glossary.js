@@ -1,4 +1,5 @@
 import { extend } from "./helper/extend";
+import { createPopper } from '@popperjs/core';
 
 export class Glossary {
 
@@ -9,11 +10,14 @@ export class Glossary {
             markupAttr: {
                 'class': null
             },
-            tooltip: {
+            hovercard: {
+                interactive: true,
                 maxWidth: 500,
                 position: 'auto',
                 showEvent: 'mouseenter',
-                hideEvent: 'mouseleave'
+                hideEvent: 'mouseleave',
+                showDelay: 300,
+                threshold: 500
             },
             includes: [
                 'body',
@@ -27,11 +31,17 @@ export class Glossary {
                 'sub,sup'
             ],
             route: '/api/glossary/item/',
-            config: []
+            config: null
         }, options || {})
 
-        this.contentNodes = document.querySelectorAll(this.options.entrySelector)
-        this._parseNodes(this.contentNodes, 0)
+        this.hideTimeout = null
+
+        if(null !== this.options.config)
+        {
+            this.contentNodes = document.querySelectorAll(this.options.entrySelector)
+            this._parseNodes(this.contentNodes, 0)
+        }
+
         this._bindEvents()
     }
 
@@ -124,41 +134,71 @@ export class Glossary {
     {
         const glossaryElements = document.querySelectorAll('[data-glossary-id]');
 
+        /*if(this.options.hovercard.showEvent === 'click')
+        {
+            this.options.hovercard.interactive = true
+        }*/
+
         if(glossaryElements)
         {
             for(const element of glossaryElements)
             {
-                element.addEventListener(this.options.tooltip.showEvent, (e) => this._onShowTooltip(e))
-                element.addEventListener(this.options.tooltip.hideEvent, (e) => this._onHideTooltip(e))
+                element.addEventListener(this.options.hovercard.showEvent, (e) => this._onShowHovercard(e))
+                element.addEventListener(this.options.hovercard.hideEvent, (e) => this._onHideHovercard(e))
             }
         }
     }
 
-    _onShowTooltip(event)
+    _onShowHovercard(event)
     {
         this.currentElement = event.target;
 
         const id = this.currentElement.dataset.glossaryId;
 
-        // Fetch data
+        // if delay -> setTimeout -> hide -> clearTimeout
+
+        if(this.glossaryHovercard)
+        {
+            this._clearTimeout()
+            this._destroyHovercard()
+        }
 
         // Cache implementation
         const cachedResponse = this._getItemCached(id)
 
         if(cachedResponse)
         {
-            this._buildTooltip(cachedResponse);
+            this._buildHovercard(cachedResponse);
             return
         }
 
+        document.body.style.cursor = 'progress';
         this._fetchGlossaryItem(id)
     }
 
-    _onHideTooltip()
+    _onHideHovercard(event)
     {
+        this._clearTimeout()
+
+        // delay -> check if mouse over hovercard -> yes -> stay -> no -> close hovercard and destroy popper
+
         if(this?.abortController)
         {
-            this.abortController.abort();
+            this.abortController.abort()
+        }
+
+        if (this?.glossaryHovercard)
+        {
+            if(this.options.hovercard.interactive)
+            {
+                this.hideTimeout = setTimeout(() => {
+                    this._destroyHovercard()
+                }, 200)
+            }
+            else
+            {
+                this._destroyHovercard()
+            }
         }
     }
 
@@ -173,19 +213,75 @@ export class Glossary {
 
                 //result = await fetched.json()
                 response.text().then((htmlContent) => {
+                    // Hide loading
+                    document.body.style.cursor = 'auto';
+
                     // Write into cache
                     this._setItemCache(id, htmlContent);
 
-                    // Build tooltip
-                    this._buildTooltip(htmlContent);
+                    // Build hovercard
+                    this._buildHovercard(htmlContent);
                 })
 
-            }).catch((e) => {})
+            }).catch((e) => {
+                document.body.style.cursor = 'auto';
+            })
     }
 
-    _buildTooltip(response)
+    _buildHovercard(response)
     {
-        // ToDo: Build Tooltip
+
+        const hovercardContent = '';
+        const hovercardArrow = '';
+
+        this.glossaryHovercard = document.createElement('div')
+        this.glossaryHovercard.style.width = this.options.hovercard.maxWidth
+
+        if(this.options.hovercard.interactive)
+        {
+            this.glossaryHovercard.addEventListener('mouseenter', () =>
+            {
+                this._clearTimeout()
+                this.glossaryHovercard?.addEventListener('mouseleave', () => {
+                    this._destroyHovercard()
+                })
+            })
+        }
+
+        this.glossaryHovercard.id = 'gs-hovercard'
+        this.glossaryHovercard.innerHTML = response
+
+        //Move to config
+        //this.currentElement.appendChild(this.glossaryHovercard)
+        document.body.appendChild(this.glossaryHovercard)
+
+        this.popper = createPopper(this.currentElement, this.glossaryHovercard, {
+
+        })
+    }
+
+    _destroyHovercard()
+    {
+        this.popper.destroy()
+
+        /*if(this.options.hovercard.interactive)
+        {
+            // Remove events
+            this.glossaryHovercard.removeEventListener('mouseenter');
+            this.glossaryHovercard.removeEventListener('mouseleave');
+        }*/
+
+        this.glossaryHovercard.parentNode.removeChild(this.glossaryHovercard)
+        this.glossaryHovercard = null
+    }
+
+    _clearTimeout()
+    {
+        if(this.hideTimeout)
+        {
+            clearTimeout(this.hideTimeout)
+            this.hideTimeout = null
+        }
     }
 
     _setItemCache(id, htmlContent)
@@ -205,24 +301,5 @@ export class Glossary {
     _isValid(node)
     {
         return node.nodeType === Node.TEXT_NODE || (node.glossary !== true && node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')));
-    }
-
-    /**
-     * Parse nodes by selector
-     * @param selector
-     * @public
-     */
-    parseNodes(selector)
-    {
-        if(typeof selector === 'string')
-        {
-            this.contentNodes = document.querySelectorAll(selector)
-        }
-        else
-        {
-            this.contentNodes = selector
-        }
-
-        this._parseNodes();
     }
 }

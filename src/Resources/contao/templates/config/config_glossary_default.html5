@@ -1,6 +1,6 @@
 <?php
   $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/contaoglossary/scripts/dist/main.js|static';
- // $GLOBALS['TL_CSS'][] = 'bundles/contaoglossary/styles/*.css';
+  $GLOBALS['TL_CSS'][] =        'bundles/contaoglossary/styles/glossary.css';
 ?>
 
 <script>
@@ -10,7 +10,7 @@
       'markupAttr': {
           'class': 'gl-item'
       },
-      'tooltip': {
+      'hovercard': {
           'maxWidth': 500,
           'position': 'auto', // center
           'showEvent': 'mouseenter',
