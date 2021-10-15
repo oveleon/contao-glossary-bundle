@@ -108,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('protected'),
-		'default'                     => '{title_legend},title,jumpTo;{template_legend},glossaryTooltipTemplate;{protected_legend:hide},protected'
+		'default'                     => '{title_legend},title,jumpTo;{template_legend},glossaryHoverCardTemplate;{protected_legend:hide},protected'
 	),
 
 	// Subpalettes
@@ -148,18 +148,18 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
 		),
-		'glossaryTooltipTemplate' => array
+		'glossaryHoverCardTemplate' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['glossaryTooltipTemplate'],
-			'default'                 => 'tooltip_glossary_default',
+			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['glossaryHoverCardTemplate'],
+			'default'                 => 'hovercard_glossary_default',
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'options_callback' => static function ()
 			{
-				return \Contao\Controller::getTemplateGroup('tooltip_glossary_');
+				return \Contao\Controller::getTemplateGroup('hovercard_glossary_');
 			},
 			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'tl_class'=>'w50 clr'),
-			'sql'                     => "varchar(64) NOT NULL default 'tooltip_glossary_default'"
+			'sql'                     => "varchar(64) NOT NULL default 'hovercard_glossary_default'"
 		),
 		'protected' => array
 		(

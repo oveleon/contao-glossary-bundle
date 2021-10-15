@@ -154,16 +154,16 @@ class GlossaryController extends AbstractController
 		}
 
 		// Check for template in item, otherwise get archive template
-		if(!!$objGlossaryItem->glossaryTooltipTemplate)
+		if(!!$objGlossaryItem->glossaryHoverCardTemplate)
 		{
-			$tooltipTemplate = $objGlossaryItem->glossaryTooltipTemplate;
+			$hoverCardTemplate = $objGlossaryItem->glossaryHoverCardTemplate;
 		}
 		else
 		{
-			$tooltipTemplate = GlossaryModel::findByPk($objGlossaryItem->pid)->glossaryTooltipTemplate;
+			$hoverCardTemplate = GlossaryModel::findByPk($objGlossaryItem->pid)->glossaryHoverCardTemplate;
 		}
 
-		return new Response(Glossary::parseGlossaryItem($objGlossaryItem, $tooltipTemplate, null));
+		return new Response(Glossary::parseGlossaryItem($objGlossaryItem, $hoverCardTemplate, null));
 	}
 
 	/**

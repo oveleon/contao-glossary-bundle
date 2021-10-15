@@ -24,7 +24,7 @@ use Contao\Model\Collection;
  * @property string  $description
  * @property string  $subheadline
  * @property string  $teaser
- * @property string  $glossaryTooltipTemplate
+ * @property string  $glossaryHoverCardTemplate
  * @property boolean $addImage
  * @property string  $singleSRC
  * @property string  $alt
@@ -55,7 +55,7 @@ use Contao\Model\Collection;
  * @method static GlossaryItemModel|null findOneByDescription($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneBySubheadline($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByTeaser($val, array $opt=array())
- * @method static GlossaryItemModel|null findOneByGlossaryTooltipTemplate($val, array $opt=array())
+ * @method static GlossaryItemModel|null findOneByGlossaryHoverCardTemplate($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByAddImage($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneBySingleSRC($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByAlt($val, array $opt=array())
@@ -82,7 +82,7 @@ use Contao\Model\Collection;
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByDescription($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySubheadline($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTeaser($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByGlossaryTooltipTemplate($val, array $opt=array())
+ * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByGlossaryHoverCardTemplate($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAddImage($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySingleSRC($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAlt($val, array $opt=array())

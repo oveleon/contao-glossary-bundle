@@ -31,8 +31,7 @@ class GeneratePageListener
 	{
 		//$this->framework->initialize();
 
-		// ToDo: Rename
-		if ($pageModel->excludeGlossaryTooltips)
+		if ($pageModel->excludeGlossaryHoverCards)
 		{
 			return;
 		}
@@ -40,7 +39,7 @@ class GeneratePageListener
 		// Get Rootpage Settings
 		$objRootPage = PageModel::findByPk($pageModel->rootId);
 
-		if(null === $objRootPage || !$objRootPage->activateGlossaryTooltips)
+		if(null === $objRootPage || !$objRootPage->activateGlossaryHoverCards)
 		{
 			return;
 		}
@@ -62,21 +61,11 @@ class GeneratePageListener
 
 		foreach ($objGlossaryArchives as $objGlossaryArchive)
 		{
-			$arrArchiveFallbackTemplates[ $objGlossaryArchive->id ] = $objGlossaryArchive->glossaryTooltipTemplate;
+			$arrArchiveFallbackTemplates[ $objGlossaryArchive->id ] = $objGlossaryArchive->glossaryHoverCardTemplate;
 		}
 
 		$objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives);
 		$arrGlossaryItems = [];
-
-		// Helper
-		/*$getTemplate = function ($item) use ($arrArchiveFallbackTemplates) {
-			if($item->glossaryTooltipTemplate)
-			{
-				return $item->glossaryTooltipTemplate;
-			}
-
-			return $arrArchiveFallbackTemplates[ $item->pid ];
-		};*/
 
 		foreach ($objGlossaryItems as $objGlossaryItem)
 		{
@@ -95,6 +84,8 @@ class GeneratePageListener
 
 		// Load glossary configuration template
 		$objTemplate = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
+
+		//ToDo: Add new setting to tl_page to exclude automatic markup or linking : return null
 		$objTemplate->glossaryConfig = json_encode($arrGlossaryItems);
 
 		$GLOBALS['TL_BODY'][] = $objTemplate->parse();

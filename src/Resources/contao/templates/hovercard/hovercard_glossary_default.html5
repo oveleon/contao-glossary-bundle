@@ -1,5 +1,5 @@
 
-<div id="g_tooltip_<?= $this->id ?>" class="g_tooltip_special item">
+<div id="g_hovercard_<?= $this->id ?>" class="g_hovercard_default item">
 
   <strong><?= $this->headline ?></strong>
 

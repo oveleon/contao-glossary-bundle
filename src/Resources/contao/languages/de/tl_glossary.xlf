@@ -18,13 +18,13 @@
         <source>Please choose the glossary reader page to which visitors will be redirected when clicking a glossary item.</source>
         <target>Bitte wählen Sie die Glossarleser-Seite aus, zu der Besucher weitergeleitet werden, wenn Sie einen Glossareintrag anklicken.</target>
       </trans-unit>
-      <trans-unit id="tl_glossary.glossaryTooltipTemplate.0">
-        <source>Tooltip template</source>
-        <target>Tooltip-Template</target>
+      <trans-unit id="tl_glossary.glossaryHoverCardTemplate.0">
+        <source>Hovercard template</source>
+        <target>Hovercard-Template</target>
       </trans-unit>
-      <trans-unit id="tl_glossary.glossaryTooltipTemplate.1">
-        <source>Here you can select the tooltip template.</source>
-        <target>Hier können Sie das Tooltip-Template auswählen.</target>
+      <trans-unit id="tl_glossary.glossaryHoverCardTemplate.1">
+        <source>Here you can select the hovercard template.</source>
+        <target>Hier können Sie das Hovercard-Template auswählen.</target>
       </trans-unit>
       <trans-unit id="tl_glossary.protected.0">
         <source>Protect glossary</source>

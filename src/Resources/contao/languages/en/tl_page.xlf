@@ -4,17 +4,17 @@
       <trans-unit id="tl_page.glossary_legend">
         <source>Glossary settings</source>
       </trans-unit>
-      <trans-unit id="tl_page.activateGlossaryTooltips.0">
-        <source>Activate glossary tooltips</source>
+      <trans-unit id="tl_page.activateGlossaryHoverCards.0">
+        <source>Activate glossary hovercards</source>
       </trans-unit>
-      <trans-unit id="tl_page.activateGlossaryTooltips.1">
-        <source>Enable glossary tooltips for this and its subpages.</source>
+      <trans-unit id="tl_page.activateGlossaryHoverCards.1">
+        <source>Enable glossary hovercards for this and its subpages.</source>
       </trans-unit>
-      <trans-unit id="tl_page.excludeGlossaryTooltips.0">
-        <source>Disable glossary tooltips</source>
+      <trans-unit id="tl_page.excludeGlossaryHoverCards.0">
+        <source>Disable glossary hovercards</source>
       </trans-unit>
-      <trans-unit id="tl_page.excludeGlossaryTooltips.1">
-        <source>Disable glossary tooltips for this page.</source>
+      <trans-unit id="tl_page.excludeGlossaryHoverCards.1">
+        <source>Disable glossary hovercards for this page.</source>
       </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.0">
         <source>Glossaries</source>
@@ -26,7 +26,7 @@
         <source>Configuration template</source>
       </trans-unit>
       <trans-unit id="tl_page.glossaryConfigTemplate.1">
-        <source>Here you can select a configuration template for the glossary tooltip.</source>
+        <source>Here you can select a configuration template for the glossary hovercard.</source>
       </trans-unit>
     </body>
   </file>
