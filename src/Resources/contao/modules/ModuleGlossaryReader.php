@@ -98,7 +98,6 @@ class ModuleGlossaryReader extends ModuleGlossary
             throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
         }
 
-		// ToDo: Rework parsing and template
 		// Set the default template
 	    if (!$this->glossary_template)
 	    {

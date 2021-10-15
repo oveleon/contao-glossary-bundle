@@ -32,6 +32,7 @@ class InsertTagsListener
      */
     private $framework;
 
+	// ToDo: Change to invoke method
     public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
@@ -52,6 +53,7 @@ class InsertTagsListener
         return false;
     }
 
+	// ToDo: Rework GlossaryInsertTags
     private function replaceGlossaryInsertTags(string $insertTag, string $idOrAlias, array $flags): string
     {
         $this->framework->initialize();

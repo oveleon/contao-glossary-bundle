@@ -195,7 +195,7 @@ class Glossary extends Frontend
     /**
      * Return the link of a glossary item
      */
-    protected function getLink(GlossaryItemModel $objItem, string $strUrl, string $strBase=''): string
+    protected function getLink($objItem, string $strUrl, string $strBase=''): string
     {
         switch ($objItem->source)
         {
