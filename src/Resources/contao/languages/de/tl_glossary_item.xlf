@@ -78,14 +78,6 @@
         <source>The glossary item teaser can be used in a hovercard or can be shown in a glossary list instead of the full article.</source>
         <target>Der Teasertext kann in einer Hovercard angezeigt werden, oder in einer Glossarliste anstatt des ganzen Beitrags angezeigt werden.</target>
       </trans-unit>
-      <trans-unit id="tl_glossary_item.glossaryHoverCardTemplate.0">
-        <source>Hovercard template</source>
-        <target>Hovercard-Template</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary_item.glossaryHoverCardTemplate.1">
-        <source>Here you can override the hovercard template.</source>
-        <target>Hier können Sie das Hovercard-Template überschreiben.</target>
-      </trans-unit>
       <trans-unit id="tl_glossary_item.addImage.0">
         <source>Add an image</source>
         <target>Ein Bild hinzufügen</target>

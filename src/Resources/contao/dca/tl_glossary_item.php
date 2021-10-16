@@ -126,7 +126,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('source', 'addImage', 'overwriteMeta'),
-		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords,sensitiveSearch;{source_legend:hide},source;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},subheadline,teaser;{template_legend:hide},glossaryHoverCardTemplate;{image_legend},addImage;{expert_legend:hide},cssClass;{publish_legend},published'
+		'default'                     => '{title_legend},keyword,alias;{keyword_legend:hide},keywords,sensitiveSearch;{source_legend:hide},source;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},subheadline,teaser;{image_legend},addImage;{expert_legend:hide},cssClass;{publish_legend},published'
 	),
 
     // Subpalettes
@@ -255,18 +255,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = array
 			'inputType'               => 'textarea',
 			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"
-		),
-		'glossaryHoverCardTemplate' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['glossaryHoverCardTemplate'],
-			'exclude'                 => true,
-			'inputType'               => 'select',
-			'options_callback' => static function ()
-			{
-				return \Contao\Controller::getTemplateGroup('hovercard_glossary_');
-			},
-			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50 clr'),
-			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'addImage' => array
 		(
