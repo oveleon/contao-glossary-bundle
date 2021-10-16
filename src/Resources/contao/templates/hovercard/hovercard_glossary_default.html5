@@ -1,18 +1,18 @@
 
 <div id="g_hovercard_<?= $this->id ?>" class="g_hovercard_default item">
 
-  <strong><?= $this->headline ?></strong>
-
 	<?php if ($this->addImage): ?>
 		<?php $this->insert('image', $this->arrData); ?>
 	<?php endif; ?>
 
-  <div class="ce_text block">
+  <strong class="g_hovercard-keyword"><?= $this->headline ?></strong>
+
+  <div class="g_hovercard-text ce_text block">
 	  <?= $this->teaser ?>
   </div>
 
 	<?php if ($this->hasText || $this->hasTeaser): ?>
-      <p class="more"><?= $this->more ?></p>
+      <p class="g_hovercard-link more"><?= $this->more ?></p>
 	<?php endif; ?>
 
 </div>
