@@ -108,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('protected'),
-		'default'                     => '{title_legend},title,jumpTo;{template_legend},glossaryHoverCardTemplate;{protected_legend:hide},protected'
+		'default'                     => '{title_legend},title,jumpTo;{template_legend},glossaryHoverCardTemplate;{image_legend},hoverCardImgSize;{protected_legend:hide},protected'
 	),
 
 	// Subpalettes
@@ -160,6 +160,19 @@ $GLOBALS['TL_DCA']['tl_glossary'] = array
 			},
 			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'tl_class'=>'w50 clr'),
 			'sql'                     => "varchar(64) NOT NULL default 'hovercard_glossary_default'"
+		),
+		'hoverCardImgSize' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['hoverCardImgSize'],
+			'exclude'                 => true,
+			'inputType'               => 'imageSize',
+			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
+			'eval'                    => array('rgxp'=>'natural', 'includeBlankOption'=>true, 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'),
+			'options_callback' => static function ()
+			{
+				return Contao\System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(Contao\BackendUser::getInstance());
+			},
+			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'protected' => array
 		(

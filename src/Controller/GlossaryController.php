@@ -148,22 +148,13 @@ class GlossaryController extends AbstractController
 		$this->framework->initialize();
 
 		$objGlossaryItem = GlossaryItemModel::findPublishedById($id);
+		$objGlossaryArchive = GlossaryModel::findByPk($objGlossaryItem->pid);
 
 		if(null === $objGlossaryItem) {
 			return $this->error('No result found', 404);
 		}
 
-		// Check for template in item, otherwise get archive template
-		if(!!$objGlossaryItem->glossaryHoverCardTemplate)
-		{
-			$hoverCardTemplate = $objGlossaryItem->glossaryHoverCardTemplate;
-		}
-		else
-		{
-			$hoverCardTemplate = GlossaryModel::findByPk($objGlossaryItem->pid)->glossaryHoverCardTemplate;
-		}
-
-		return new Response(Glossary::parseGlossaryItem($objGlossaryItem, $hoverCardTemplate, null));
+		return new Response(Glossary::parseGlossaryItem($objGlossaryItem, $objGlossaryArchive->glossaryHoverCardTemplate, $objGlossaryArchive->hoverCardImgSize));
 	}
 
 	/**

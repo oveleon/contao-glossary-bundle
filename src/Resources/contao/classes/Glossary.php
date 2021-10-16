@@ -353,7 +353,7 @@ class Glossary extends Frontend
 					unset($picture['title']);
 					$objTemplate->picture = $picture;
 
-					// Link to the news article
+					// Link to the glossary item
 					$objTemplate->href = $objTemplate->link;
 					$objTemplate->linkTitle = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objGlossaryItem->keyword), true);
 
