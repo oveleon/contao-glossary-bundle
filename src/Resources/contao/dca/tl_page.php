@@ -9,14 +9,14 @@
  */
 
 // Palettes
-$GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = 'activateGlossaryHoverCards';
+$GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = 'activateGlossary';
 
-$GLOBALS['TL_DCA']['tl_page']['subpalettes']['activateGlossaryHoverCards'] = 'glossaryArchives,glossaryConfigTemplate';
+$GLOBALS['TL_DCA']['tl_page']['subpalettes']['activateGlossary'] = 'glossaryArchives,glossaryConfigTemplate';
 
 // Fields
-$GLOBALS['TL_DCA']['tl_page']['fields']['activateGlossaryHoverCards'] = array
+$GLOBALS['TL_DCA']['tl_page']['fields']['activateGlossary'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['activateGlossaryHoverCards'],
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['activateGlossary'],
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50', 'submitOnChange'=>true),
 	'sql'                     => "char(1) NOT NULL default ''"
@@ -44,11 +44,9 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = array
 	'sql'                     => "varchar(64) NOT NULL default ''"
 );
 
-
-// ToDo: Implement logic to deactivate markup
-$GLOBALS['TL_DCA']['tl_page']['fields']['excludeGlossaryHoverCards'] = array
+$GLOBALS['TL_DCA']['tl_page']['fields']['disableGlossary'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['excludeGlossaryHoverCards'],
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['disableGlossary'],
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "char(1) NOT NULL default ''"
@@ -57,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['excludeGlossaryHoverCards'] = array
 // Extend the root palettes
 $objPaletteManipulator = Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 	->addLegend('glossary_legend', 'global_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER, true)
-	->addField(array('activateGlossaryHoverCards'), 'glossary_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+	->addField(array('activateGlossary'), 'glossary_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
 	->applyToPalette('root', 'tl_page')
 ;
 
@@ -67,7 +65,7 @@ if (array_key_exists('rootfallback', $GLOBALS['TL_DCA']['tl_page']['palettes']))
 
 // Extend regular palette
 $objPaletteManipulator = Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-	->addField(array('excludeGlossaryHoverCards'), 'expert_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+	->addField(array('disableGlossary'), 'expert_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
 	->applyToPalette('regular', 'tl_page');
 
 /**

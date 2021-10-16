@@ -11,12 +11,13 @@
           'class': 'gl-item'
       },
       'hovercard': {
+          'showLoadingAnimation': true,
           'maxWidth': 500,
           'position': 'auto', // center
           'showEvent': 'mouseenter',
           'hideEvent': 'mouseleave',
       },
-      'config': <?= $this->glossaryConfig ?>,
+      'config': <?= $this->glossaryConfig ?: 'null' ?>,
       'route': '/api/glossary/item/'
   });
 </script>

@@ -5,29 +5,21 @@
         <source>Glossary settings</source>
         <target>Glossar-Einstellungen</target>
       </trans-unit>
-      <trans-unit id="tl_page.activateGlossaryHoverCards.0">
-        <source>Activate glossary hovercards</source>
-        <target>Glossar-Hovercards aktivieren</target>
+      <trans-unit id="tl_page.activateGlossary.0">
+        <source>Activate glossary</source>
+        <target>Glossar aktivieren</target>
       </trans-unit>
-      <trans-unit id="tl_page.activateGlossaryHoverCards.1">
-        <source>Enable glossary hovercards for this and its subpages.</source>
-        <target>Aktivieren Sie die Glossar-Hovercards für diese und dessen Unterseiten.</target>
+      <trans-unit id="tl_page.activateGlossary.1">
+        <source>Enable glossary hovercards and links for this and its subpages.</source>
+        <target>Aktivieren Sie die Glossar-Hovercards und Verlinkungen für diese und dessen Unterseiten.</target>
       </trans-unit>
-      <trans-unit id="tl_page.excludeGlossaryHoverCards.0">
-        <source>Disable glossary hovercards</source>
-        <target>Glossar-Hovercards deaktivieren</target>
+      <trans-unit id="tl_page.disableGlossary.0">
+        <source>Disable glossary</source>
+        <target>Glossar deaktivieren</target>
       </trans-unit>
-      <trans-unit id="tl_page.excludeGlossaryHoverCards.1">
-        <source>Disable glossary hovercards for this page.</source>
-        <target>Glossar-Hovercards für diese Seite deaktivieren.</target>
-      </trans-unit>
-      <trans-unit id="tl_page.glossaryArchives.0">
-        <source>Glossaries</source>
-        <target>Glossare</target>
-      </trans-unit>
-      <trans-unit id="tl_page.glossaryArchives.1">
-        <source>Please select one or more glossaries.</source>
-        <target>Bitte wählen Sie ein oder mehrere Glossare</target>
+      <trans-unit id="tl_page.disableGlossary.1">
+        <source>Disable glossary hovercards and links for this page.</source>
+        <target>Glossar-Hovercards und Verlinkungen für diese Seite deaktivieren.</target>
       </trans-unit>
       <trans-unit id="tl_page.glossaryConfigTemplate.0">
         <source>Configuration template</source>
@@ -36,6 +28,14 @@
       <trans-unit id="tl_page.glossaryConfigTemplate.1">
         <source>Here you can select a configuration template for the glossary hovercard.</source>
         <target>Hier können Sie eine Konfigurations-Template für die Glossar-Hovercard auswählen.</target>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryArchives.0">
+        <source>Glossaries</source>
+        <target>Glossare</target>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryArchives.1">
+        <source>Please select one or more glossaries.</source>
+        <target>Bitte wählen Sie ein oder mehrere Glossare aus.</target>
       </trans-unit>
     </body>
   </file>

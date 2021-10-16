@@ -4,29 +4,29 @@
       <trans-unit id="tl_page.glossary_legend">
         <source>Glossary settings</source>
       </trans-unit>
-      <trans-unit id="tl_page.activateGlossaryHoverCards.0">
-        <source>Activate glossary hovercards</source>
+      <trans-unit id="tl_page.activateGlossary.0">
+        <source>Activate glossary</source>
       </trans-unit>
-      <trans-unit id="tl_page.activateGlossaryHoverCards.1">
+      <trans-unit id="tl_page.activateGlossary.1">
         <source>Enable glossary hovercards for this and its subpages.</source>
       </trans-unit>
-      <trans-unit id="tl_page.excludeGlossaryHoverCards.0">
-        <source>Disable glossary hovercards</source>
+      <trans-unit id="tl_page.disableGlossary.0">
+        <source>Disable glossary</source>
       </trans-unit>
-      <trans-unit id="tl_page.excludeGlossaryHoverCards.1">
+      <trans-unit id="tl_page.disableGlossary.1">
         <source>Disable glossary hovercards for this page.</source>
-      </trans-unit>
-      <trans-unit id="tl_page.glossaryArchives.0">
-        <source>Glossaries</source>
-      </trans-unit>
-      <trans-unit id="tl_page.glossaryArchives.1">
-        <source>Please select one or more glossaries.</source>
       </trans-unit>
       <trans-unit id="tl_page.glossaryConfigTemplate.0">
         <source>Configuration template</source>
       </trans-unit>
       <trans-unit id="tl_page.glossaryConfigTemplate.1">
         <source>Here you can select a configuration template for the glossary hovercard.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryArchives.0">
+        <source>Glossaries</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryArchives.1">
+        <source>Please select one or more glossaries.</source>
       </trans-unit>
     </body>
   </file>

@@ -31,7 +31,7 @@ class GeneratePageListener
 	{
 		//$this->framework->initialize();
 
-		if ($pageModel->excludeGlossaryHoverCards)
+		if ($pageModel->disableGlossary)
 		{
 			return;
 		}
@@ -39,7 +39,7 @@ class GeneratePageListener
 		// Get Rootpage Settings
 		$objRootPage = PageModel::findByPk($pageModel->rootId);
 
-		if(null === $objRootPage || !$objRootPage->activateGlossaryHoverCards)
+		if(null === $objRootPage || !$objRootPage->activateGlossary)
 		{
 			return;
 		}
@@ -57,36 +57,39 @@ class GeneratePageListener
 			return;
 		}
 
-		$arrArchiveFallbackTemplates = [];
-
-		foreach ($objGlossaryArchives as $objGlossaryArchive)
-		{
-			$arrArchiveFallbackTemplates[ $objGlossaryArchive->id ] = $objGlossaryArchive->glossaryHoverCardTemplate;
-		}
-
-		$objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives);
-		$arrGlossaryItems = [];
-
-		foreach ($objGlossaryItems as $objGlossaryItem)
-		{
-			if(array_filter($arrKeywords = StringUtil::deserialize($objGlossaryItem->keywords, true)))
-			{
-				$arrGlossaryItems[] = [
-					'id'        => $objGlossaryItem->id,
-					'keywords'  => $arrKeywords,
-					'url'       => Glossary::generateUrl($objGlossaryItem),
-
-					// Case-sensitive search
-					'cs'        => $objGlossaryItem->sensitiveSearch ? 1 : 0
-				];
-			}
-		}
-
 		// Load glossary configuration template
 		$objTemplate = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
 
-		//ToDo: Add new setting to tl_page to exclude automatic markup or linking : return null
-		$objTemplate->glossaryConfig = json_encode($arrGlossaryItems);
+		$objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives);
+
+		$glossaryConfig = null;
+
+		if (null !== $objGlossaryItems) {
+
+			$arrGlossaryItems = [];
+
+			foreach ($objGlossaryItems as $objGlossaryItem) {
+
+				// Check if keywords exist
+				if (array_filter($arrKeywords = StringUtil::deserialize($objGlossaryItem->keywords, true))) {
+					$arrGlossaryItems[] = [
+						'id' => $objGlossaryItem->id,
+						'keywords' => $arrKeywords,
+						'url' => Glossary::generateUrl($objGlossaryItem),
+
+						// Case-sensitive search
+						'cs' => $objGlossaryItem->sensitiveSearch ? 1 : 0
+					];
+				}
+			}
+
+			if (!empty($arrGlossaryItems))
+			{
+				$glossaryConfig = json_encode($arrGlossaryItems);
+			}
+		}
+
+		$objTemplate->glossaryConfig = $glossaryConfig;
 
 		$GLOBALS['TL_BODY'][] = $objTemplate->parse();
 	}

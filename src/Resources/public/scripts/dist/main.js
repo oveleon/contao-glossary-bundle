@@ -1998,12 +1998,13 @@ class Glossary {
             },
             hovercard: {
                 interactive: true,
+                showLoadingAnimation: true,
                 maxWidth: 500,
                 position: 'auto',
                 showEvent: 'mouseenter',
                 hideEvent: 'mouseleave',
-                showDelay: 300,
-                threshold: 500
+                showDelay: 300,             //
+                threshold: 200              // Time how long hovercards are still visible after leaving
             },
             includes: [
                 'body',
@@ -2022,6 +2023,7 @@ class Glossary {
 
         this.hideTimeout = null
 
+        // Only parse nodes when config exists
         if(null !== this.options.config)
         {
             this.contentNodes = document.querySelectorAll(this.options.entrySelector)
@@ -2121,9 +2123,7 @@ class Glossary {
         const glossaryElements = document.querySelectorAll('[data-glossary-id]');
 
         /*if(this.options.hovercard.showEvent === 'click')
-        {
-            this.options.hovercard.interactive = true
-        }*/
+            this.options.hovercard.interactive = true*/
 
         if(glossaryElements)
         {
@@ -2154,10 +2154,13 @@ class Glossary {
 
         if(cachedResponse)
         {
+            //console.log("%cCached", "color:green")
             this._buildHovercard(cachedResponse);
+            this._updateHovercard(cachedResponse)
             return
         }
 
+        //console.log("%c Not cached", "color:red")
         document.body.style.cursor = 'progress';
         this._fetchGlossaryItem(id)
     }
@@ -2179,7 +2182,7 @@ class Glossary {
             {
                 this.hideTimeout = setTimeout(() => {
                     this._destroyHovercard()
-                }, 200)
+                }, this.options.hovercard.threshold)
             }
             else
             {
@@ -2190,7 +2193,11 @@ class Glossary {
 
     async _fetchGlossaryItem(id)
     {
+        //console.log('fetch new data')
         this.abortController = new AbortController()
+
+        if(this.options.hovercard.showLoadingAnimation)
+            this._buildHovercard();
 
         await fetch(this.options.route + id + '/html', {signal: this.abortController.signal})
             .then((response) => {
@@ -2206,7 +2213,10 @@ class Glossary {
                     this._setItemCache(id, htmlContent);
 
                     // Build hovercard
-                    this._buildHovercard(htmlContent);
+                    if(!this.options.hovercard.showLoadingAnimation)
+                        this._buildHovercard(htmlContent);
+                    else
+                        this._updateHovercard(htmlContent)
                 })
 
             }).catch((e) => {
@@ -2216,26 +2226,31 @@ class Glossary {
 
     _buildHovercard(response)
     {
+        //console.log('Build hovercard', response, this.currentElement)
 
         const hovercardContent = '';
         const hovercardArrow = '';
 
         this.glossaryHovercard = document.createElement('div')
-        this.glossaryHovercard.style.width = this.options.hovercard.maxWidth
+        this.glossaryHovercard.style.width = this.options.hovercard.maxWidth + 'px'
 
         if(this.options.hovercard.interactive)
         {
-            this.glossaryHovercard.addEventListener('mouseenter', () =>
+            this.glossaryHovercard.addEventListener(this.options.hovercard.showEvent, () =>
             {
                 this._clearTimeout()
-                this.glossaryHovercard?.addEventListener('mouseleave', () => {
+                this.glossaryHovercard?.addEventListener(this.options.hovercard.hideEvent, () => {
                     this._destroyHovercard()
                 })
             })
         }
 
         this.glossaryHovercard.id = 'gs-hovercard'
-        this.glossaryHovercard.innerHTML = response
+
+        if(!this.options.hovercard.showLoadingAnimation)
+            //this.glossaryHovercard.innerHTML = response
+            this._updateHovercard(response)
+
 
         //Move to config
         //this.currentElement.appendChild(this.glossaryHovercard)
@@ -2246,16 +2261,26 @@ class Glossary {
         })
     }
 
+    _updateHovercard(response)
+    {
+        if(this?.glossaryHovercard) {
+            this.glossaryHovercard.innerHTML = response
+
+            if(this.options.hovercard.showLoadingAnimation)
+                this.popper.update()
+        }
+    }
+
     _destroyHovercard()
     {
         this.popper.destroy()
 
-        /*if(this.options.hovercard.interactive)
+        // Remove events
+        if(this.options.hovercard.interactive)
         {
-            // Remove events
-            this.glossaryHovercard.removeEventListener('mouseenter');
-            this.glossaryHovercard.removeEventListener('mouseleave');
-        }*/
+            this.glossaryHovercard.removeEventListener(this.options.hovercard.showEvent, null);
+            this.glossaryHovercard.removeEventListener(this.options.hovercard.hideEvent, null);
+        }
 
         this.glossaryHovercard.parentNode.removeChild(this.glossaryHovercard)
         this.glossaryHovercard = null
