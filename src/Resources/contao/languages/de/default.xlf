@@ -5,6 +5,10 @@
         <source>No items available.</source>
         <target>Keine Einträge vorhanden.</target>
       </trans-unit>
+      <trans-unit id="MSC.glossaryPicker">
+        <source>Glossary</source>
+        <target>Glossar</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

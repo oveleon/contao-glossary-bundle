@@ -31,9 +31,7 @@ $GLOBALS['TL_MODELS']['tl_glossary_item'] = 'Oveleon\ContaoGlossaryBundle\Glossa
 
 // Register hooks
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('Oveleon\ContaoGlossaryBundle\Glossary', 'getSearchablePages');
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('contao_glossary.listener.insert_tags', 'onReplaceInsertTags');
 
 // Add permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'glossarys';
 $GLOBALS['TL_PERMISSIONS'][] = 'glossaryp';
-
