@@ -12,10 +12,11 @@
       },
       'hovercard': {
           'showLoadingAnimation': true,
-          'maxWidth': 500,
-          'position': 'auto', // center
+          'maxWidth': 380,
           'showEvent': 'mouseenter',
           'hideEvent': 'mouseleave',
+          'showThreshold' : 300,
+          'hideThreshold' : 200,
       },
       'config': <?= $this->glossaryConfig ?: 'null' ?>,
       'route': '/api/glossary/item/'

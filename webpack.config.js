@@ -9,6 +9,6 @@ module.exports = {
         path: path.resolve(__dirname, 'src/Resources/public/scripts/dist'),
     },
     optimization: {
-        minimize: false
+        minimize: true
     }
 };

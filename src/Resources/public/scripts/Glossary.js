@@ -1,26 +1,27 @@
 import { extend } from "./helper/extend";
 import { createPopper } from '@popperjs/core';
 
-export class Glossary {
-
-    constructor(options) {
+export class Glossary
+{
+    constructor(options)
+    {
         this.options = extend(true, {
-            entrySelector: '#wrapper',
-            markup: 'mark',
+            entrySelector: '.c_text, .ce_text', // Selectors for glossary-term search
+            markup: 'a',                        // Markup attribute for parsed glossary terms (e.g. 'mark', 'span', 'a')
             markupAttr: {
-                'class': null
+                'class': null                   // Class for parsed glossary terms
             },
             hovercard: {
-                interactive: true,
-                showLoadingAnimation: true,
-                maxWidth: 500,
-                position: 'auto',
-                showEvent: 'mouseenter',
-                hideEvent: 'mouseleave',
-                showDelay: 300,             //
-                threshold: 200              // Time how long hovercards are still visible after leaving
+                interactive: true,              // Makes hovercards clickable
+                showLoadingAnimation: true,     // Show empty hovercard until content is fetched
+                maxWidth: 380,                  // Maximum width of hovercard
+                //position: 'auto',             // Not yet implemented - PopperSettings
+                showEvent: 'mouseenter',        // EventListener to build hover card
+                hideEvent: 'mouseleave',        // EventListener to destroy hover card
+                showThreshold: 300,             // Minimum time that showEvent has to be triggered to build a hovercard
+                hideThreshold: 200              // Time that hovercard will stay visible after triggering hideEvent
             },
-            includes: [
+            includes: [                         // Allowed nodes for glossary term markup
                 'body',
                 'div,span,p',
                 'main,section,article',
@@ -35,6 +36,7 @@ export class Glossary {
             config: null
         }, options || {})
 
+        this.showDelay = null
         this.hideTimeout = null
 
         // Only parse nodes when config exists
@@ -44,6 +46,7 @@ export class Glossary {
             this._parseNodes(this.contentNodes, 0)
         }
 
+        // Bind events for hovercard creation
         this._bindEvents()
     }
 
@@ -72,6 +75,19 @@ export class Glossary {
         }
     }
 
+    /**
+     * Checks valid nodes for glossary term conversion
+     * @private
+     */
+    _isValid(node)
+    {
+        return node.nodeType === Node.TEXT_NODE || (node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')));
+    }
+
+    /**
+     * Replace all found terms with a markup
+     * @private
+     */
     _replaceTerm(node)
     {
         if(!node.textContent.trim())
@@ -81,7 +97,7 @@ export class Glossary {
 
         for (const term of this.options.config)
         {
-            // Case-sensitive search from term via config
+            // Case-sensitive search for glossary term out of config
             const rgx = new RegExp("(?<=\\s|>|^)(" + term.keywords.join('|') + ")\\b", term.cs ? 'gu' : 'giu')
             const matches = node.textContent.match(rgx)
 
@@ -104,14 +120,17 @@ export class Glossary {
             }
         }
 
+        // Conversion from text to element
         const wrap = document.createElement('span')
         wrap.innerHTML = node.textContent
-
         node.replaceWith(wrap)
-
         wrap.outerHTML = wrap.innerHTML
     }
 
+    /**
+     * Create the glossary item markup
+     * @private
+     */
     _createTermMarkup(text, term)
     {
         const el = document.createElement(this.options.markup)
@@ -123,6 +142,7 @@ export class Glossary {
 
         el.dataset.glossaryId = term.id
 
+        // Link markup
         if(this.options.markup === 'a')
         {
             el.title = text
@@ -132,12 +152,13 @@ export class Glossary {
         return el.outerHTML;
     }
 
+    /**
+     * Apply EventListeners to glossary terms
+     * @private
+     */
     _bindEvents()
     {
         const glossaryElements = document.querySelectorAll('[data-glossary-id]');
-
-        /*if(this.options.hovercard.showEvent === 'click')
-            this.options.hovercard.interactive = true*/
 
         if(glossaryElements)
         {
@@ -149,18 +170,44 @@ export class Glossary {
         }
     }
 
+    /**
+     * Cache - Saves already fetched content into sessionStorage
+     * @private
+     */
+    _setItemCache(id, htmlContent)
+    {
+        let bag = sessionStorage.getItem('glossaryCache');
+        sessionStorage.setItem('glossaryCache', JSON.stringify({...(bag ? JSON.parse(bag) : {}), ...{[id]: htmlContent}}))
+    }
+
+    /**
+     * Cache - Checks and loads cached content from sessionStorage
+     * @private
+     */
+    _getItemCached(id)
+    {
+        let bag = sessionStorage.getItem('glossaryCache');
+        bag = JSON.parse(bag)
+
+        return (bag && bag[id]) ? bag[id] : null
+    }
+
+    /**
+     * Show-handler for hovercards
+     * @private
+     */
     _onShowHovercard(event)
     {
         this.currentElement = event.target;
 
         const id = this.currentElement.dataset.glossaryId;
 
-        // if delay -> setTimeout -> hide -> clearTimeout
-
+        // Clear existing hovercard
         if(this.glossaryHovercard)
         {
-            this._clearTimeout()
+            this._clearHideTimeout()
             this._destroyHovercard()
+            this._clearShowDelay()
         }
 
         // Cache implementation
@@ -168,113 +215,141 @@ export class Glossary {
 
         if(cachedResponse)
         {
-            //console.log("%cCached", "color:green")
             this._buildHovercard(cachedResponse);
             this._updateHovercard(cachedResponse)
             return
         }
 
-        //console.log("%c Not cached", "color:red")
-        document.body.style.cursor = 'progress';
-        this._fetchGlossaryItem(id)
+        // Only fetch glossary content after certain time to prevent too many requests
+        this.showDelay = setTimeout(() => {
+            this._fetchGlossaryItem(id)
+        }, this.options.hovercard.showThreshold)
     }
 
+    /**
+     * Destroy-handler for hovercards
+     * @private
+     */
     _onHideHovercard(event)
     {
-        this._clearTimeout()
-
-        // delay -> check if mouse over hovercard -> yes -> stay -> no -> close hovercard and destroy popper
-
-        if(this?.abortController)
-        {
-            this.abortController.abort()
-        }
+        // Clear delays
+        this._clearHideTimeout()
+        this._clearShowDelay()
 
         if (this?.glossaryHovercard)
         {
+            // Do not destroy if showEvent is over hovercard
             if(this.options.hovercard.interactive)
             {
                 this.hideTimeout = setTimeout(() => {
+                    this._abortFetch()
                     this._destroyHovercard()
-                }, this.options.hovercard.threshold)
+                }, this.options.hovercard.hideThreshold)
             }
             else
             {
+                this._abortFetch()
                 this._destroyHovercard()
             }
         }
     }
 
+    /**
+     * Gets glossary item content through a route
+     * @private
+     */
     async _fetchGlossaryItem(id)
     {
-        //console.log('fetch new data')
         this.abortController = new AbortController()
 
+        // Build skeleton hovercard
         if(this.options.hovercard.showLoadingAnimation)
-            this._buildHovercard();
+            this._buildHovercard()
 
+        // Fetch glossary content from API
         await fetch(this.options.route + id + '/html', {signal: this.abortController.signal})
             .then((response) => {
                 if(response.status >= 300)
                     throw new Error(response.statusText)
 
-                //result = await fetched.json()
                 response.text().then((htmlContent) => {
-                    // Hide loading
-                    document.body.style.cursor = 'auto';
-
                     // Write into cache
                     this._setItemCache(id, htmlContent);
 
-                    // Build hovercard
+                    // Build or parse content into hovercard
                     if(!this.options.hovercard.showLoadingAnimation)
                         this._buildHovercard(htmlContent);
                     else
                         this._updateHovercard(htmlContent)
                 })
 
-            }).catch((e) => {
-                document.body.style.cursor = 'auto';
-            })
+            }).catch((e) => {})
     }
 
+    /**
+     * AbortController for fetching glossary items
+     * @private
+     */
+    _abortFetch()
+    {
+        if (this?.abortController)
+            this.abortController.abort()
+    }
+
+    /**
+     * Creates the hovercard
+     * @private
+     */
     _buildHovercard(response)
     {
-        //console.log('Build hovercard', response, this.currentElement)
-
-        const hovercardContent = '';
-        const hovercardArrow = '';
-
         this.glossaryHovercard = document.createElement('div')
-        this.glossaryHovercard.style.width = this.options.hovercard.maxWidth + 'px'
+        this.glossaryHovercard.style.maxWidth = this.options.hovercard.maxWidth + 'px'
 
         if(this.options.hovercard.interactive)
         {
+            // Bind show and hide event to hovercard
             this.glossaryHovercard.addEventListener(this.options.hovercard.showEvent, () =>
             {
-                this._clearTimeout()
+                this._clearHideTimeout()
                 this.glossaryHovercard?.addEventListener(this.options.hovercard.hideEvent, () => {
                     this._destroyHovercard()
+                    this._abortFetch()
                 })
             })
         }
 
+        // Set ID for hovercard styles
         this.glossaryHovercard.id = 'gs-hovercard'
 
+        // Update hovercard content
         if(!this.options.hovercard.showLoadingAnimation)
-            //this.glossaryHovercard.innerHTML = response
             this._updateHovercard(response)
 
-
-        //Move to config
-        //this.currentElement.appendChild(this.glossaryHovercard)
         document.body.appendChild(this.glossaryHovercard)
 
+        // Positioning of hovercard / PopperJS
         this.popper = createPopper(this.currentElement, this.glossaryHovercard, {
-
+            modifiers: [
+                {
+                    name: 'offset',
+                    options: {
+                        offset: [16, 5],
+                    },
+                },
+                {
+                    name: 'preventOverflow',
+                    options: {
+                        padding: 16,
+                    },
+                },
+            ]
         })
     }
 
+    /**
+     * Updates content or position of hovercard
+     * @private
+     */
     _updateHovercard(response)
     {
         if(this?.glossaryHovercard) {
@@ -285,46 +360,48 @@ export class Glossary {
         }
     }
 
+    /**
+     * Destroys the hovercard
+     * @private
+     */
     _destroyHovercard()
     {
         this.popper.destroy()
 
         // Remove events
-        if(this.options.hovercard.interactive)
+        /*if(this.options.hovercard.interactive)
         {
             this.glossaryHovercard.removeEventListener(this.options.hovercard.showEvent, null);
             this.glossaryHovercard.removeEventListener(this.options.hovercard.hideEvent, null);
-        }
+        }*/
 
         this.glossaryHovercard.parentNode.removeChild(this.glossaryHovercard)
         this.glossaryHovercard = null
     }
 
-    _clearTimeout()
+    /**
+     * Clears showThreshold
+     * @private
+     */
+    _clearShowDelay()
+    {
+        if(this.showDelay)
+        {
+            clearTimeout(this.showDelay)
+            this.showDelay = null
+        }
+    }
+
+    /**
+     * Clears hideThreshold
+     * @private
+     */
+    _clearHideTimeout()
     {
         if(this.hideTimeout)
         {
             clearTimeout(this.hideTimeout)
             this.hideTimeout = null
         }
-    }
-
-    _setItemCache(id, htmlContent)
-    {
-        let bag = sessionStorage.getItem('glossaryCache');
-        sessionStorage.setItem('glossaryCache', JSON.stringify({...(bag ? JSON.parse(bag) : {}), ...{[id]: htmlContent}}))
-    }
-
-    _getItemCached(id)
-    {
-        let bag = sessionStorage.getItem('glossaryCache');
-        bag = JSON.parse(bag)
-
-        return (bag && bag[id]) ? bag[id] : null
-    }
-
-    _isValid(node)
-    {
-        return node.nodeType === Node.TEXT_NODE || (node.glossary !== true && node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')));
     }
 }
