@@ -1,3 +1,13 @@
+/**
+ * Glossary JavaScript
+ * Parses html content and creates hovercards
+ *
+ * package     contao-glossary-bundle
+ * license     AGPL-3.0
+ * author      Sebastian Zoglowek <https://github.com/zoglo>
+ * copyright   Oveleon <https://www.oveleon.de/>
+ */
+
 import { extend } from "./helper/extend";
 import { createPopper } from '@popperjs/core';
 
@@ -8,18 +18,37 @@ export class Glossary
         this.options = extend(true, {
             entrySelector: '.c_text, .ce_text', // Selectors for glossary-term search
             markup: 'a',                        // Markup attribute for parsed glossary terms (e.g. 'mark', 'span', 'a')
-            markupAttr: {
-                'class': null                   // Class for parsed glossary terms
-            },
+            markupAttr: null,                   // Markup attributes
             hovercard: {
+                id: 'gs-hovercard',             // Id for the hovercard
                 interactive: true,              // Makes hovercards clickable
                 showLoadingAnimation: true,     // Show empty hovercard until content is fetched
                 maxWidth: 380,                  // Maximum width of hovercard
-                //position: 'auto',             // Not yet implemented - PopperSettings
-                showEvent: 'mouseenter',        // EventListener to build hover card
-                hideEvent: 'mouseleave',        // EventListener to destroy hover card
                 showThreshold: 300,             // Minimum time that showEvent has to be triggered to build a hovercard
-                hideThreshold: 200              // Time that hovercard will stay visible after triggering hideEvent
+                leaveThreshold: 200             // Time that hovercard will stay visible after triggering the hideEvent
+            },
+            popperOptions: {                    // PopperJS options -> check https://popper.js.org/docs/v2/
+                placement: 'top',
+                modifiers: [
+                    {
+                        name: 'offset',
+                        options: {
+                            offset: [0, 8],
+                        },
+                    },
+                    {
+                        name: 'preventOverflow',
+                        options: {
+                            padding: 16,
+                        },
+                    },
+                    {
+                        name: 'arrow',
+                        options: {
+                            padding: 5,
+                        },
+                    },
+                ]
             },
             includes: [                         // Allowed nodes for glossary term markup
                 'body',
@@ -32,22 +61,47 @@ export class Glossary
                 'mark,abbr',
                 'sub,sup'
             ],
-            route: '/api/glossary/item/',
+            route: {                            // API settings
+                prefix: '/api/glossary/item/',
+                suffix: '/html',
+            },
+            mobileDetectionWidth : 1024,        // Minimum width for hovercard-creation
             config: null
         }, options || {})
+
+        // Eventlistener
+        this.showEvent = 'pointerenter'
+        this.hideEvent = 'pointerleave'
 
         this.showDelay = null
         this.hideTimeout = null
 
-        // Only parse nodes when config exists
-        if(null !== this.options.config)
+        // Only parse nodes when config exists and markup on mobile is a link
+        if(null !== this.options.config && this._shouldParse())
         {
             this.contentNodes = document.querySelectorAll(this.options.entrySelector)
             this._parseNodes(this.contentNodes, 0)
         }
 
         // Bind events for hovercard creation
-        this._bindEvents()
+        if(window.innerWidth >= this.options.mobileDetectionWidth)
+        {
+            this._bindEvents()
+        }
+    }
+
+    /**
+     * Checks if parsing is allowed
+     * @private
+     */
+    _shouldParse()
+    {
+        // Only parse if markup is a link
+        if(window.innerWidth < this.options.mobileDetectionWidth) {
+            return this.options.markup.toLowerCase() === 'a';
+        }
+
+        return true
     }
 
     /**
@@ -60,7 +114,7 @@ export class Glossary
 
         for(const node of nodes)
         {
-            if(this._isValid(node))
+            if(this._isValidNode(node))
             {
                 switch (node.nodeType)
                 {
@@ -79,7 +133,7 @@ export class Glossary
      * Checks valid nodes for glossary term conversion
      * @private
      */
-    _isValid(node)
+    _isValidNode(node)
     {
         return node.nodeType === Node.TEXT_NODE || (node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')));
     }
@@ -137,13 +191,19 @@ export class Glossary
 
         el.innerText = text
 
-        if(null !== this.options.markupAttr.class)
-            el.className = this.options.markupAttr.class
+        // Set markup attributes
+        if(null !== this.options.markupAttr) {
+
+            for (const key in this.options.markupAttr)
+            {
+                el.setAttribute(key, this.options.markupAttr[key])
+            }
+        }
 
         el.dataset.glossaryId = term.id
 
         // Link markup
-        if(this.options.markup === 'a')
+        if(this.options.markup.toLowerCase() === 'a')
         {
             el.title = text
             el.href = term.url
@@ -164,8 +224,8 @@ export class Glossary
         {
             for(const element of glossaryElements)
             {
-                element.addEventListener(this.options.hovercard.showEvent, (e) => this._onShowHovercard(e))
-                element.addEventListener(this.options.hovercard.hideEvent, (e) => this._onHideHovercard(e))
+                element.addEventListener(this.showEvent, (e) => this._onShowHovercard(e))
+                element.addEventListener(this.hideEvent, (e) => this._onHideHovercard(e))
             }
         }
     }
@@ -210,18 +270,20 @@ export class Glossary
             this._clearShowDelay()
         }
 
-        // Cache implementation
-        const cachedResponse = this._getItemCached(id)
 
-        if(cachedResponse)
-        {
-            this._buildHovercard(cachedResponse);
-            this._updateHovercard(cachedResponse)
-            return
-        }
 
         // Only fetch glossary content after certain time to prevent too many requests
         this.showDelay = setTimeout(() => {
+            // Cache implementation
+            const cachedResponse = this._getItemCached(id)
+
+            if(cachedResponse)
+            {
+                this._buildHovercard(cachedResponse);
+                this._updateHovercard(cachedResponse)
+                return
+            }
+
             this._fetchGlossaryItem(id)
         }, this.options.hovercard.showThreshold)
     }
@@ -236,7 +298,7 @@ export class Glossary
         this._clearHideTimeout()
         this._clearShowDelay()
 
-        if (this?.glossaryHovercard)
+        if (this.glossaryHovercard)
         {
             // Do not destroy if showEvent is over hovercard
             if(this.options.hovercard.interactive)
@@ -244,7 +306,7 @@ export class Glossary
                 this.hideTimeout = setTimeout(() => {
                     this._abortFetch()
                     this._destroyHovercard()
-                }, this.options.hovercard.hideThreshold)
+                }, this.options.hovercard.leaveThreshold)
             }
             else
             {
@@ -267,7 +329,7 @@ export class Glossary
             this._buildHovercard()
 
         // Fetch glossary content from API
-        await fetch(this.options.route + id + '/html', {signal: this.abortController.signal})
+        await fetch(this.options.route.prefix + id + this.options.route.suffix, {signal: this.abortController.signal})
             .then((response) => {
                 if(response.status >= 300)
                     throw new Error(response.statusText)
@@ -305,13 +367,23 @@ export class Glossary
         this.glossaryHovercard = document.createElement('div')
         this.glossaryHovercard.style.maxWidth = this.options.hovercard.maxWidth + 'px'
 
+        // Create inner markup
+        this.glossaryHovercardContent = document.createElement('div')
+        this.glossaryHovercardContent.classList.add('content')
+        this.glossaryHovercard.appendChild(this.glossaryHovercardContent);
+
+        // Create Popper arrow
+        this.popperArrow = document.createElement('div')
+        this.popperArrow.setAttribute('data-popper-arrow', '')
+        this.glossaryHovercard.appendChild(this.popperArrow);
+
         if(this.options.hovercard.interactive)
         {
             // Bind show and hide event to hovercard
-            this.glossaryHovercard.addEventListener(this.options.hovercard.showEvent, () =>
+            this.glossaryHovercard.addEventListener(this.showEvent, () =>
             {
                 this._clearHideTimeout()
-                this.glossaryHovercard?.addEventListener(this.options.hovercard.hideEvent, () => {
+                this.glossaryHovercard?.addEventListener(this.hideEvent, () => {
                     this._destroyHovercard()
                     this._abortFetch()
                 })
@@ -319,31 +391,24 @@ export class Glossary
         }
 
         // Set ID for hovercard styles
-        this.glossaryHovercard.id = 'gs-hovercard'
+        this.glossaryHovercard.id = this.options.hovercard.id;
 
         // Update hovercard content
-        if(!this.options.hovercard.showLoadingAnimation)
+        if(!this.options.hovercard.showLoadingAnimation) {
             this._updateHovercard(response)
+        }
+        else
+        {
+            const loading = document.createElement('span')
+                  loading.classList.add('hovercard-loader')
+
+            this.glossaryHovercardContent.appendChild(loading);
+        }
 
         document.body.appendChild(this.glossaryHovercard)
 
         // Positioning of hovercard / PopperJS
-        this.popper = createPopper(this.currentElement, this.glossaryHovercard, {
-            modifiers: [
-                {
-                    name: 'offset',
-                    options: {
-                        offset: [16, 5],
-                    },
-                },
-                {
-                    name: 'preventOverflow',
-                    options: {
-                        padding: 16,
-                    },
-                },
-            ]
-        })
+        this.popper = createPopper(this.currentElement, this.glossaryHovercard, this.options.popperOptions)
     }
 
     /**
@@ -353,7 +418,7 @@ export class Glossary
     _updateHovercard(response)
     {
         if(this?.glossaryHovercard) {
-            this.glossaryHovercard.innerHTML = response
+            this.glossaryHovercardContent.innerHTML = response
 
             if(this.options.hovercard.showLoadingAnimation)
                 this.popper.update()
@@ -371,8 +436,8 @@ export class Glossary
         // Remove events
         /*if(this.options.hovercard.interactive)
         {
-            this.glossaryHovercard.removeEventListener(this.options.hovercard.showEvent, null);
-            this.glossaryHovercard.removeEventListener(this.options.hovercard.hideEvent, null);
+            this.glossaryHovercard.removeEventListener(this.showEvent, null);
+            this.glossaryHovercard.removeEventListener(this.hideEvent, null);
         }*/
 
         this.glossaryHovercard.parentNode.removeChild(this.glossaryHovercard)

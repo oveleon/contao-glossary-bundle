@@ -5,20 +5,9 @@
 
 <script>
   const GN = new Glossary({
-      'entrySelector': '.c_text, .ce_text',
-      'markup': 'a',
       'markupAttr': {
           'class': 'gl-item'
       },
-      'hovercard': {
-          'showLoadingAnimation': true,
-          'maxWidth': 380,
-          'showEvent': 'mouseenter',
-          'hideEvent': 'mouseleave',
-          'showThreshold' : 300,
-          'hideThreshold' : 200,
-      },
-      'config': <?= $this->glossaryConfig ?: 'null' ?>,
-      'route': '/api/glossary/item/'
+      'config': <?= $this->glossaryConfig ?: 'null' ?>
   });
 </script>

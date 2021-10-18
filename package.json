@@ -1,11 +1,21 @@
 {
     "name": "contao-glossary-bundle",
     "version": "2.0.0",
+    "license": "AGPL-3.0",
     "scripts": {
         "build": "webpack",
         "dev": "webpack --watch"
     },
-    "author": "Sebastian Zoglowek",
+    "author": {
+        "name" : "Sebastian Zoglowek",
+        "url" : "https://github.com/zoglo"
+    },
+    "contributors": [
+        {
+            "name" : "Daniele Sciannimanica",
+            "url" : "https://github.com/doishub"
+        }
+    ],
     "devDependencies": {
         "webpack": "^5.4.0",
         "webpack-cli": "^4.2.0"
