@@ -16,17 +16,29 @@
       <trans-unit id="tl_page.disableGlossary.1">
         <source>Disable glossary hovercards for this page.</source>
       </trans-unit>
-      <trans-unit id="tl_page.glossaryConfigTemplate.0">
-        <source>Configuration template</source>
-      </trans-unit>
-      <trans-unit id="tl_page.glossaryConfigTemplate.1">
-        <source>Here you can select a configuration template for the glossary hovercard.</source>
-      </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.0">
         <source>Glossaries</source>
       </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.1">
         <source>Please select one or more glossaries.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryHoverCard.0">
+        <source>Hovercards</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryHoverCard.1">
+        <source>Please choose if glossary hovercards should be displayed for this page and its subpages.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.hoverCardDisabled">
+        <source>Disabled</source>
+      </trans-unit>
+      <trans-unit id="tl_page.hoverCardEnabled">
+        <source>Enabled</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryConfigTemplate.0">
+        <source>Configuration template</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryConfigTemplate.1">
+        <source>Here you can select a configuration template for the glossary JavaScript.</source>
       </trans-unit>
     </body>
   </file>

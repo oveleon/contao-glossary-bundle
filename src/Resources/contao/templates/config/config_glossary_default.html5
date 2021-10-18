@@ -5,8 +5,8 @@
 
 <script>
   const GN = new Glossary({
-      'markupAttr': {
-          'class': 'gl-item'
+      'hovercard': {
+          'active': <?= $this->hoverCardMode ?: 0 ?>
       },
       'config': <?= $this->glossaryConfig ?: 'null' ?>
   });

@@ -11,7 +11,7 @@
 // Palettes
 $GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = 'activateGlossary';
 
-$GLOBALS['TL_DCA']['tl_page']['subpalettes']['activateGlossary'] = 'glossaryArchives,glossaryConfigTemplate';
+$GLOBALS['TL_DCA']['tl_page']['subpalettes']['activateGlossary'] = 'glossaryArchives,glossaryHoverCard,glossaryConfigTemplate';
 
 // Fields
 $GLOBALS['TL_DCA']['tl_page']['fields']['activateGlossary'] = array
@@ -32,6 +32,19 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryArchives'] = array
 	'sql'                     => "blob NULL"
 );
 
+$GLOBALS['TL_DCA']['tl_page']['fields']['glossaryHoverCard'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['activateGlossaryHoverCards'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options'                 => array(
+		'disabled' => &$GLOBALS['TL_LANG']['tl_page']['hoverCardDisabled'],
+		'enabled'  => &$GLOBALS['TL_LANG']['tl_page']['hoverCardEnabled'],
+	),
+	'eval'                    => array('tl_class'=>'w50 clr'),
+	'sql'                     => "varchar(32) NOT NULL default 'hoverCardDisabled'"
+);
+
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['glossaryConfigTemplate'],
@@ -40,7 +53,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = array
 	{
 		return Contao\Controller::getTemplateGroup('config_glossary_');
 	},
-	'eval'                    => array('tl_class'=>'w50'),
+	'eval'                    => array('tl_class'=>'w50 clr'),
 	'sql'                     => "varchar(64) NOT NULL default ''"
 );
 

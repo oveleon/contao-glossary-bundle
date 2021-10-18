@@ -10,8 +10,8 @@
         <target>Glossar aktivieren</target>
       </trans-unit>
       <trans-unit id="tl_page.activateGlossary.1">
-        <source>Enable glossary hovercards and links for this and its subpages.</source>
-        <target>Aktivieren Sie die Glossar-Hovercards und Verlinkungen für diese und dessen Unterseiten.</target>
+        <source>Enable glossary links for this and its subpages.</source>
+        <target>Aktivieren Sie die Verlinkungen für diese und dessen Unterseiten.</target>
       </trans-unit>
       <trans-unit id="tl_page.disableGlossary.0">
         <source>Disable glossary</source>
@@ -21,14 +21,6 @@
         <source>Disable glossary hovercards and links for this page.</source>
         <target>Glossar-Hovercards und Verlinkungen für diese Seite deaktivieren.</target>
       </trans-unit>
-      <trans-unit id="tl_page.glossaryConfigTemplate.0">
-        <source>Configuration template</source>
-        <target>Konfigurations-Template</target>
-      </trans-unit>
-      <trans-unit id="tl_page.glossaryConfigTemplate.1">
-        <source>Here you can select a configuration template for the glossary hovercard.</source>
-        <target>Hier können Sie eine Konfigurations-Template für die Glossar-Hovercard auswählen.</target>
-      </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.0">
         <source>Glossaries</source>
         <target>Glossare</target>
@@ -36,6 +28,30 @@
       <trans-unit id="tl_page.glossaryArchives.1">
         <source>Please select one or more glossaries.</source>
         <target>Bitte wählen Sie ein oder mehrere Glossare aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryHoverCard.0">
+        <source>Hovercards</source>
+        <target>Hovercards</target>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryHoverCard.1">
+        <source>Please choose if glossary hovercards should be displayed for this page and its subpages.</source>
+        <target>Bitte wählen Sie aus, ob für diese Seite und ihre Unterseiten Glossar-Hovercards angezeigt werden sollen.</target>
+      </trans-unit>
+      <trans-unit id="tl_page.hoverCardDisabled">
+        <source>Disabled</source>
+        <target>Deaktiviert</target>
+      </trans-unit>
+      <trans-unit id="tl_page.hoverCardEnabled">
+        <source>Enabled</source>
+        <target>Aktiviert</target>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryConfigTemplate.0">
+        <source>Configuration template</source>
+        <target>Konfigurations-Template</target>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryConfigTemplate.1">
+        <source>Here you can select a configuration template for the glossary javascript.</source>
+        <target>Hier können Sie ein Konfigurations-Template für das Glossar-JavaScript auswählen.</target>
       </trans-unit>
     </body>
   </file>

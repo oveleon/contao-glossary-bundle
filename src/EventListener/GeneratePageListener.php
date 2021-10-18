@@ -89,6 +89,16 @@ class GeneratePageListener
 			}
 		}
 
+		switch ($objRootPage->glossaryHoverCard) {
+			case 'enabled':
+				$objTemplate->hoverCardMode = true;
+				break;
+
+			default:
+				$objTemplate->hoverCardMode = false;
+				break;
+		}
+
 		$objTemplate->glossaryConfig = $glossaryConfig;
 
 		$GLOBALS['TL_BODY'][] = $objTemplate->parse();

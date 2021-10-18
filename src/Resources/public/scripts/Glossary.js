@@ -20,6 +20,7 @@ export class Glossary
             markup: 'a',                        // Markup attribute for parsed glossary terms (e.g. 'mark', 'span', 'a')
             markupAttr: null,                   // Markup attributes
             hovercard: {
+                active: true,                   // Whether the hovercard feature should be enabled or not
                 id: 'gs-hovercard',             // Id for the hovercard
                 interactive: true,              // Makes hovercards clickable
                 showLoadingAnimation: true,     // Show empty hovercard until content is fetched
@@ -83,9 +84,10 @@ export class Glossary
             this._parseNodes(this.contentNodes, 0)
         }
 
-        // Bind events for hovercard creation
-        if(window.innerWidth >= this.options.mobileDetectionWidth)
+        // Check if hovercards are activated and device is not mobile
+        if(this.options.hovercard.active && (window.innerWidth >= this.options.mobileDetectionWidth))
         {
+            // Bind events for hovercard creation
             this._bindEvents()
         }
     }
@@ -110,7 +112,7 @@ export class Glossary
      */
     _parseNodes(_nodes)
     {
-        const nodes = Array.from(_nodes);
+        const nodes = Array.from(_nodes)
 
         for(const node of nodes)
         {
@@ -190,6 +192,14 @@ export class Glossary
         const el = document.createElement(this.options.markup)
 
         el.innerText = text
+        el.dataset.glossaryId = term.id
+
+        // Link markup
+        if(this.options.markup.toLowerCase() === 'a')
+        {
+            el.title = text
+            el.href = term.url
+        }
 
         // Set markup attributes
         if(null !== this.options.markupAttr) {
@@ -198,15 +208,6 @@ export class Glossary
             {
                 el.setAttribute(key, this.options.markupAttr[key])
             }
-        }
-
-        el.dataset.glossaryId = term.id
-
-        // Link markup
-        if(this.options.markup.toLowerCase() === 'a')
-        {
-            el.title = text
-            el.href = term.url
         }
 
         return el.outerHTML;
@@ -258,9 +259,9 @@ export class Glossary
      */
     _onShowHovercard(event)
     {
-        this.currentElement = event.target;
+        this.currentElement = event.target
 
-        const id = this.currentElement.dataset.glossaryId;
+        const id = this.currentElement.dataset.glossaryId
 
         // Clear existing hovercard
         if(this.glossaryHovercard)
@@ -279,7 +280,7 @@ export class Glossary
 
             if(cachedResponse)
             {
-                this._buildHovercard(cachedResponse);
+                this._buildHovercard(cachedResponse)
                 this._updateHovercard(cachedResponse)
                 return
             }
