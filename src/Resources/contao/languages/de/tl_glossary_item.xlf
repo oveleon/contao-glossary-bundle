@@ -51,8 +51,8 @@
         <target>Robots-Tag</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.robots.1">
-        <source>Here you can overwrite how search engines handle the news item.</source>
-        <target>Hier legen Sie fest, wie Suchmaschinen den Beitrag behandeln.</target>
+        <source>Here you can overwrite how search engines handle the glossary item.</source>
+        <target>Hier legen Sie fest, wie Suchmaschinen den Glossareintrag behandeln.</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.description.0">
         <source>Meta description</source>

@@ -1,9 +1,13 @@
 <?php
 
-/*
- * This file is part of Oveleon glossary bundle.
+/**
+ * This file is part of Oveleon Contao Glossary Bundle.
  *
- * (c) https://www.oveleon.de/
+ * @package     contao-glossary-bundle
+ * @license     AGPL-3.0
+ * @author      Fabian Ekert        <https://github.com/eki89>
+ * @author      Sebastian Zoglowek  <https://github.com/zoglo>
+ * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle;
@@ -194,7 +198,7 @@ class GlossaryItemModel extends Model
      * @param integer $intPid     The glossary ID
      * @param array   $arrOptions An optional options array
      *
-     * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no news
+     * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossary items
      */
     public static function findPublishedDefaultByPid($intPid, array $arrOptions=array())
     {

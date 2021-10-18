@@ -1,9 +1,13 @@
 <?php
 
-/*
- * This file is part of Oveleon glossary bundle.
+/**
+ * This file is part of Oveleon Contao Glossary Bundle.
  *
- * (c) https://www.oveleon.de/
+ * @package     contao-glossary-bundle
+ * @license     AGPL-3.0
+ * @author      Fabian Ekert        <https://github.com/eki89>
+ * @author      Sebastian Zoglowek  <https://github.com/zoglo>
+ * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
@@ -60,7 +64,7 @@ class tl_content_glossary extends Contao\Backend
             case 'paste':
             case 'create':
             case 'select':
-                // Check access to the news item
+                // Check access to the glossary item
                 $this->checkAccessToElement(CURRENT_ID, $root, true);
                 break;
 

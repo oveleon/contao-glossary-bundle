@@ -1,9 +1,13 @@
 <?php
 
-/*
- * This file is part of Oveleon glossary bundle.
+/**
+ * This file is part of Oveleon Contao Glossary Bundle.
  *
- * (c) https://www.oveleon.de/
+ * @package     contao-glossary-bundle
+ * @license     AGPL-3.0
+ * @author      Fabian Ekert        <https://github.com/eki89>
+ * @author      Sebastian Zoglowek  <https://github.com/zoglo>
+ * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
@@ -296,7 +300,7 @@ class tl_glossary extends Backend
 	}
 
 	/**
-	 * Add the news glossary to the permissions
+	 * Add the glossary to the permissions
 	 *
 	 * @param $insertId
 	 */
@@ -347,7 +351,7 @@ class tl_glossary extends Backend
 
 					if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp))
 					{
-						$arrGlossarys = Contao\StringUtil::deserialize($objGroup->news, true);
+						$arrGlossarys = Contao\StringUtil::deserialize($objGroup->glossarys, true);
 						$arrGlossarys[] = $insertId;
 
 						$this->Database->prepare("UPDATE tl_user_group SET glossarys=? WHERE id=?")

@@ -1,11 +1,13 @@
 <?php
+
 /**
- * This file is part of Oveleon Glossary bundle.
+ * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Sebastian Zoglowek <https://github.com/zoglo>
- * @copyright   Oveleon <https://www.oveleon.de/>
+ * @author      Fabian Ekert        <https://github.com/eki89>
+ * @author      Sebastian Zoglowek  <https://github.com/zoglo>
+ * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
 // Palettes

@@ -39,7 +39,7 @@
         <source>Robots tag</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.robots.1">
-        <source>Here you can overwrite how search engines handle the news item.</source>
+        <source>Here you can overwrite how search engines handle the glossary item.</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.description.0">
         <source>Meta description</source>
