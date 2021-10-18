@@ -3,6 +3,18 @@ $hovercard-bg-color:        #fff;
 $hovercard-border-radius:   5px;
 $hovercard-box-shadow:      0 0 15px rgba(0, 0, 0, 0.15);
 
+// Reset
+#gs-hovercard,
+#gs-hovercard * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#gs-hovercard p {
+  margin: 0;
+}
+
 // Styles for hovercard
 #gs-hovercard {
   font-size: 14px;
