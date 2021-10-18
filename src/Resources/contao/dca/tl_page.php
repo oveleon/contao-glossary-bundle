@@ -42,7 +42,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryHoverCard'] = array
 		'enabled'  => &$GLOBALS['TL_LANG']['tl_page']['hoverCardEnabled'],
 	),
 	'eval'                    => array('tl_class'=>'w50 clr'),
-	'sql'                     => "varchar(32) NOT NULL default 'hoverCardDisabled'"
+	'sql'                     => "varchar(32) NOT NULL default 'disabled'"
 );
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = array

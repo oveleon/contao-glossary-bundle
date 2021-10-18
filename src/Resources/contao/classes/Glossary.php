@@ -35,7 +35,7 @@ class Glossary extends Frontend
     /**
      * Add glossary items to the indexer
      */
-    public function getSearchablePages(array $arrPages, int $intRoot=0, bool $blnIsSitemap=false): array
+    public function getSearchablePages(array $arrPages, $intRoot=0, bool $blnIsSitemap=false): array
     {
         $arrRoot = array();
 
