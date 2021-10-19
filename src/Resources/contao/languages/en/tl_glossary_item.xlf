@@ -57,7 +57,7 @@
         <source>Glossary item teaser</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.teaser.1">
-        <source>The glossary item teaser can be used in a hovercard or can be shown in a glossary list instead of the full article.</source>
+        <source>The glossary item teaser can be used in a hovercard or can be shown in a glossary list instead of the full content.</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.addImage.0">
         <source>Add an image</source>
