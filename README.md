@@ -608,7 +608,7 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
 > We **only provide support** for **bugs, and feature requests**; please only post issues about these two topics.
 > 
 > If you need help implementing Contao Glossary Bundle or you are just starting out with Contao/CSS/JavaScript or HTML, please contact us on our [website](https://www.oveleon.de/kontakt.html#kontaktformular), 
-> visit the [Contao Community](community.contao.org) or the [Contao Slack](https://join.slack.com/t/contao/shared_invite/enQtNjUzMjY4MDU0ODM3LWVjYWMzODVkZjM5NjdlNDRiZjk2OTI3OWVkMmQ1YjA0MTQ3YTljMjFjODkwYTllN2NkMDcxMThiNzMzZjZlOGU), 
+> visit the [Contao Community](https://community.contao.org/) or the [Contao Slack](https://join.slack.com/t/contao/shared_invite/enQtNjUzMjY4MDU0ODM3LWVjYWMzODVkZjM5NjdlNDRiZjk2OTI3OWVkMmQ1YjA0MTQ3YTljMjFjODkwYTllN2NkMDcxMThiNzMzZjZlOGU), 
 > you will be able to find more help there. 
 > 
 > This will help us to keep the issues related to this plugin and solve issues faster.
