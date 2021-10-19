@@ -94,6 +94,20 @@ abstract class ModuleGlossary extends \Module
 	{
 		$availableGroups = array();
 
+		if (!$blnHideEmptyGroups)
+		{
+			$arrLetterRange = range('A', 'Z');
+
+			foreach ($arrLetterRange as $letter)
+			{
+				$availableGroups[$letter] = array
+				(
+					'item' => sprintf('<span>%s</span>', $letter),
+					'class' => 'inactive'
+				);
+			}
+		}
+
 		if ($blnSingleGroup)
 		{
 			// Fetch all glossary items to generate pagination links
@@ -108,19 +122,6 @@ abstract class ModuleGlossary extends \Module
 				(
 					'item' => $this->generateGroupAnchorLink($itemGroup, $blnSingleGroup),
 					'class' => 'active'
-				);
-			}
-		}
-		elseif (!$blnHideEmptyGroups)
-		{
-			$arrLetterRange = range('A', 'Z');
-
-			foreach ($arrLetterRange as $letter)
-			{
-				$availableGroups[$letter] = array
-				(
-					'item' => sprintf('<span>%s</span>', $letter),
-					'class' => 'inactive'
 				);
 			}
 		}

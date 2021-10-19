@@ -4,8 +4,9 @@
  *
  * package     contao-glossary-bundle
  * license     AGPL-3.0
- * author      Sebastian Zoglowek <https://github.com/zoglo>
- * copyright   Oveleon <https://www.oveleon.de/>
+ * author      Daniele Sciannimanica    <https://github.com/doishub>
+ * author      Sebastian Zoglowek       <https://github.com/zoglo>
+ * copyright   Oveleon                  <https://www.oveleon.de/>
  */
 
 import { extend } from "./helper/extend";

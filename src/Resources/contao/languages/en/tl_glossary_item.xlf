@@ -128,6 +128,9 @@
       <trans-unit id="tl_glossary_item.title_legend">
         <source>Title</source>
       </trans-unit>
+      <trans-unit id="tl_glossary_item.keyword_legend">
+        <source>Keywords</source>
+      </trans-unit>
       <trans-unit id="tl_glossary_item.meta_legend">
         <source>Meta data</source>
       </trans-unit>
