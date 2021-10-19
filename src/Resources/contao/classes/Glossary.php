@@ -241,6 +241,9 @@ class Glossary extends Frontend
 	 */
 	public static function generateLink($strLink, GlossaryItemModel $objGlossaryItem, bool $blnIsReadMore=false): string
 	{
+		// Load language for 'read more' link
+		System::loadLanguageFile('default');
+
 		$blnIsInternal = $objGlossaryItem->source != 'external';
 		$strReadMore = $blnIsInternal ? $GLOBALS['TL_LANG']['MSC']['readMore'] : $GLOBALS['TL_LANG']['MSC']['open'];
 		$strGlossaryItemUrl = self::generateUrl($objGlossaryItem);
@@ -352,6 +355,9 @@ class Glossary extends Frontend
 				// Link to the glossary item if no image link has been defined
 				if (!$objTemplate->fullsize && !$objTemplate->imageUrl)
 				{
+					// Load language for 'read more' link
+					System::loadLanguageFile('default');
+
 					// Unset the image title attribute
 					$picture = $objTemplate->picture;
 					unset($picture['title']);
