@@ -11,7 +11,7 @@
         <target>Bitte wählen Sie ein oder mehrere Glossare</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_readerModule.0">
-        <source>Glossar reader module</source>
+        <source>Glossary reader</source>
         <target>Glossarleser</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_readerModule.1">

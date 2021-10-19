@@ -19,7 +19,7 @@ export class Glossary
         this.options = extend(true, {
             entrySelector: '.c_text, .ce_text', // Selectors for glossary-term search
             markup: 'a',                        // Markup attribute for parsed glossary terms (e.g. 'mark', 'span', 'a')
-            markupAttr: null,                   // Markup attributes
+            markupAttr: null,                   // Markup attributes for created markups
             hovercard: {
                 active: true,                   // Whether the hovercard feature should be enabled or not
                 id: 'gs-hovercard',             // Id for the hovercard

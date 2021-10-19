@@ -9,7 +9,7 @@
         <source>Please select one or more glossaries.</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_readerModule.0">
-        <source>Glossar reader module</source>
+        <source>Glossary reader</source>
       </trans-unit>
       <trans-unit id="tl_module.glossary_readerModule.1">
         <source>Automatically switch to the glossary reader if an item has been selected.</source>
