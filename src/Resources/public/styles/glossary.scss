@@ -111,6 +111,16 @@ $hovercard-box-shadow:      0 0 15px rgba(0, 0, 0, 0.15);
   animation: 1s loading linear infinite;
 }
 
+// Img reset
+.g_hovercard_default > figure {
+  line-height: 0;
+  margin: 0;
+}
+
+.g_hovercard_default img {
+  background: $hovercard-bg-color;
+}
+
 //Layouting inner content
 .g_hovercard-keyword {
   display: block;
