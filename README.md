@@ -37,8 +37,15 @@ Terms appearing on your website can be automatically replaced with links and a h
   + [Root page](#root-page-settings)
   + [Regular page](#regular-page-settings)
   + [Glossary archive](#glossary-archive-settings)
+  + [Glossary items](#glossary-item-settings)
++ [Creating links in Contao](#creating-links-in-contao)
+  + [Insert tags](#insert-tags)
+  + [TinyMCE/Link picker](#tinymce--link-picker)
+    + [Limitation](#known-limitations)
 + [Glossary JavaScript](#glossary-javascript)
++ [Support](#support)
 + [License](#license)
++ [Sponsoring](#sponsoring)
 
 ## Features
 
@@ -53,7 +60,7 @@ Terms appearing on your website can be automatically replaced with links and a h
 - Case sensitivity for automatic linking
 - Hovercard-preview for glossary terms
 - Loading animation for hovercards
-- Inserttags
+- Insert tags
 - Linkpicker
 - Meta title and description for detail pages
 - Sitemap-Integration
@@ -81,12 +88,12 @@ After installing the contao-glossary-bundle, you need to run a **contao install*
 
 ### Creating glossaries and terms
 
-The contao glossary bundle uses archives (glossaries) and glossary items (terms) similar to the Contao-News-Bundle.
+The Contao Glossary Bundle uses archives (glossaries) and glossary items (terms) similar to the Contao-News-Bundle.
 
 1. Set up a redirect page for glossary items
 
 
-2. Create a glossary archive in **Glossaries**
+2. Create a new glossary archive in **Glossaries**
 
    ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/Glossaries.png)
 
@@ -105,7 +112,7 @@ The contao glossary bundle uses archives (glossaries) and glossary items (terms)
    ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/GlossaryItemSettings.png)
 
 
-5. (Additionally, you are able to create a detail page within your glossary term)
+5. (Additionally, you are able to create a detail page within your glossary item)
 
    ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/GlossaryItemDetail.png)
 
@@ -123,7 +130,7 @@ To display your glossaries and glossary terms, you have to create two front end 
 
 #### Glossary reader
 
-1. Create the front end module *Glossary-reader*
+1. Create the front-end module *Glossary-reader*
 2. Select your glossary/glossaries
 3. Embed the module in your redirect-page (for your archive)
 
@@ -138,10 +145,14 @@ To display your glossaries and glossary terms, you have to create two front end 
 
    ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/RootPageSettings.png)
 
+> **Only [search terms](#glossary-item-settings) within glossary items are taken into account. Not the keyword itself**
+> 
+> **You are able to add multiple keywords to a term. The glossary JavaScript does an exact search; thus spaces are allowed as well.**
+
 > **Hint:**
-> 
-> You can disable automatic links and hovercards within "Expert settings" in regular pages. This option is recommended for the glossary pages.
-> 
+>
+> You can disable automatic links and hovercards within "Expert settings" on regular pages. This option is recommended for glossary pages.
+>
 > ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/DisableGlossarySubPage.png)
 
 
@@ -292,7 +303,7 @@ with additional ***Glossary Settings***.
 *The hovercard shows a preview of the glossary item*
 
 ### Regular page settings
-The **Expert settings** for regular pages are extended with following option:
+The **Expert settings** for regular pages are extended with the following option:
 
 <table>
   <tr>
@@ -320,6 +331,10 @@ The Glossaries under **Glossaries** contain extra options for hovercards
     <td><strong>Description</strong></td>
   </tr>
   <tr>
+    <td>Redirect page</td>
+    <td>The glossary reader page to which visitors will be redirected when clicking a glossary item.</td>
+  </tr>
+  <tr>
     <td>Glossary hovercard template</td>
     <td>The template that is used for glossary hovercards.</td>
   </tr>
@@ -333,11 +348,153 @@ The Glossaries under **Glossaries** contain extra options for hovercards
 
 *The teaser images within glossary items are shown in the hovercard*
 
+### Glossary item settings
+Glossary items are terms within your glossaries.
+
+<table>
+  <tr>
+    <th colspan="2"><strong>Glossary item settings</strong></th>
+  </tr>
+  <tr>
+    <td><strong>Option</strong></td>
+    <td><strong>Description</strong></td>
+  </tr>
+  <tr>
+    <td>Title</td>
+    <td>The title/keyword of your glossary entry.</td>
+  </tr>
+  <tr>
+    <td>Glossary item alias</td>
+    <td>The alias and unique reference for a glossary item. It is used for created pages and insert-tags.</td>
+  </tr>
+  <tr>
+    <td>Search terms</td>
+    <td>Here you can enter search terms that are included in automatic cross-references (automatic linking).</td>
+  </tr>
+  <tr>
+    <td>Case-sensitive markup</td>
+    <td>Here you can select if the search for keywords should be case-sensitive.</td>
+  </tr>
+  <tr>
+    <td>Redirect target</td>
+    <td>The redirect of a glossary item
+        <ul>
+            <li>Use default page: Creates a page</li>
+            <li>Page: Redirects to a page within your Contao instance</li>
+            <li>Article: Redirects to an article within your Contao instance</li>
+            <li>Custom URL: Redirects to a custom url</li>
+        </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Meta title</td>
+    <td>Here you can add a custom meta title to overwrite the default page title.</td>
+  </tr>
+  <tr>
+    <td>Robots tag</td>
+    <td>Here you can overwrite how search engines handle the glossary item.
+        <ul>
+            <li>index,follow</li>
+            <li>index,nofollow</li>
+            <li>noindex,follow</li>
+            <li>noindex,nofollow</li>
+        </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Meta description</td>
+    <td>Here you can add a custom meta description to overwrite the default page description.</td>
+  </tr>
+  <tr>
+    <td>Subheadline</td>
+    <td>A subheadline within glossary items (Templates: glossary_full)</td>
+  </tr>
+  <tr>
+    <td>Glossary item teaser</td>
+    <td>The glossary item teaser can be used in a hovercard or can be shown in a glossary list instead of the full content.</td>
+  </tr>
+  <tr>
+    <td>Add an image</td>
+    <td>Adds an image to the glossary item (Templates: glossary_latest, glossary_full, hovercard_glossary_default)</td>
+  </tr>
+  <tr>
+    <td>CSS class</td>
+    <td>CSS classes for the glossary item</td>
+  </tr>
+  <tr>
+    <td>Publish item</td>
+    <td>Make the glossary item publicly visible on the website.</td>
+  </tr>
+</table>
+
+## Creating links in Contao
+Automatic linking creates links when entering the page through JavaScript. For SEO purposes, you are able to create real links within Contao using the following options:
+
+### Using Insert tags 
+> For more information on *Insert tags*, please visit the official <a href="https://docs.contao.org/manual/en/article-management/insert-tags/" title="Insert tags :: Contao Manual" target="_blank">Contao documentation</a>.
+
+#### Insert tags
+You can use insert tags with the glossary id or its alias (aliases are generated and unique).
+
+**Example**
+```
+    {{glossaryitem::430}}
+    {{glossaryitem::website}}
+```
+
+<table>
+  <tr>
+    <th colspan="2"><strong>Insert tags</strong></th>
+  </tr>
+  <tr>
+    <td><strong>Insert tag</strong></td>
+    <td><strong>Description</strong></td>
+  </tr>
+  <tr>
+    <td>{{glossaryitem::*}}</td>
+    <td>This tag is replaced with a link to a glossary item (replace * with the ID or alias).</td>
+  </tr>
+  <tr>
+    <td>{{glossaryitem_open::*}}</td>
+    <td>Is replaced with the opening tag of a link to a glossary item: <i>{{glossaryitem_open::430}}Check out <a href="https://github.com/doishub" title="Daniele Sciannimanica">doishub</a> on GitHub{{link_close}}</i>.</td>
+  </tr>
+  <tr>
+    <td>{{glossaryitem_url::*}}</td>
+    <td>This tag will be replaced with the URL of a glossary item: <i>&lt;a href="{{glossaryitem_url::430}}"&gt;He's an awesome mentor&lt;/a&gt;</i>.</td>
+  </tr>
+  <tr>
+    <td>{{glossaryitem_keyword::*}}</td>
+    <td>This tag is replaced with the keyword of a glossary item: <i>&lt;a title="{{glossaryitem_keyword::430}}"&gt;Follow him :)&lt;/a&gt;</i>.</td>
+  </tr>
+  <tr>
+    <td>{{glossaryitem_teaser::*}}</td>
+    <td>This tag is replaced with the teaser of a glossary item: <i>{{glossaryitem_teaser::430}}</i>.</td>
+  </tr>
+</table>
+
+### TinyMCE / Link picker
+When creating links in TinyMCE in the backend of Contao CMS, you are able to choose a new source "Glossary" in the link picker.
+
+![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/LinkPicker.png)
+
+#### Known limitations
+> It is currently **not possible** to add **hovercard-events** to a **link created via link picker** due to security reasons.
+>
+> To apply a hovercard event to a link, edit the html within your tinymce, and add 
+> > data-glossary-id: "your glossary item id"
+>
+> to your link.
+> 
+> **Example**
+> >&lt;a href="{{glossaryitem_url::430}}" target="_blank" rel="noopener" **data-glossary-id="430"**&gt;Domain name&lt;/a&gt;
+> 
+
+
 ## Glossary JavaScript
 > Markup of glossary keywords and behavior for hovercards can be changed by parsing options into the glossary initialization.
 > The Glossary object can be found within the config_glossary_default template.
-> Developers can create a new template with following prefix: 
-> 'config_glossary_' 
+> Developers can create a new template with the following prefix: 
+> 'config_glossary_',
 > and choose it in the root page settings.
 
 #### Settings
@@ -447,6 +604,19 @@ The Glossaries under **Glossaries** contain extra options for hovercards
 
 *Enabling 'showLoadingAnimation' shows an empty hovercard until content is fetched*
 
+## Support
+> We **only provide support** for **bugs, and feature requests**; please only post issues about these two topics.
+> 
+> If you need help implementing Contao Glossary Bundle or you are just starting out with Contao/CSS/JavaScript or HTML, please contact us on our [website](https://www.oveleon.de/kontakt.html#kontaktformular), 
+> visit the [Contao Community](community.contao.org) or the [Contao Slack](https://join.slack.com/t/contao/shared_invite/enQtNjUzMjY4MDU0ODM3LWVjYWMzODVkZjM5NjdlNDRiZjk2OTI3OWVkMmQ1YjA0MTQ3YTljMjFjODkwYTllN2NkMDcxMThiNzMzZjZlOGU), 
+> you will be able to find more help there. 
+> 
+> This will help us to keep the issues related to this plugin and solve issues faster.
+
 ## License
 
-This project is licensed under the AGPL-3.0 License - check  <a href="/oveleon/contao-glossary-bundle/blob/master/LICENSE">LICENSE</a> for more details.
+This project is licensed under the AGPL-3.0 License — check  <a href="/oveleon/contao-glossary-bundle/blob/master/LICENSE">LICENSE</a> for more details.
+
+## Sponsoring
+
+If you find this plugin useful, please consider [sponsoring us](https://github.com/sponsors/oveleon) to help contribute to our time invested and to further development of this and other open source projects. Thank you for your support! - [Oveleon](https://www.oveleon.de).
