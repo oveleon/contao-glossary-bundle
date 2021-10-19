@@ -310,7 +310,7 @@ class Glossary extends Frontend
 				{
 					while ($objElement->next())
 					{
-						$strText .= $this->getContentElement($objElement->current());
+						$strText .= Controller::getContentElement($objElement->current());
 					}
 				}
 
