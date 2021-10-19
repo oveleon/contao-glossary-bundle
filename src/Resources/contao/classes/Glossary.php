@@ -199,7 +199,7 @@ class Glossary extends Frontend
     /**
      * Return the link of a glossary item
      */
-    protected function getLink($objItem, string $strUrl, string $strBase=''): string
+    protected function getLink($objItem, $strUrl, string $strBase=''): string
     {
         switch ($objItem->source)
         {
@@ -239,7 +239,7 @@ class Glossary extends Frontend
 	/**
 	 * Generate a link and return it as string
 	 */
-	public static function generateLink(string $strLink, GlossaryItemModel $objGlossaryItem, bool $blnIsReadMore=false): string
+	public static function generateLink($strLink, GlossaryItemModel $objGlossaryItem, bool $blnIsReadMore=false): string
 	{
 		$blnIsInternal = $objGlossaryItem->source != 'external';
 		$strReadMore = $blnIsInternal ? $GLOBALS['TL_LANG']['MSC']['readMore'] : $GLOBALS['TL_LANG']['MSC']['open'];
