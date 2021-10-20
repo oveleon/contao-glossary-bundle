@@ -17,16 +17,16 @@ export class Glossary
     constructor(options)
     {
         this.options = extend(true, {
-            entrySelector: '.c_text, .ce_text', // Selectors for glossary-term search
+            entrySelector: '#wrapper',          // Selectors for glossary-term search
             markup: 'a',                        // Markup attribute for parsed glossary terms (e.g. 'mark', 'span', 'a')
             markupAttr: null,                   // Markup attributes for created markups
             hovercard: {
                 active: true,                   // Whether the hovercard feature should be enabled or not
                 id: 'gs-hovercard',             // Id for the hovercard
-                interactive: true,              // Makes hovercards clickable
-                showLoadingAnimation: true,     // Show empty hovercard until content is fetched
+                interactive: true,              // Enables interaction with the hovercard
+                showLoadingAnimation: true,     // Show placeholder animation until content is loaded
                 maxWidth: 380,                  // Maximum width of hovercard
-                showThreshold: 300,             // Minimum time that showEvent has to be triggered to build a hovercard
+                showThreshold: 300,             // Minimum time that showEvent has to be triggered to show a hovercard
                 leaveThreshold: 200             // Time that hovercard will stay visible after triggering the hideEvent
             },
             popperOptions: {                    // PopperJS options -> check https://popper.js.org/docs/v2/
@@ -56,10 +56,10 @@ export class Glossary
                 'body',
                 'div,span,p',
                 'main,section,article',
-                'h1,h2,h3,h4,h5,h6,strong',
+                'h1,h2,h3,h4,h5,h6',
                 'ol,ul,li',
                 'table,tr,th,tbody,thead,td',
-                'i,b,em',
+                'i,b,em,strong',
                 'mark,abbr',
                 'sub,sup'
             ],
@@ -67,7 +67,7 @@ export class Glossary
                 prefix: '/api/glossary/item/',
                 suffix: '/html',
             },
-            mobileDetectionWidth : 1024,        // Minimum width for hovercard-creation
+            hovercardBreakpoint : 1024,        // Minimum width for hovercard-creation
             config: null
         }, options || {})
 
@@ -86,7 +86,7 @@ export class Glossary
         }
 
         // Check if hovercards are activated and device is not mobile
-        if(this.options.hovercard.active && (window.innerWidth >= this.options.mobileDetectionWidth))
+        if(this.options.hovercard.active && (window.innerWidth >= this.options.hovercardBreakpoint))
         {
             // Bind events for hovercard creation
             this._bindEvents()
@@ -100,7 +100,7 @@ export class Glossary
     _shouldParse()
     {
         // Only parse if markup is a link
-        if(window.innerWidth < this.options.mobileDetectionWidth) {
+        if(window.innerWidth < this.options.hovercardBreakpoint) {
             return this.options.markup.toLowerCase() === 'a';
         }
 

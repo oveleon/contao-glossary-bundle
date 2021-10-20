@@ -29,7 +29,7 @@ Terms appearing on your website can be automatically replaced with links and a h
   + [Modules & Settings](#publishing-your-glossaries-to-your-website)
     + [Glossary overview](#glossary-overview)
     + [Reader/Detailpage](#glossary-reader)
-    + [Automatic links & hovercards](#automatic-links-and-hover-cards)
+    + [Automatic keyword conversion & hovercards](#automatic-keyword-conversion-and-hovercards)
 + [Front end modules](#front-end-modules)
   + [Glossary](#glossary)
   + [Glossary reader](#glossaryreader)
@@ -56,8 +56,8 @@ Terms appearing on your website can be automatically replaced with links and a h
 - Paginated glossary lists
 - Quicklinks
 - Navigation/Pagination grouping for umlauts (UTF8 to ASCII conversion)
-- Automatic linking of glossary terms by keywords
-- Case sensitivity for automatic linking
+- Automatic keyword conversion of glossary terms (markup or link)
+- Case sensitivity for keyword conversion
 - Hovercard-preview for glossary terms
 - Loading animation for hovercards
 - Insert tags
@@ -105,14 +105,14 @@ The Contao Glossary Bundle uses archives (glossaries) and glossary items (terms)
 
 4. Create a new glossary item:
    - Title = Glossary term
-   - (Search terms = keywords for automatic linking)
+   - (Search terms = keywords for automatic conversion)
    - Glossary item teaser = teaser text for glossary overview etc.
    - Publish item
 
    ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/GlossaryItemSettings.png)
 
 
-5. (Additionally, you are able to create a detail page within your glossary item)
+5. (Additionally, you are able to create content elements for detail pages - Similar to contao news)
 
    ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/GlossaryItemDetail.png)
 
@@ -137,7 +137,7 @@ To display your glossaries and glossary terms, you have to create two front end 
    ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/ModuleGlossaryReader.png)
 
 
-### Automatic links and hover cards
+### Automatic keyword conversion and hovercards
 
 1. Go to your ***website root*** and "activate glossary" under glossary settings
 2. Select your glossary/glossaries
@@ -151,7 +151,7 @@ To display your glossaries and glossary terms, you have to create two front end 
 
 > **Hint:**
 >
-> You can disable automatic links and hovercards within "Expert settings" on regular pages. This option is recommended for glossary pages.
+> You can disable automatic keyword conversion and hovercards within "Expert settings" on regular pages. This option is recommended for glossary pages.
 >
 > ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/DisableGlossarySubPage.png)
 
@@ -277,15 +277,15 @@ with additional ***Glossary Settings***.
   </tr>
   <tr>
     <td>Activate glossary</td>
-    <td>Enables automatic glossary links for the page and its subpages.</td>
+    <td>Enables automatic keyword conversion for the page and its subpages.</td>
   </tr>
   <tr>
     <td>Glossaries</td>
-    <td>Keywords (within glossary items) for these glossaries will be converted to links.</td>
+    <td>Keywords (within glossary items) for these glossaries will be converted to links or a chosen markup.</td>
   </tr>
   <tr>
     <td>Hovercards</td>
-    <td>Disable/Enables the teaser hovercards for glossary links.</td>
+    <td>Disable/Enables the teaser hovercards for glossary links/markup.</td>
   </tr>
   <tr>
     <td>Configuration template</td>
@@ -295,7 +295,7 @@ with additional ***Glossary Settings***.
 
 ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/frontend/GlossaryLinks.png)
 
-*All keywords within glossary items are converted to links*
+*All keywords within glossary items are converted to links by default (You are able to change the markup within the glossary configuration template, see [JavaScript Settings](#glossary-javascript))*
 
 
 ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/frontend/hoverCard.png)
@@ -315,7 +315,7 @@ The **Expert settings** for regular pages are extended with the following option
   </tr>
   <tr>
     <td>Disable glossary</td>
-    <td>Disables glossary hovercards and links for this page.</td>
+    <td>Disables glossary hovercards and keyword conversion for this page.</td>
   </tr>
 </table>
 
@@ -369,7 +369,7 @@ Glossary items are terms within your glossaries.
   </tr>
   <tr>
     <td>Search terms</td>
-    <td>Here you can enter search terms that are included in automatic cross-references (automatic linking).</td>
+    <td>Here you can enter search terms that are included in automatic cross-references (automatic keyword conversion).</td>
   </tr>
   <tr>
     <td>Case-sensitive markup</td>
@@ -428,7 +428,7 @@ Glossary items are terms within your glossaries.
 </table>
 
 ## Creating links in Contao
-Automatic linking creates links when entering the page through JavaScript. For SEO purposes, you are able to create real links within Contao using the following options:
+Automatic conversion creates links (or another markup) when entering the page through JavaScript. For SEO purposes, you are able to create real links within Contao using the following options:
 
 ### Using Insert tags 
 > For more information on *Insert tags*, please visit the official <a href="https://docs.contao.org/manual/en/article-management/insert-tags/" title="Insert tags :: Contao Manual" target="_blank">Contao documentation</a>.
@@ -478,7 +478,7 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
 ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/backend/LinkPicker.png)
 
 #### Known limitations
-> It is currently **not possible** to add **hovercard-events** to a **link created via link picker** due to security reasons.
+> It is currently **not possible** to add **hovercard-events** to a **link created via link picker through tinyMCE** due to security reasons.
 >
 > To apply a hovercard event to a link, edit the html within your tinymce, and add 
 > > data-glossary-id: "your glossary item id"
@@ -509,8 +509,8 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
     <td><strong>Description</strong></td>
   </tr>
   <tr>
-    <td>entryselector</td>
-    <td>'.c_text, .ce_text'</td>
+    <td>entrySelector</td>
+    <td>'#wrapper'</td>
     <td>Selectors for glossary-term search</td>
   </tr>
   <tr>
@@ -521,7 +521,14 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
   <tr>
     <td>markupAttr</td>
     <td>null</td>
-    <td>Markup attribute for created markups</td>
+    <td>Markup attribute for created markups:
+<pre>// For example:
+markupAttr: {
+    'class': 'class1 class2',
+    'data-myattr: 'attr'
+}
+</pre>
+    </td>
   </tr>
   <tr>
     <th colspan="3"><strong>hovercard</strong></th>
@@ -539,12 +546,12 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
   <tr>
     <td>interactive</td>
     <td>true</td>
-    <td>Makes hovercards clickable</td>
+    <td>Enables interaction with the hovercard</td>
   </tr>
   <tr>
     <td>showLoadingAnimation</td>
     <td>true</td>
-    <td>Show empty hovercard until content is fetched</td>
+    <td>Show placeholder animation until content is loaded</td>
   </tr>
   <tr>
     <td>maxWidth</td>
@@ -554,7 +561,7 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
   <tr>
     <td>showThreshold</td>
     <td>300</td>
-    <td>Minimum time that showEvent has to be triggered to build a hovercard (in ms)</td>
+    <td>Minimum time that showEvent has to be triggered to show a hovercard (in ms)</td>
   </tr>
   <tr>
     <td>leaveThreshold</td>
@@ -571,24 +578,28 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
   </tr>
   <tr>
     <td>includes</td>
-    <td>'body',
-                'div,span,p',
-                'main,section,article',
-                'h1,h2,h3,h4,h5,h6,strong',
-                'ol,ul,li',
-                'table,tr,th,tbody,thead,td',
-                'i,b,em',
-                'mark,abbr',
-                'sub,sup'</td>
+    <td>
+<pre>
+'body',
+'div,span,p',
+'main,section,article',
+'h1,h2,h3,h4,h5,h6',
+'ol,ul,li',
+'table,tr,th,tbody,thead,td',
+'i,b,em,strong',
+'mark,abbr',
+'sub,sup'
+</pre>
+</td>
     <td>Allowed nodes for glossary term markup</td>
   </tr>
   <tr>
-    <td>route</td>
-    <td>'/api/glossary/item/' (prefix) | '/html' (suffix)</td>
+    <td>route: {<br/>&nbsp;&nbsp;&nbsp;prefix:<br/>&nbsp;&nbsp;&nbsp;suffix:<br/>}</td>
+    <td>&nbsp;<br>'/api/glossary/item/'<br/>'/html'<br/>&nbsp;</td>
     <td>API settings</td>
   </tr>
   <tr>
-    <td>mobileDetectionWidth</td>
+    <td>hovercardBreakpoint</td>
     <td>1024</td>
     <td>Minimum width for hovercard-creation (in px)</td>
   </tr>
@@ -602,7 +613,7 @@ When creating links in TinyMCE in the backend of Contao CMS, you are able to cho
 
 ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/frontend/loadingAnimation.png)
 
-*Enabling 'showLoadingAnimation' shows an empty hovercard until content is fetched*
+*Enabling 'showLoadingAnimation' shows an empty hovercard until content is loaded*
 
 ## Support
 > We **only provide support** for **bugs, and feature requests**; please only post issues about these two topics.
