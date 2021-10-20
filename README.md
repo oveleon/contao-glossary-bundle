@@ -43,6 +43,7 @@ Terms appearing on your website can be automatically replaced links (or another 
   + [TinyMCE/Link picker](#tinymce--link-picker)
     + [Limitation](#known-limitations)
 + [Glossary JavaScript](#glossary-javascript)
++ [Browser Support (JavaScript)](#browser-support)
 + [Support](#support)
 + [License](#license)
 + [Sponsoring](#sponsoring)
@@ -613,6 +614,31 @@ markupAttr: {
 ![](https://www.oveleon.de/share/github-assets/contao-glossary-bundle/frontend/loadingAnimation.png)
 
 *Enabling 'showLoadingAnimation' shows an empty hovercard until content is loaded*
+
+## Browser Support
+The Glossary-JavaScript for automatic keyword conversion was tested in the following browsers:
+
+https://caniuse.com/?search=String.matchAll
+
+**Mac (Big Sur, Catalina):**
+- Safari (14.1, 13.1)
+- Google Chrome (94)
+- Mozilla Firefox (93)
+- Opera (80)
+- Microsoft Edge (94)
+
+**IPhone and IPad**
+- Mobile Safari (iOS 14 and iOS 14)
+- Chrome Mobile (iOS 14 and iOS 14)
+
+**Microsoft Windows**
+- Google Chrome (94)
+- Mozilla Firefox (93)
+- Opera (80)
+- Microsoft Edge (94)
+
+> It will work with every browser that supports [String.matchAll](https://caniuse.com/?search=String.matchAll)
+
 
 ## Support
 > We **only provide support** for **bugs, and feature requests**; please only post issues about these two topics.
