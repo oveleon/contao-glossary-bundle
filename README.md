@@ -583,7 +583,6 @@ markupAttr: {
 'body',
 'div,span,p',
 'main,section,article',
-'h1,h2,h3,h4,h5,h6',
 'ol,ul,li',
 'table,tr,th,tbody,thead,td',
 'i,b,em,strong',

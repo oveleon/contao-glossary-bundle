@@ -56,7 +56,6 @@ export class Glossary
                 'body',
                 'div,span,p',
                 'main,section,article',
-                'h1,h2,h3,h4,h5,h6',
                 'ol,ul,li',
                 'table,tr,th,tbody,thead,td',
                 'i,b,em,strong',
@@ -78,6 +77,9 @@ export class Glossary
         this.showDelay = null
         this.hideTimeout = null
 
+        // User agent check
+        this.isNewIE = this._isNewIE()
+
         // Only parse nodes when config exists and markup on mobile is a link
         if(null !== this.options.config && this._shouldParse())
         {
@@ -91,6 +93,15 @@ export class Glossary
             // Bind events for hovercard creation
             this._bindEvents()
         }
+    }
+
+    /**
+     * Checks if its an apple device
+     * @private
+     */
+    _isNewIE()
+    {
+        return (/iPod|iPhone|iPad|Macintosh/.test(navigator.userAgent))
     }
 
     /**
@@ -154,15 +165,14 @@ export class Glossary
 
         for (const term of this.options.config)
         {
-            // Case-sensitive search for glossary term out of config
-            const rgx = new RegExp("(?<=\\s|>|^)(" + term.keywords.join('|') + ")\\b", term.cs ? 'gu' : 'giu')
-            const matches = node.textContent.match(rgx)
+            const rgx = new RegExp("(?:\\s|>|^)(" + term.keywords.join('|') + ")\\b", term.cs ? 'gu' : 'giu')
+
+            const matches = node.textContent.matchAll(rgx)
 
             if(null !== matches)
             {
-                const filteredMatches = matches.filter((v, i, a) => a.indexOf(v) === i)
-
-                for (let match of filteredMatches)
+                // Get each *group* match of matches
+                for (let [group,match] of matches)
                 {
                     if(termCache.includes(match))
                         continue
@@ -170,9 +180,30 @@ export class Glossary
                     termCache.push(match)
 
                     const elementMarkup = this._createTermMarkup(match, term)
-                    const matchRgx = new RegExp("(?<=\\s|>|^)(" + match + ")\\b", 'gu')
 
-                    node.textContent = node.textContent.replace(matchRgx, elementMarkup)
+                    // Polyfill for ios/safari etc.
+                    // Lookbehind in JS regular expressions ( ?>= ) : https://caniuse.com/js-regexp-lookbehind
+                    if(this.isNewIE)
+                    {
+                        const matchRgx = new RegExp("(?:>|^)(" + match + ")\\b", 'gu')
+                        let sentence = [];
+
+                        for(let word of node.textContent.split(' '))
+                        {
+                            if(word.match(matchRgx))
+                                sentence.push(word.replace(match, elementMarkup))
+                            else
+                                sentence.push(word)
+                        }
+
+                        node.textContent = sentence.join(' ')
+                    }
+                    else
+                    {
+                        // Lookbehind regex for other browsers
+                        const matchRgx = new RegExp("(?<=\\s|>|^)(" + match + ")\\b", 'gu')
+                        node.textContent = node.textContent.replace(matchRgx, elementMarkup)
+                    }
                 }
             }
         }
