@@ -8,13 +8,13 @@
         <source>Activate glossary</source>
       </trans-unit>
       <trans-unit id="tl_page.activateGlossary.1">
-        <source>Enable glossary links for this and its subpages.</source>
+        <source>Enable replacing of keywords for this and its subpages.</source>
       </trans-unit>
       <trans-unit id="tl_page.disableGlossary.0">
         <source>Disable glossary</source>
       </trans-unit>
       <trans-unit id="tl_page.disableGlossary.1">
-        <source>Disable glossary hovercards and links for this page.</source>
+        <source>Disable glossary hovercards and keyword replacing for this page.</source>
       </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.0">
         <source>Glossaries</source>

@@ -27,8 +27,8 @@
         <target>Suchbegriffe</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.keywords.1">
-        <source>Here you can enter search terms that are included in automatic cross-references.</source>
-        <target>Hier können Sie Suchbegriffe eingeben, die in automatische Querverweise einbezogen werden.</target>
+        <source>Here you can enter search terms that should be taken into account during the automatic replacement of search terms.</source>
+        <target>Hier können Sie Suchbegriffe eingeben, die bei der automatischen Ersetzung von Suchbegriffen berücksichtigt werden sollen.</target>
       </trans-unit>
       <trans-unit id="tl_glossary_item.sensitiveSearch.0">
         <source>Case-sensitive markup</source>

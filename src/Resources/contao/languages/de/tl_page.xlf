@@ -10,16 +10,16 @@
         <target>Glossar aktivieren</target>
       </trans-unit>
       <trans-unit id="tl_page.activateGlossary.1">
-        <source>Enable glossary links for this and its subpages.</source>
-        <target>Aktivieren Sie die Verlinkungen für diese und dessen Unterseiten.</target>
+        <source>Enable replacing of keywords for this and its subpages.</source>
+        <target>Aktivieren Sie das Ersetzen von Suchbegriffen für diese und ihre Unterseiten.</target>
       </trans-unit>
       <trans-unit id="tl_page.disableGlossary.0">
         <source>Disable glossary</source>
         <target>Glossar deaktivieren</target>
       </trans-unit>
       <trans-unit id="tl_page.disableGlossary.1">
-        <source>Disable glossary hovercards and links for this page.</source>
-        <target>Glossar-Hovercards und Verlinkungen für diese Seite deaktivieren.</target>
+        <source>Disable glossary hovercards and keyword replacing for this page.</source>
+        <target>Glossar-Hovercards und Ersetzen von Suchbegriffen für diese Seite deaktivieren.</target>
       </trans-unit>
       <trans-unit id="tl_page.glossaryArchives.0">
         <source>Glossaries</source>

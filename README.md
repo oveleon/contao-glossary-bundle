@@ -17,7 +17,7 @@
 
 With the Contao Glossary Bundle, you can manage glossary terms in the backend and display them using frontend modules. 
 Each glossary entry can be individually modified and structured with content elements.
-Terms appearing on your website can be automatically replaced with links and a hovercard preview.
+Terms appearing on your website can be automatically replaced links (or another markup) and a hovercard preview.
 
 + [Features](#features)
 + [Installation](#installation)
@@ -277,7 +277,7 @@ with additional ***Glossary Settings***.
   </tr>
   <tr>
     <td>Activate glossary</td>
-    <td>Enables automatic keyword conversion for the page and its subpages.</td>
+    <td>Enable replacing of keywords for this and its subpages.</td>
   </tr>
   <tr>
     <td>Glossaries</td>
@@ -622,7 +622,7 @@ markupAttr: {
 > visit the [Contao Community](https://community.contao.org/) or the [Contao Slack](https://join.slack.com/t/contao/shared_invite/enQtNjUzMjY4MDU0ODM3LWVjYWMzODVkZjM5NjdlNDRiZjk2OTI3OWVkMmQ1YjA0MTQ3YTljMjFjODkwYTllN2NkMDcxMThiNzMzZjZlOGU), 
 > you will be able to find more help there. 
 > 
-> This will help us to keep the issues related to this plugin and solve issues faster.
+> This will help us to keep the issues related to this plugin and solve them faster.
 
 ## License
 

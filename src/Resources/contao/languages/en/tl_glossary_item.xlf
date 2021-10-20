@@ -21,7 +21,7 @@
         <source>Search terms</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.keywords.1">
-        <source>Here you can enter search terms that are included in automatic cross-references.</source>
+        <source>Here you can enter search terms that should be taken into account during the automatic replacement of search terms.</source>
       </trans-unit>
       <trans-unit id="tl_glossary_item.sensitiveSearch.0">
         <source>Case-sensitive markup</source>
