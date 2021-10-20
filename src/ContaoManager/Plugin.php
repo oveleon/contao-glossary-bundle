@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/**
+/*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle
@@ -37,14 +37,14 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
         ];
     }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
-	{
-		return $resolver
-			->resolve(__DIR__.'/../Resources/config/routes.yml')
-			->load(__DIR__.'/../Resources/config/routes.yml')
-			;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
+    {
+        return $resolver
+            ->resolve(__DIR__.'/../Resources/config/routes.yml')
+            ->load(__DIR__.'/../Resources/config/routes.yml')
+            ;
+    }
 }

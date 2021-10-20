@@ -1,6 +1,8 @@
 <?php
 
-/**
+declare(strict_types=1);
+
+/*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle
@@ -16,34 +18,34 @@ use Contao\Model;
 use Contao\Model\Collection;
 
 /**
- * Reads and writes glossary items
+ * Reads and writes glossary items.
  *
- * @property integer $id
- * @property integer $pid
- * @property integer $tstamp
- * @property string  $keyword
- * @property boolean $sensitiveSearch
- * @property string  $alias
- * @property string  $pageTitle
- * @property string  $description
- * @property string  $subheadline
- * @property string  $teaser
- * @property boolean $addImage
- * @property string  $singleSRC
- * @property string  $alt
- * @property string  $size
- * @property string  $imagemargin
- * @property string  $imageUrl
- * @property boolean $fullsize
- * @property string  $caption
- * @property string  $floating
- * @property string  $source
- * @property integer $jumpTo
- * @property integer $articleId
- * @property string  $url
- * @property boolean $target
- * @property string  $cssClass
- * @property boolean $published
+ * @property int    $id
+ * @property int    $pid
+ * @property int    $tstamp
+ * @property string $keyword
+ * @property bool   $sensitiveSearch
+ * @property string $alias
+ * @property string $pageTitle
+ * @property string $description
+ * @property string $subheadline
+ * @property string $teaser
+ * @property bool   $addImage
+ * @property string $singleSRC
+ * @property string $alt
+ * @property string $size
+ * @property string $imagemargin
+ * @property string $imageUrl
+ * @property bool   $fullsize
+ * @property string $caption
+ * @property string $floating
+ * @property string $source
+ * @property int    $jumpTo
+ * @property int    $articleId
+ * @property string $url
+ * @property bool   $target
+ * @property string $cssClass
+ * @property bool   $published
  *
  * @method static GlossaryItemModel|null findById($id, array $opt=array())
  * @method static GlossaryItemModel|null findByPk($id, array $opt=array())
@@ -74,7 +76,6 @@ use Contao\Model\Collection;
  * @method static GlossaryItemModel|null findOneByTarget($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByCssClass($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByPublished($val, array $opt=array())
- *
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByPid($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTstamp($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByKeyword($val, array $opt=array())
@@ -103,7 +104,6 @@ use Contao\Model\Collection;
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findMultipleByIds($val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBy($col, $val, array $opt=array())
  * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findAll(array $opt=array())
- *
  * @method static integer countById($id, array $opt=array())
  * @method static integer countByPid($val, array $opt=array())
  * @method static integer countByTstamp($val, array $opt=array())
@@ -136,36 +136,36 @@ use Contao\Model\Collection;
  */
 class GlossaryItemModel extends Model
 {
-	/**
-	 * Table name
-	 * @var string
-	 */
-	protected static $strTable = 'tl_glossary_item';
-
-
-	/**
-	 * Find a published glossary item by its ID
-	 *
-	 * @param integer $intId      The glossary item ID
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return GlossaryItemModel|null The model or null if there are no glossary items
-	 */
-	public static function findPublishedById($intId, array $arrOptions=array())
-	{
-		$t = static::$strTable;
-		$arrColumns = array("$t.id=?");
-
-		if (!static::isPreviewMode($arrOptions))
-		{
-			$arrColumns[] = "$t.published='1'";
-		}
-
-		return static::findOneBy($arrColumns, $intId, $arrOptions);
-	}
+    /**
+     * Table name.
+     *
+     * @var string
+     */
+    protected static $strTable = 'tl_glossary_item';
 
     /**
-     * Find a published glossary item from one or more glossaries by its ID or alias
+     * Find a published glossary item by its ID.
+     *
+     * @param int   $intId      The glossary item ID
+     * @param array $arrOptions An optional options array
+     *
+     * @return GlossaryItemModel|null The model or null if there are no glossary items
+     */
+    public static function findPublishedById($intId, array $arrOptions = [])
+    {
+        $t = static::$strTable;
+        $arrColumns = ["$t.id=?"];
+
+        if (!static::isPreviewMode($arrOptions))
+        {
+            $arrColumns[] = "$t.published='1'";
+        }
+
+        return static::findOneBy($arrColumns, $intId, $arrOptions);
+    }
+
+    /**
+     * Find a published glossary item from one or more glossaries by its ID or alias.
      *
      * @param mixed $varId      The numeric ID or alias name
      * @param array $arrPids    An array of parent IDs
@@ -173,7 +173,7 @@ class GlossaryItemModel extends Model
      *
      * @return GlossaryItemModel|null The model or null if there are no glossary items
      */
-    public static function findPublishedByParentAndIdOrAlias($varId, $arrPids, array $arrOptions=array())
+    public static function findPublishedByParentAndIdOrAlias($varId, $arrPids, array $arrOptions = [])
     {
         if (empty($arrPids) || !\is_array($arrPids))
         {
@@ -181,8 +181,8 @@ class GlossaryItemModel extends Model
         }
 
         $t = static::$strTable;
-        $arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? array("$t.alias=?") : array("$t.id=?");
-        $arrColumns[] = "$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")";
+        $arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? ["$t.alias=?"] : ["$t.id=?"];
+        $arrColumns[] = "$t.pid IN(".implode(',', array_map('\intval', $arrPids)).')';
 
         if (!static::isPreviewMode($arrOptions))
         {
@@ -193,17 +193,17 @@ class GlossaryItemModel extends Model
     }
 
     /**
-     * Find published glossary items with the default redirect target by their parent ID
+     * Find published glossary items with the default redirect target by their parent ID.
      *
-     * @param integer $intPid     The glossary ID
-     * @param array   $arrOptions An optional options array
+     * @param int   $intPid     The glossary ID
+     * @param array $arrOptions An optional options array
      *
      * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossary items
      */
-    public static function findPublishedDefaultByPid($intPid, array $arrOptions=array())
+    public static function findPublishedDefaultByPid($intPid, array $arrOptions = [])
     {
         $t = static::$strTable;
-        $arrColumns = array("$t.pid=? AND $t.source='default'");
+        $arrColumns = ["$t.pid=? AND $t.source='default'"];
 
         if (!static::isPreviewMode($arrOptions))
         {
@@ -219,14 +219,14 @@ class GlossaryItemModel extends Model
     }
 
     /**
-     * Find published glossary items by their parent ID
+     * Find published glossary items by their parent ID.
      *
-     * @param array   $arrPids     An array of glossary IDs
-     * @param array   $arrOptions  An optional options array
+     * @param array $arrPids    An array of glossary IDs
+     * @param array $arrOptions An optional options array
      *
      * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossaries
      */
-    public static function findPublishedByPids($arrPids, array $arrOptions=array())
+    public static function findPublishedByPids($arrPids, array $arrOptions = [])
     {
         if (empty($arrPids) || !\is_array($arrPids))
         {
@@ -234,32 +234,32 @@ class GlossaryItemModel extends Model
         }
 
         $t = static::$strTable;
-        $arrColumns = array("$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")");
+        $arrColumns = ["$t.pid IN(".implode(',', array_map('\intval', $arrPids)).')'];
 
         // Never return unpublished elements in the back end
-        if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
+        if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
         {
             $arrColumns[] = "$t.published='1'";
         }
 
         if (!isset($arrOptions['order']))
         {
-            $arrOptions['order']  = "$t.keyword ASC";
+            $arrOptions['order'] = "$t.keyword ASC";
         }
 
         return static::findBy($arrColumns, null, $arrOptions);
     }
 
     /**
-     * Find published glossary items by letter and their parent ID
+     * Find published glossary items by letter and their parent ID.
      *
-     * @param string  $strLetter   First glossary item letter
-     * @param array   $arrPids     An array of glossary IDs
-     * @param array   $arrOptions  An optional options array
+     * @param string $strLetter  First glossary item letter
+     * @param array  $arrPids    An array of glossary IDs
+     * @param array  $arrOptions An optional options array
      *
      * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossaries
      */
-    public static function findPublishedByLetterAndPids($strLetter, $arrPids, array $arrOptions=array())
+    public static function findPublishedByLetterAndPids($strLetter, $arrPids, array $arrOptions = [])
     {
         if (empty($arrPids) || !\is_array($arrPids))
         {
@@ -267,19 +267,19 @@ class GlossaryItemModel extends Model
         }
 
         $t = static::$strTable;
-        $arrColumns   = array("$t.letter=?");
-        $arrColumns[] = "$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")";
-        $arrValues    = array($strLetter);
+        $arrColumns = ["$t.letter=?"];
+        $arrColumns[] = "$t.pid IN(".implode(',', array_map('\intval', $arrPids)).')';
+        $arrValues = [$strLetter];
 
         // Never return unpublished elements in the back end
-        if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
+        if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
         {
             $arrColumns[] = "$t.published='1'";
         }
 
         if (!isset($arrOptions['order']))
         {
-            $arrOptions['order']  = "$t.keyword ASC";
+            $arrOptions['order'] = "$t.keyword ASC";
         }
 
         return static::findBy($arrColumns, $arrValues, $arrOptions);

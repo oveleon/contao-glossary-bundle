@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/**
+/*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle
@@ -69,14 +69,17 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
     {
         $attributes = ['fieldType' => 'radio'];
 
-        if ($source = $config->getExtra('source')) {
+        if ($source = $config->getExtra('source'))
+        {
             $attributes['preserveRecord'] = $source;
         }
 
-        if ($this->supportsValue($config)) {
+        if ($this->supportsValue($config))
+        {
             $attributes['value'] = $this->getInsertTagValue($config);
 
-            if ($flags = $this->getInsertTagFlags($config)) {
+            if ($flags = $this->getInsertTagFlags($config))
+            {
                 $attributes['flags'] = $flags;
             }
         }
@@ -93,11 +96,13 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
     {
         $params = ['do' => 'glossary'];
 
-        if (null === $config || !$config->getValue() || !$this->supportsValue($config)) {
+        if (null === $config || !$config->getValue() || !$this->supportsValue($config))
+        {
             return $params;
         }
 
-        if (null !== ($glossaryId = $this->getGlossaryId($this->getInsertTagValue($config)))) {
+        if (null !== ($glossaryId = $this->getGlossaryId($this->getInsertTagValue($config))))
+        {
             $params['table'] = 'tl_glossary_item';
             $params['id'] = $glossaryId;
         }
@@ -118,11 +123,13 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         /** @var GlossaryItemModel $glossaryAdapter */
         $glossaryAdapter = $this->framework->getAdapter(GlossaryItemModel::class);
 
-        if (!($glossaryItemModel = $glossaryAdapter->findById($id)) instanceof GlossaryItemModel) {
+        if (!($glossaryItemModel = $glossaryAdapter->findById($id)) instanceof GlossaryItemModel)
+        {
             return null;
         }
 
-        if (!($glossary = $glossaryItemModel->getRelated('pid')) instanceof GlossaryModel) {
+        if (!($glossary = $glossaryItemModel->getRelated('pid')) instanceof GlossaryModel)
+        {
             return null;
         }
 

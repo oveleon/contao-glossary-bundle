@@ -1,6 +1,8 @@
 <?php
 
-/**
+declare(strict_types=1);
+
+/*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle
@@ -14,60 +16,62 @@ namespace Oveleon\ContaoGlossaryBundle;
 
 use Contao\BackendTemplate;
 use Contao\Config;
-use Contao\System;
+use Contao\Input;
 use Contao\StringUtil;
+use Contao\System;
 use Patchwork\Utf8;
 
 /**
  * Front end module "glossary list".
  *
- * @property array    $glossary_archives
- * @property integer  $glossary_readerModule
- * @property boolean  $glossary_hideEmptyGroups
- * @property boolean  $glossary_singleGroup
- * @property boolean  $glossary_utf8Transliteration
- * @property boolean  $glossary_quickLinks
- * @property string   $glossary_letter
+ * @property array  $glossary_archives
+ * @property int    $glossary_readerModule
+ * @property bool   $glossary_hideEmptyGroups
+ * @property bool   $glossary_singleGroup
+ * @property bool   $glossary_utf8Transliteration
+ * @property bool   $glossary_quickLinks
+ * @property string $glossary_letter
  *
  * @author Fabian Ekert <https://github.com/eki89>
  * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 class ModuleGlossaryList extends ModuleGlossary
 {
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'mod_glossary';
+    /**
+     * Template.
+     *
+     * @var string
+     */
+    protected $strTemplate = 'mod_glossary';
 
-	/**
-	 * Display a wildcard in the back end
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
-		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
+    /**
+     * Display a wildcard in the back end.
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
-		if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
-		{
-			$objTemplate = new BackendTemplate('be_wildcard');
-			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossary'][0]) . ' ###';
-			$objTemplate->title = $this->headline;
-			$objTemplate->id = $this->id;
-			$objTemplate->link = $this->name;
-			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
+        {
+            $objTemplate = new BackendTemplate('be_wildcard');
+            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['glossary'][0]).' ###';
+            $objTemplate->title = $this->headline;
+            $objTemplate->id = $this->id;
+            $objTemplate->link = $this->name;
+            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
-			return $objTemplate->parse();
-		}
+            return $objTemplate->parse();
+        }
 
-		$this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives));
+        $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives));
 
-		// Return if there are no glossaries
-		if (empty($this->glossary_archives) || !\is_array($this->glossary_archives))
-		{
-			return '';
-		}
+        // Return if there are no glossaries
+        if (empty($this->glossary_archives) || !\is_array($this->glossary_archives))
+        {
+            return '';
+        }
 
         // Show the glossary reader if an item has been selected
         if ($this->glossary_readerModule > 0 && (isset($_GET['items']) || (Config::get('useAutoItem') && isset($_GET['auto_item']))))
@@ -75,36 +79,36 @@ class ModuleGlossaryList extends ModuleGlossary
             return $this->getFrontendModule($this->glossary_readerModule, $this->strColumn);
         }
 
-		// Tag glossary archives
-		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
-		{
-			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
-			$responseTagger->addTags(array_map(static function ($id) { return 'contao.db.tl_glossary.' . $id; }, $this->glossary_archives));
-		}
+        // Tag glossary archives
+        if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+        {
+            $responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+            $responseTagger->addTags(array_map(static fn ($id) => 'contao.db.tl_glossary.'.$id, $this->glossary_archives));
+        }
 
-		return parent::generate();
-	}
+        return parent::generate();
+    }
 
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
-		$this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyGlossaryList'];
+    /**
+     * Generate the module.
+     */
+    protected function compile(): void
+    {
+        $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyGlossaryList'];
 
-	    if ($this->glossary_singleGroup)
+        if ($this->glossary_singleGroup)
         {
             // Get the current page
-            $id = 'page_g' . $this->id;
-            $letter = \Input::get($id) ?? $this->glossary_letter;
+            $id = 'page_g'.$this->id;
+            $letter = Input::get($id) ?? $this->glossary_letter;
 
-	        $objGlossaryItems = GlossaryItemModel::findPublishedByLetterAndPids($letter, $this->glossary_archives);
+            $objGlossaryItems = GlossaryItemModel::findPublishedByLetterAndPids($letter, $this->glossary_archives);
         }
-	    else
+        else
         {
-	        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
+            $objGlossaryItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
         }
 
-		$this->parseGlossaryGroups($objGlossaryItems, $this->Template, $this->glossary_singleGroup, $this->glossary_hideEmptyGroups, $this->glossary_utf8Transliteration, $this->glossary_quickLinks);
-	}
+        $this->parseGlossaryGroups($objGlossaryItems, $this->Template, (bool) $this->glossary_singleGroup, (bool) $this->glossary_hideEmptyGroups, (bool) $this->glossary_utf8Transliteration, (bool) $this->glossary_quickLinks);
+    }
 }

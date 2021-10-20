@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/**
+/*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle

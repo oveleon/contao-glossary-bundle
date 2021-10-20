@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/**
+/*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle
@@ -50,21 +50,23 @@ class InsertTagsListener
         $elements = explode('::', $tag);
         $key = strtolower($elements[0]);
 
-        if (\in_array($key, self::SUPPORTED_TAGS, true)) {
-	        return $this->replaceGlossaryInsertTags($key, $elements[1], array_merge($flags, \array_slice($elements, 2)));
+        if (\in_array($key, self::SUPPORTED_TAGS, true))
+        {
+            return $this->replaceGlossaryInsertTags($key, $elements[1], array_merge($flags, \array_slice($elements, 2)));
         }
 
         return false;
     }
 
-	private function replaceGlossaryInsertTags(string $insertTag, string $idOrAlias, array $arguments): string
+    private function replaceGlossaryInsertTags(string $insertTag, string $idOrAlias, array $arguments): string
     {
         $this->framework->initialize();
 
         /** @var GlossaryItemModel $adapter */
         $adapter = $this->framework->getAdapter(GlossaryItemModel::class);
 
-        if (null === ($model = $adapter->findByIdOrAlias($idOrAlias))) {
+        if (null === ($model = $adapter->findByIdOrAlias($idOrAlias)))
+        {
             return '';
         }
 
@@ -77,7 +79,7 @@ class InsertTagsListener
                     '<a href="%s" title="%s" data-glossary-id="%s">%s</a>',
                     $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
                     StringUtil::specialcharsAttribute($model->keyword),
-	                $model->id,
+                    $model->id,
                     $model->keyword
                 );
 
@@ -86,7 +88,7 @@ class InsertTagsListener
                     '<a href="%s" title="%s" data-glossary-id="%s">',
                     $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
                     StringUtil::specialcharsAttribute($model->keyword),
-	                $model->id
+                    $model->id
                 );
 
             case 'glossaryitem_url':

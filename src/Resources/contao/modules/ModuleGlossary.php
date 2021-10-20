@@ -1,6 +1,8 @@
 <?php
 
-/**
+declare(strict_types=1);
+
+/*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
  * @package     contao-glossary-bundle
@@ -23,200 +25,197 @@ use Patchwork\Utf8;
  * Parent class for glossary modules.
  *
  * @property string $glossary_template
- * @property mixed $glossary_metaFields
+ * @property mixed  $glossary_metaFields
  *
  * @author Fabian Ekert <https://github.com/eki89>
  * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 abstract class ModuleGlossary extends \Module
 {
-	/**
-	 * Sort out protected glossaries
-	 */
-	protected function sortOutProtected(array $arrGlossaries): array
-	{
-		if (empty($arrGlossaries) || !\is_array($arrGlossaries))
-		{
-			return $arrGlossaries;
-		}
+    /**
+     * Sort out protected glossaries.
+     */
+    protected function sortOutProtected(array $arrGlossaries): array
+    {
+        if (empty($arrGlossaries) || !\is_array($arrGlossaries))
+        {
+            return $arrGlossaries;
+        }
 
-		$this->import(FrontendUser::class, 'User');
-		$objGlossary = GlossaryModel::findMultipleByIds($arrGlossaries);
-		$arrGlossaries = array();
+        $this->import(FrontendUser::class, 'User');
+        $objGlossary = GlossaryModel::findMultipleByIds($arrGlossaries);
+        $arrGlossaries = [];
 
-		if ($objGlossary !== null)
-		{
-			$blnFeUserLoggedIn = System::getContainer()->get('contao.security.token_checker')->hasFrontendUser();
+        if (null !== $objGlossary)
+        {
+            $blnFeUserLoggedIn = System::getContainer()->get('contao.security.token_checker')->hasFrontendUser();
 
-			while ($objGlossary->next())
-			{
-				if ($objGlossary->protected)
-				{
-					if (!$blnFeUserLoggedIn || !\is_array($this->User->groups))
-					{
-						continue;
-					}
+            while ($objGlossary->next())
+            {
+                if ($objGlossary->protected)
+                {
+                    if (!$blnFeUserLoggedIn || !\is_array($this->User->groups))
+                    {
+                        continue;
+                    }
 
-					$groups = StringUtil::deserialize($objGlossary->groups);
+                    $groups = StringUtil::deserialize($objGlossary->groups);
 
-					if (empty($groups) || !\is_array($groups) || !\count(array_intersect($groups, $this->User->groups)))
-					{
-						continue;
-					}
-				}
+                    if (empty($groups) || !\is_array($groups) || !\count(array_intersect($groups, $this->User->groups)))
+                    {
+                        continue;
+                    }
+                }
 
-				$arrGlossaries[] = $objGlossary->id;
-			}
-		}
+                $arrGlossaries[] = $objGlossary->id;
+            }
+        }
 
-		return $arrGlossaries;
-	}
+        return $arrGlossaries;
+    }
 
-	/**
-	 * Parse a glossary item and return it as string
-	 *
-	 * @throws \Exception
-	 */
-	protected function parseGlossaryItem(GlossaryItemModel $objGlossaryItem, string $strClass=''): string
-	{
-		if ($objGlossaryItem->cssClass)
-		{
-			$strClass = ' ' . $objGlossaryItem->cssClass . $strClass;
-		}
+    /**
+     * Parse a glossary item and return it as string.
+     *
+     * @throws \Exception
+     */
+    protected function parseGlossaryItem(GlossaryItemModel $objGlossaryItem, string $strClass = ''): string
+    {
+        if ($objGlossaryItem->cssClass)
+        {
+            $strClass = ' '.$objGlossaryItem->cssClass.$strClass;
+        }
 
-		return Glossary::parseGlossaryItem($objGlossaryItem, $this->glossary_template ?: 'glossary_latest', $this->imgSize, $strClass);
-	}
+        return Glossary::parseGlossaryItem($objGlossaryItem, $this->glossary_template ?: 'glossary_latest', $this->imgSize, $strClass);
+    }
 
-	/**
-	 * Parse glossary groups and injects them to the template
-	 */
-	protected function parseGlossaryGroups($objGlossaryItems, FrontendTemplate &$objTemplate, bool $blnSingleGroup=false, bool $blnHideEmptyGroups=false, bool $blnTransliteration=true, bool $blnQuickLinks=false): void
-	{
-		$availableGroups = array();
+    /**
+     * Parse glossary groups and injects them to the template.
+     */
+    protected function parseGlossaryGroups($objGlossaryItems, FrontendTemplate &$objTemplate, bool $blnSingleGroup = false, bool $blnHideEmptyGroups = false, bool $blnTransliteration = true, bool $blnQuickLinks = false): void
+    {
+        $availableGroups = [];
 
-		if (!$blnHideEmptyGroups)
-		{
-			$arrLetterRange = range('A', 'Z');
+        if (!$blnHideEmptyGroups)
+        {
+            $arrLetterRange = range('A', 'Z');
 
-			foreach ($arrLetterRange as $letter)
-			{
-				$availableGroups[$letter] = array
-				(
-					'item' => sprintf('<span>%s</span>', $letter),
-					'class' => 'inactive'
-				);
-			}
-		}
+            foreach ($arrLetterRange as $letter)
+            {
+                $availableGroups[$letter] = [
+                    'item' => sprintf('<span>%s</span>', $letter),
+                    'class' => 'inactive',
+                ];
+            }
+        }
 
-		if ($blnSingleGroup)
-		{
-			// Fetch all glossary items to generate pagination links
-			$objAvailableGlossaryItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
+        if ($blnSingleGroup)
+        {
+            // Fetch all glossary items to generate pagination links
+            $objAvailableGlossaryItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
 
-			foreach ($objAvailableGlossaryItems as $item)
-			{
-				// Transliterate letters to valid Ascii
-				$itemGroup = $blnTransliteration ? Utf8::toAscii($item->letter) : $item->letter;
+            foreach ($objAvailableGlossaryItems as $item)
+            {
+                // Transliterate letters to valid Ascii
+                $itemGroup = $blnTransliteration ? Utf8::toAscii($item->letter) : $item->letter;
 
-				$availableGroups[$itemGroup] = array
-				(
-					'item' => $this->generateGroupAnchorLink($itemGroup, $blnSingleGroup),
-					'class' => 'active'
-				);
-			}
-		}
+                $availableGroups[$itemGroup] = [
+                    'item' => $this->generateGroupAnchorLink($itemGroup, $blnSingleGroup),
+                    'class' => 'active',
+                ];
+            }
+        }
 
-		$objTemplate->availableGroups = $availableGroups;
+        $objTemplate->availableGroups = $availableGroups;
 
-		if ($objGlossaryItems === null)
-		{
-			return;
-		}
+        if (null === $objGlossaryItems)
+        {
+            return;
+        }
 
-		$arrGlossaryGroups = array();
+        $arrGlossaryGroups = [];
 
-		if($blnQuickLinks)
-		{
-			$arrQuickLinks = array();
-		}
+        if ($blnQuickLinks)
+        {
+            $arrQuickLinks = [];
+        }
 
-		$limit = $objGlossaryItems->count();
+        $limit = $objGlossaryItems->count();
 
-		if ($limit < 1)
-		{
-			return;
-		}
+        if ($limit < 1)
+        {
+            return;
+        }
 
-		$uuids = array();
+        $uuids = [];
 
-		foreach ($objGlossaryItems as $objGlossaryItem)
-		{
-			if ($objGlossaryItem->addImage && $objGlossaryItem->singleSRC)
-			{
-				$uuids[] = $objGlossaryItem->singleSRC;
-			}
-		}
+        foreach ($objGlossaryItems as $objGlossaryItem)
+        {
+            if ($objGlossaryItem->addImage && $objGlossaryItem->singleSRC)
+            {
+                $uuids[] = $objGlossaryItem->singleSRC;
+            }
+        }
 
-		// Preload all images in one query so they are loaded into the model registry
-		FilesModel::findMultipleByUuids($uuids);
+        // Preload all images in one query so they are loaded into the model registry
+        FilesModel::findMultipleByUuids($uuids);
 
-		foreach ($objGlossaryItems as $objGlossaryItem)
-		{
-			// Transliterate letters to valid Ascii
-			$itemGroup = $blnTransliteration ? Utf8::toAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
+        foreach ($objGlossaryItems as $objGlossaryItem)
+        {
+            // Transliterate letters to valid Ascii
+            $itemGroup = $blnTransliteration ? Utf8::toAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
 
-			$arrGlossaryGroups[$itemGroup]['id'] = 'group'.$this->id.'_'.$itemGroup;
-			$arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem);
+            $arrGlossaryGroups[$itemGroup]['id'] = 'group'.$this->id.'_'.$itemGroup;
+            $arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem);
 
-			$availableGroups[$itemGroup] = array
-			(
-				'item' => $this->generateGroupAnchorLink($itemGroup, $blnSingleGroup),
-				'class' => $blnSingleGroup ? 'active selected' : 'active'
-			);
+            $availableGroups[$itemGroup] = [
+                'item' => $this->generateGroupAnchorLink($itemGroup, $blnSingleGroup),
+                'class' => $blnSingleGroup ? 'active selected' : 'active',
+            ];
 
-			if($blnQuickLinks)
-			{
-				$arrQuickLinks[] = $this->generateAnchorLink($objGlossaryItem->keyword, $objGlossaryItem);;
-			}
-		}
+            if ($blnQuickLinks)
+            {
+                $arrQuickLinks[] = $this->generateAnchorLink($objGlossaryItem->keyword, $objGlossaryItem);
+            }
+        }
 
-		// Sort available groups
-		uksort($availableGroups, 'strnatcasecmp');
+        // Sort available groups
+        uksort($availableGroups, 'strnatcasecmp');
 
-		$objTemplate->availableGroups = $availableGroups;
-		$objTemplate->glossarygroups = $arrGlossaryGroups;
-		$objTemplate->hasQuickLinks = false;
+        $objTemplate->availableGroups = $availableGroups;
+        $objTemplate->glossarygroups = $arrGlossaryGroups;
+        $objTemplate->hasQuickLinks = false;
 
-		if($blnQuickLinks)
-		{
-			$objTemplate->hasQuickLinks = true;
-			$objTemplate->quickLinks = $arrQuickLinks;
-		}
-	}
+        if ($blnQuickLinks)
+        {
+            $objTemplate->hasQuickLinks = true;
+            $objTemplate->quickLinks = $arrQuickLinks;
+        }
+    }
 
-	/**
-	 * Returns a glossary group link
-	 */
-	protected function generateGroupAnchorLink(string $letter, bool $blnPageUrl=false): string
-	{
-		if ($blnPageUrl)
-		{
-			return sprintf('<a href="%s?page_g%s=%s">%s</a>', explode('?', $this->Environment->get('request'), 2)[0], $this->id, $letter, $letter);
-		}
+    /**
+     * Returns a glossary group link.
+     */
+    protected function generateGroupAnchorLink(string $letter, bool $blnPageUrl = false): string
+    {
+        if ($blnPageUrl)
+        {
+            return sprintf('<a href="%s?page_g%s=%s">%s</a>', explode('?', $this->Environment->get('request'), 2)[0], $this->id, $letter, $letter);
+        }
 
-		return sprintf('<a href="%s#group%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $letter, $letter);
-	}
+        return sprintf('<a href="%s#group%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $letter, $letter);
+    }
 
-	/**
-	 * Generate an anchor link and return it as string
-	 */
-	protected function generateAnchorLink(string $strLink, GlossaryItemModel $objGlossaryItem): string
-	{
-		return sprintf(
-			'<a href="%s#g_entry_%s">%s</a>',
-			$this->Environment->get('request'),
-			$objGlossaryItem->id,
-			$strLink
-		);
-	}
+    /**
+     * Generate an anchor link and return it as string.
+     */
+    protected function generateAnchorLink(string $strLink, GlossaryItemModel $objGlossaryItem): string
+    {
+        return sprintf(
+            '<a href="%s#g_entry_%s">%s</a>',
+            $this->Environment->get('request'),
+            $objGlossaryItem->id,
+            $strLink
+        );
+    }
 }
