@@ -8,7 +8,7 @@
       <trans-unit id="MOD.glossary.1">
         <source>Manage glossaries and display them in a glossary list</source>
       </trans-unit>
-      <trans-unit id="FMD.glossary">
+      <trans-unit id="FMD.glossaries">
         <source>Glossaries</source>
       </trans-unit>
       <trans-unit id="FMD.glossary.0">

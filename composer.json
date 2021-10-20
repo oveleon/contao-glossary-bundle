@@ -1,17 +1,23 @@
 {
     "name": "oveleon/contao-glossary-bundle",
     "type": "contao-bundle",
-    "description": "Adds glossary functionality to Contao",
-    "license": "MIT",
+    "description": "A glossary extension for the Contao Open Source CMS. Glossaries are organized in archives similar to news and events and can be displayed via a list and reader module.",
+    "license":"AGPL-3.0-or-later",
     "authors": [
         {
             "name": "Fabian Ekert",
             "homepage": "https://github.com/eki89"
+        },
+        {
+            "name": "Sebastian Zoglowek",
+            "homepage": "https://github.com/zoglo"
         }
     ],
     "require": {
-        "php": "^7.2",
-        "contao/core-bundle": "^4.4"
+        "php": "^7.4 || ^8.0",
+        "ext-json":"*",
+        "contao/core-bundle": "^4.9",
+        "symfony/http-foundation":"4.4.* || ^5.2"
     },
     "conflict": {
         "contao/core": "*",
@@ -19,16 +25,13 @@
     },
     "require-dev": {
         "contao/manager-plugin": "^2.3.1",
-        "contao/test-case": "^4.0",
-        "phpunit/phpunit": "^8.4",
-        "symfony/http-client": "4.4.*",
-        "symfony/phpunit-bridge": "4.4.*"
+        "contao/easy-coding-standard": "^3.4"
     },
     "extra": {
-        "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin",
-        "symfony": {
-            "require": "^4.4"
-        }
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        },
+        "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin"
     },
     "autoload": {
         "psr-4": {
@@ -52,5 +55,10 @@
     "support": {
         "issues": "https://github.com/oveleon/contao-glossary-bundle/issues",
         "source": "https://github.com/oveleon/contao-glossary-bundle"
+    },
+    "scripts": {
+        "cs-fixer": [
+            "vendor/bin/ecs check src/ --fix --ansi"
+        ]
     }
 }

@@ -5,23 +5,30 @@
   <div class="grouplist">
     <ul>
       <?php foreach ($this->availableGroups as $group): ?>
-        <li class="<?= $group['class'] ?>"><?= $group['item'] ?></li>
+        <li class="<?= $group['class'] ?>">
+            <?= $group['item'] ?>
+        </li>
       <?php endforeach; ?>
     </ul>
   </div>
 
-  <?php if (empty($this->groups)): ?>
+  <?php if (empty($this->glossarygroups)): ?>
     <p class="empty"><?= $this->empty ?></p>
   <?php else: ?>
+
+	  <?php if ($this->hasQuickLinks): ?>
+      <ul>
+        <?php foreach ($this->quickLinks as $link): ?>
+          <li><?= $link ?></li>
+        <?php endforeach; ?>
+      </ul>
+	  <?php endif; ?>
+
     <div class="glossary">
-      <?php foreach ($this->groups as $letter => $group): ?>
+      <?php foreach ($this->glossarygroups as $letter => $group): ?>
         <div class="group" id="<?= $group['id'] ?>">
           <div class="letter"><?= $letter ?></div>
-          <ul>
-            <?php foreach ($group['items'] as $item): ?>
-              <li class="item"><?= $item['linkHeadline'] ?></li>
-            <?php endforeach; ?>
-          </ul>
+            <?= implode("",$group['items']) ?>
         </div>
       <?php endforeach; ?>
     </div>

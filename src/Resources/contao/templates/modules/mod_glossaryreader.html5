@@ -2,7 +2,7 @@
 
 <?php $this->block('content'); ?>
 
-  <?= $this->article ?>
+  <?= $this->glossaryentry ?>
 
   <!-- indexer::stop -->
   <p class="back"><a href="<?= $this->referer ?>" title="<?= $this->back ?>"><?= $this->back ?></a></p>

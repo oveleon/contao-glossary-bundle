@@ -1,0 +1,4 @@
+
+<div id="g_entry_<?= $this->id ?>" class="layout_simple item glossary_<?= $this->glossary->id ?> block<?= $this->class ?>">
+  <?= $this->linkHeadline ?>
+</div>

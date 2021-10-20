@@ -1,0 +1,45 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_page.php" source-language="en">
+    <body>
+      <trans-unit id="tl_page.glossary_legend">
+        <source>Glossary settings</source>
+      </trans-unit>
+      <trans-unit id="tl_page.activateGlossary.0">
+        <source>Activate glossary</source>
+      </trans-unit>
+      <trans-unit id="tl_page.activateGlossary.1">
+        <source>Enable replacing of keywords for this and its subpages.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.disableGlossary.0">
+        <source>Disable glossary</source>
+      </trans-unit>
+      <trans-unit id="tl_page.disableGlossary.1">
+        <source>Disable glossary hovercards and keyword replacing for this page.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryArchives.0">
+        <source>Glossaries</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryArchives.1">
+        <source>Please select one or more glossaries.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryHoverCard.0">
+        <source>Hovercards</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryHoverCard.1">
+        <source>Please choose if glossary hovercards should be displayed for this page and its subpages.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.hoverCardDisabled">
+        <source>Disabled</source>
+      </trans-unit>
+      <trans-unit id="tl_page.hoverCardEnabled">
+        <source>Enabled</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryConfigTemplate.0">
+        <source>Configuration template</source>
+      </trans-unit>
+      <trans-unit id="tl_page.glossaryConfigTemplate.1">
+        <source>Here you can select a configuration template for the glossary JavaScript.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

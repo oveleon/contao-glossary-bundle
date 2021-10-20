@@ -11,7 +11,7 @@
         <target>Bitte wählen Sie ein oder mehrere Glossare</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_readerModule.0">
-        <source>Glossar reader module</source>
+        <source>Glossary reader</source>
         <target>Glossarleser</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_readerModule.1">
@@ -27,28 +27,44 @@
         <target>Gruppen ausblenden, für die keine Glossareinträge vorhanden sind.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_singleGroup.0">
-        <source>Limit to one group</source>
-        <target>Auf eine Gruppe beschränken</target>
+        <source>Glossary pagination</source>
+        <target>Glossar-Paginierung</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_singleGroup.1">
-        <source>Restricts the glossary to the output of only one group. This setting should be activated for extensive glossaries.</source>
-        <target>Beschränkt das Glossar auf die Ausgabe lediglich einer Gruppe. Diese Einstellung sollte für Umfangreiche Glossare aktiviert werden.</target>
+        <source>Restricts the output of glossary entries to an initial letter. Other glossary entries can be accessed via the glossary navigation.</source>
+        <target>Beschränkt die Ausgabe der Glossareinträge auf einen Anfangsbuchstaben. Andere Glossareinträge können über die Glossarnavigation angesteuert werden.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_letter.0">
-        <source>Default group</source>
-        <target>Standard-Gruppe</target>
+        <source>Default letter</source>
+        <target>Standard-Buchstabe</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_letter.1">
-        <source>The selected group is displayed when the page is entered and no group has been actively selected.</source>
-        <target>Die ausgewählte Gruppe wird angezeigt, wenn die Seite betreten wird und aktiv noch keine Gruppe ausgewählt wurde.</target>
+        <source>Displays the glossary entries for that letter first when you enter the page.</source>
+        <target>Zeigt beim Betreten der Seite die Glossar-Einträge für diesen Buchstaben zuerst an.</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_utf8Transliteration.0">
+        <source>Convert special characters</source>
+        <target>Sonderzeichen konvertieren</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_utf8Transliteration.1">
+        <source>Convert umlauts and special characters for first letters to valid letters (UTF8 to ASCII).</source>
+        <target>Umlaute und Sonderzeichen für Anfangsbuchstaben in valide Buchstaben konvertieren (UTF8 zu ASCII).</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_quickLinks.0">
+        <source>Glossary quicklinks</source>
+        <target>Glossar Quicklinks</target>
+      </trans-unit>
+      <trans-unit id="tl_module.glossary_quickLinks.1">
+        <source>Adds quicklinks to all glossary entries that are displayed on the page.</source>
+        <target>Fügt Quicklinks zu allen Glossareinträgen hinzu, die auf der Seite angezeigt werden.</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.0">
-        <source>Glossary template</source>
-        <target>Glossar-Template</target>
+        <source>Glossary entry template</source>
+        <target>Glossareintrag-Template</target>
       </trans-unit>
       <trans-unit id="tl_module.glossary_template.1">
-        <source>Here you can select the glossary template.</source>
-        <target>Hier können Sie das Glossar-Template auswählen.</target>
+        <source>Here you can select the glossary entry template.</source>
+        <target>Hier können Sie das Glossareintrags-Template auswählen.</target>
       </trans-unit>
     </body>
   </file>

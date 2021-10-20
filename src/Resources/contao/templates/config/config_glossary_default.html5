@@ -1,0 +1,13 @@
+<?php
+  $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/contaoglossary/scripts/dist/main.js|static';
+  $GLOBALS['TL_CSS'][] =        'bundles/contaoglossary/styles/glossary.css';
+?>
+
+<script>
+  const GN = new Glossary({
+      'hovercard': {
+          'active': <?= $this->hoverCardMode ?: 0 ?>
+      },
+      'config': <?= $this->glossaryConfig ?: 'null' ?>
+  });
+</script>

@@ -14,6 +14,18 @@
       <trans-unit id="tl_glossary.jumpTo.1">
         <source>Please choose the glossary reader page to which visitors will be redirected when clicking a glossary item.</source>
       </trans-unit>
+      <trans-unit id="tl_glossary.glossaryHoverCardTemplate.0">
+        <source>Glossary hovercard template</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary.glossaryHoverCardTemplate.1">
+        <source>Here you can select the glossary hovercard template.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary.hoverCardImgSize.0">
+        <source>Hovercard image size</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary.hoverCardImgSize.1">
+        <source>Here you can set the image dimensions and the resize mode.</source>
+      </trans-unit>
       <trans-unit id="tl_glossary.protected.0">
         <source>Protect glossary</source>
       </trans-unit>
@@ -34,6 +46,12 @@
       </trans-unit>
       <trans-unit id="tl_glossary.title_legend">
         <source>Title and redirect page</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary.template_legend">
+        <source>Template settings</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary.image_legend">
+        <source>Image settings</source>
       </trans-unit>
       <trans-unit id="tl_glossary.protected_legend">
         <source>Access protection</source>

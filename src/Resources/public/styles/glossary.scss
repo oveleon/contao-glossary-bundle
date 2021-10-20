@@ -1,0 +1,140 @@
+// Vars
+$hovercard-bg-color:        #fff;
+$hovercard-border-radius:   5px;
+$hovercard-box-shadow:      0 0 15px rgba(0, 0, 0, 0.15);
+
+// Reset
+#gs-hovercard,
+#gs-hovercard * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#gs-hovercard p {
+  margin: 0;
+}
+
+// Styles for hovercard
+#gs-hovercard {
+  font-size: 14px;
+  line-height: 1.5;
+  width: 380px;
+  box-shadow: $hovercard-box-shadow;
+
+  > .content {
+    overflow: hidden;
+  }
+}
+
+// Outer and inner-container
+#gs-hovercard,
+#gs-hovercard > .content {
+  min-height: 100px;
+  background: $hovercard-bg-color;
+  border-radius: $hovercard-border-radius;
+}
+
+// Popper arrow styles
+#gs-hovercard > [data-popper-arrow] {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+
+  background-color: transparent;
+
+  z-index: -1;
+
+  &:before {
+    position: absolute;
+    display: block;
+    content: '';
+
+    width: 10px;
+    height: 10px;
+
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+
+    background: $hovercard-bg-color;
+    box-shadow: $hovercard-box-shadow;
+  }
+}
+
+// Popper placement
+#gs-hovercard[data-popper-placement="bottom"] > [data-popper-arrow] { top: -5px; }
+#gs-hovercard[data-popper-placement="left"] > [data-popper-arrow] { right: -5px; }
+#gs-hovercard[data-popper-placement="top"] > [data-popper-arrow] { bottom: -5px; }
+#gs-hovercard[data-popper-placement="right"] > [data-popper-arrow] { left: -5px; }
+
+// Loading styles
+.hovercard-loader:only-child{
+  display: block;
+
+  margin: 10px;
+  padding-top: 20px;
+
+  width: 90%;
+  height: 18px;
+
+  border-radius: 10px;
+
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+
+    margin-top: 7px;
+
+    width: 80%;
+    height: 17px;
+
+    border-radius: 10px;
+    z-index: -1;
+  }
+
+  &:before{
+    margin-top: 13px;
+    width: 65%;
+  }
+}
+
+// Loading animation
+.hovercard-loader:only-child,
+.hovercard-loader:only-child:before,
+.hovercard-loader:only-child:after,
+.g_hovercard_default > figure {
+  background: #eee;
+  background: linear-gradient(100deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: 1s loading linear infinite;
+}
+
+// Img reset
+.g_hovercard_default > figure {
+  line-height: 0;
+  margin: 0;
+}
+
+.g_hovercard_default img {
+  background: $hovercard-bg-color;
+}
+
+//Layouting inner content
+.g_hovercard-keyword {
+  display: block;
+  padding: 10px;
+}
+
+.g_hovercard-text,
+.g_hovercard-link {
+  padding: 0 10px 10px;
+}
+
+// Keyframes
+@keyframes loading {
+  to {
+    background-position-x: -200%;
+  }
+}
