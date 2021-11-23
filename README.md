@@ -268,6 +268,8 @@ The contao glossary bundle extends the
 
 with additional ***Glossary Settings***.
 
+The settings will work for all subpages for this root page.
+
 <table>
   <tr>
     <th colspan="2"><strong>Glossary settings</strong></th>
@@ -591,7 +593,7 @@ markupAttr: {
 'sub,sup'
 </pre>
 </td>
-    <td>Allowed nodes for glossary term markup</td>
+    <td>Readable nodes for glossary item markup. Elements (and thus it's children) that are not listed within the includes, will not be converted.</td>
   </tr>
   <tr>
     <td>route: {<br/>&nbsp;&nbsp;&nbsp;prefix:<br/>&nbsp;&nbsp;&nbsp;suffix:<br/>}</td>
@@ -606,7 +608,26 @@ markupAttr: {
   <tr>
     <td>config</td>
     <td>json</td>
-    <td>Glossary entries with id, keywords, url, etc.</td>
+    <td>The parsed glossary entries for the markup (id, keywords, url, etc.)
+<pre>// For example:
+'config':[
+{
+    "id": "1", // ID
+    "keywords": ["Bar"], // Keywords
+    "url": "glossar-detail\/bar.html", // Route
+    "cs": 0 // Case-sensitive
+},
+{
+    "id": "3", // ID
+    "keywords": ["Foo"], // Keywords
+    "url": "glossar-detail\/foo.html", // Route
+    "cs": 0 // Case-sensitive
+},
+{...}
+]
+</pre>
+</td>
+
   </tr>
 </table>
 
