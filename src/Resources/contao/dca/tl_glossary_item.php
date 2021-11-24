@@ -445,7 +445,7 @@ class tl_glossary_item extends Backend
 
             case 'cut':
             case 'copy':
-                if ('cut' === Input::get('act') && 1 === Input::get('mode'))
+                if ('cut' === Input::get('act') && 1 === (int) Input::get('mode'))
                 {
                     $objGlossary = $this->Database->prepare('SELECT pid FROM tl_glossary_item WHERE id=?')
                         ->limit(1)
@@ -793,7 +793,7 @@ class tl_glossary_item extends Backend
     {
         if (Input::get('tid'))
         {
-            $this->toggleVisibility(Input::get('tid'), 1 === Input::get('state'), (func_num_args() <= 12 ? null : func_get_arg(12)));
+            $this->toggleVisibility(Input::get('tid'), 1 === (int) Input::get('state'), (func_num_args() <= 12 ? null : func_get_arg(12)));
             $this->redirect($this->getReferer());
         }
 
