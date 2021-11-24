@@ -11,6 +11,11 @@ $hovercard-box-shadow:      0 0 15px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
 }
 
+// z-index
+#gs-hovercard {
+  z-index: 1000;
+}
+
 #gs-hovercard p {
   margin: 0;
 }
