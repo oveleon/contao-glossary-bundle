@@ -81,7 +81,7 @@ class tl_content_glossary extends Backend
                 // Check access to the parent element if a content element is moved
                 if (in_array(Input::get('act'), ['cutAll', 'copyAll'], true))
                 {
-                    $this->checkAccessToElement(Input::get('pid'), $root, 2 === Input::get('mode'));
+                    $this->checkAccessToElement(Input::get('pid'), $root, 2 === (int) Input::get('mode'));
                 }
 
                 $objCes = $this->Database->prepare("SELECT id FROM tl_content WHERE ptable='tl_glossary_item' AND pid=?")
@@ -99,7 +99,7 @@ class tl_content_glossary extends Backend
             case 'cut':
             case 'copy':
                 // Check access to the parent element if a content element is moved
-                $this->checkAccessToElement(Input::get('pid'), $root, 2 === Input::get('mode'));
+                $this->checkAccessToElement(Input::get('pid'), $root, 2 === (int) Input::get('mode'));
             // no break
 
             default:
