@@ -6,7 +6,7 @@
     <ul>
       <?php foreach ($this->availableGroups as $group): ?>
         <li class="<?= $group['class'] ?>">
-            <?= $group['item'] ?>
+          <?= $group['item'] ?>
         </li>
       <?php endforeach; ?>
     </ul>
@@ -16,22 +16,23 @@
     <p class="empty"><?= $this->empty ?></p>
   <?php else: ?>
 
-	  <?php if ($this->hasQuickLinks): ?>
+    <?php if ($this->hasQuickLinks): ?>
       <ul>
         <?php foreach ($this->quickLinks as $link): ?>
           <li><?= $link ?></li>
         <?php endforeach; ?>
       </ul>
-	  <?php endif; ?>
+    <?php endif; ?>
 
     <div class="glossary">
       <?php foreach ($this->glossarygroups as $letter => $group): ?>
         <div class="group" id="<?= $group['id'] ?>">
           <div class="letter"><?= $letter ?></div>
-            <?= implode("",$group['items']) ?>
+          <?= implode("",$group['items']) ?>
         </div>
       <?php endforeach; ?>
     </div>
+
   <?php endif; ?>
 
 <?php $this->endblock(); ?>

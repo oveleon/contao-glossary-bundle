@@ -4,11 +4,11 @@
   <h4><?= $this->linkHeadline ?></h4>
 
   <div class="ce_text block">
-	  <?= $this->teaser ?>
+    <?= $this->teaser ?>
   </div>
 
-	<?php if ($this->hasText || $this->hasTeaser): ?>
-      <p class="more"><?= $this->more ?></p>
-	<?php endif; ?>
+  <?php if ($this->hasText || $this->hasTeaser): ?>
+    <p class="more"><?= $this->more ?></p>
+  <?php endif; ?>
 
 </div>
