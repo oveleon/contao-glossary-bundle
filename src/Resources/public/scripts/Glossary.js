@@ -165,7 +165,7 @@ export class Glossary
 
         for (const term of this.options.config)
         {
-            const rgx = new RegExp("(?:\\s|>|^)(" + term.keywords.join('|') + ")\\b", term.cs ? 'gu' : 'giu')
+            const rgx = new RegExp("(?:\\s|>|^|\\()(" + term.keywords.join('|') + ")\\b", term.cs ? 'gu' : 'giu')
 
             const matches = node.textContent.matchAll(rgx)
 
@@ -185,7 +185,7 @@ export class Glossary
                     // Lookbehind in JS regular expressions ( ?>= ) : https://caniuse.com/js-regexp-lookbehind
                     if(this.isNewIE)
                     {
-                        const matchRgx = new RegExp("(?:>|^)(" + match + ")\\b", 'gu')
+                        const matchRgx = new RegExp("(?:>|^|\\()(" + match + ")\\b", 'gu')
                         let sentence = [];
 
                         for(let word of node.textContent.split(' '))
@@ -201,7 +201,7 @@ export class Glossary
                     else
                     {
                         // Lookbehind regex for other browsers
-                        const matchRgx = new RegExp("(?<=\\s|>|^)(" + match + ")\\b", 'gu')
+                        const matchRgx = new RegExp("(?<=\\s|>|^|\\()(" + match + ")\\b", 'gu')
                         node.textContent = node.textContent.replace(matchRgx, elementMarkup)
                     }
                 }
