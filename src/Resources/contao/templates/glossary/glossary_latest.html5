@@ -3,16 +3,16 @@
 
   <h4><?= $this->linkHeadline ?></h4>
 
-	<?php if ($this->addImage): ?>
-		<?php $this->insert('image', $this->arrData); ?>
-	<?php endif; ?>
+  <?php if ($this->addImage): ?>
+    <?php $this->insert('image', $this->arrData); ?>
+  <?php endif; ?>
 
   <div class="ce_text block">
-	  <?= $this->teaser ?>
+    <?= $this->teaser ?>
   </div>
 
-	<?php if ($this->hasText || $this->hasTeaser): ?>
-      <p class="more"><?= $this->more ?></p>
-	<?php endif; ?>
+  <?php if ($this->hasText || $this->hasTeaser): ?>
+    <p class="more"><?= $this->more ?></p>
+  <?php endif; ?>
 
 </div>

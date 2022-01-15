@@ -3,25 +3,25 @@
 
   <h1><?= $this->headline ?></h1>
 
-	<?php if ($this->hasSubHeadline): ?>
+  <?php if ($this->hasSubHeadline): ?>
     <h2><?= $this->subHeadline ?></h2>
-	<?php endif; ?>
+  <?php endif; ?>
 
-	<?php if ($this->hasText): ?>
-		<?= $this->text ?>
-	<?php else: ?>
+  <?php if ($this->hasText): ?>
+    <?= $this->text ?>
+  <?php else: ?>
     <div class="ce_text block">
-		<?php if (!$this->addBefore): ?>
-			<?= $this->teaser ?>
-		<?php endif; ?>
+      <?php if (!$this->addBefore): ?>
+        <?= $this->teaser ?>
+      <?php endif; ?>
 
-		<?php if ($this->addImage): ?>
-			<?php $this->insert('image', $this->arrData); ?>
-		<?php endif; ?>
+      <?php if ($this->addImage): ?>
+        <?php $this->insert('image', $this->arrData); ?>
+      <?php endif; ?>
 
-		<?php if ($this->addBefore): ?>
-			<?= $this->teaser ?>
-		<?php endif; ?>
+      <?php if ($this->addBefore): ?>
+        <?= $this->teaser ?>
+      <?php endif; ?>
     </div>
   <?php endif; ?>
 
