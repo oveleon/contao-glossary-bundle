@@ -5,9 +5,12 @@
 
 <script>
   const GN = new Glossary({
-      'hovercard': {
-          'active': <?= $this->hoverCardMode ?: 0 ?>
-      },
-      'config': <?= $this->glossaryConfig ?: 'null' ?>
+    'hovercard': {
+        'active': <?= $this->hoverCardMode ?: 0 ?>
+    },
+    'route': {
+      'cache': <?= $this->cacheStatus ?: 0 ?>
+    },
+    'config': <?= $this->glossaryConfig ?: 'null' ?>
   });
 </script>

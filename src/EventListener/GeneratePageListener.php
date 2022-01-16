@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoGlossaryBundle\EventListener;
 
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendTemplate;
 use Contao\LayoutModel;
@@ -114,6 +115,9 @@ class GeneratePageListener
                 $objTemplate->hoverCardMode = false;
                 break;
         }
+
+        // Disable glossary cache in contao debug mode
+        $objTemplate->cacheStatus = !Config::get('debugMode');
 
         $objTemplate->glossaryConfig = $glossaryConfig;
 

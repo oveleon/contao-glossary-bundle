@@ -596,9 +596,9 @@ markupAttr: {
     <td>Readable nodes for glossary item markup. Elements (and thus it's children) that are not listed within the includes, will not be converted.</td>
   </tr>
   <tr>
-    <td>route: {<br/>&nbsp;&nbsp;&nbsp;prefix:<br/>&nbsp;&nbsp;&nbsp;suffix:<br/>}</td>
-    <td>&nbsp;<br>'/api/glossary/item/'<br/>'/html'<br/>&nbsp;</td>
-    <td>API settings</td>
+    <td>route: {<br/>&nbsp;&nbsp;&nbsp;prefix:<br/>&nbsp;&nbsp;&nbsp;suffix:<br/>&nbsp;&nbsp;&nbsp;cache:<br/>}</td>
+    <td>&nbsp;<br>'/api/glossary/item/'<br/>'/html'<br/>true<br/>&nbsp;</td>
+    <td>API and glossary term cache settings</td>
   </tr>
   <tr>
     <td>hovercardBreakpoint</td>
