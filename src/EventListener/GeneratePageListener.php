@@ -88,7 +88,9 @@ class GeneratePageListener
                 {
                     $arrGlossaryItems[] = [
                         'id' => $objGlossaryItem->id,
-                        'keywords' => $arrKeywords,
+
+                        // Catch wrongly entered empty keywords and filter them out
+                        'keywords' => array_values(array_filter($arrKeywords)),
                         'url' => Glossary::generateUrl($objGlossaryItem),
 
                         // Case-sensitive search
