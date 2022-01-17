@@ -44,6 +44,7 @@ Terms appearing on your website can be automatically replaced links (or another 
     + [Limitation](#known-limitations)
 + [Glossary JavaScript](#glossary-javascript)
 + [Browser Support (JavaScript)](#browser-support)
++ [Frequently asked Questions](#frequently-asked-questions)
 + [Support](#support)
 + [License](#license)
 + [Sponsoring](#sponsoring)
@@ -659,6 +660,35 @@ https://caniuse.com/?search=String.matchAll
 - Microsoft Edge (94)
 
 > It will work with every browser that supports [String.matchAll](https://caniuse.com/?search=String.matchAll)
+
+## Frequently asked questions
+
+### The glossary term markup does not work on my website
+- Make sure to check whether the glossary is activated in root page settings
+- Make sure to check whether the glossary is not disabled for this subpage
+- Check whether there is any JavaScript errors from other sources when opening developer tools
+- Make sure to check for an existing <code>&lt;div id="wrapper"&gt;</code> container inside your <code>&lt;body&gt;</code>
+  > If you are using a custom theme, you have to adjust the glossary JavaScript within the template <code>config_glossary_default.html</code>. 
+  > Here you can add an entry selector for the main content of your page as shown below (See [JavaScript Options](#glossary-javascript)):
+  >
+  > <pre>
+  > const GN = new Glossary({
+  > &nbsp;&nbsp;'entrySelector': "#YOUR-CONTENT-SELECTOR",
+  > </pre>
+  
+### Not all links are converted on my page
+- The JavaScript for the markup contains a fallback due to MacOS and Safari not allowing [js-regex-lookbehind](https://caniuse.com/js-regexp-lookbehind). 
+- Keywords with spaces (e.g. "Foo Bar") can not be found, full keywords ("Foobar") will still be taken into account.
+
+### I want to style the glossary markup
+- In case you need a class, you have to adjust the JavaScript configuration within <code>config_glossary_default.html</code>
+- Make sure to check the [JavaScript-Settings](#glossary-javascript) for more options. 
+  > <pre>
+  > const GN = new Glossary({
+  > &nbsp;&nbsp;'markupAttr': {
+  > &nbsp;&nbsp;&nbsp;&nbsp;'class': 'yourclass1 yourclass2'
+  > &nbsp;&nbsp;},
+  > </pre>
 
 
 ## Support
