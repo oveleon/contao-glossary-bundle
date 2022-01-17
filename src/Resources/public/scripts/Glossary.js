@@ -65,6 +65,7 @@ export class Glossary
             route: {                            // API settings
                 prefix: '/api/glossary/item/',
                 suffix: '/html',
+                cache: true
             },
             hovercardBreakpoint : 1024,        // Minimum width for hovercard-creation
             config: null
@@ -308,13 +309,16 @@ export class Glossary
         // Only fetch glossary content after certain time to prevent too many requests
         this.showDelay = setTimeout(() => {
             // Cache implementation
-            const cachedResponse = this._getItemCached(id)
-
-            if(cachedResponse)
+            if(this.options.route.cache)
             {
-                this._buildHovercard(cachedResponse)
-                this._updateHovercard(cachedResponse)
-                return
+                const cachedResponse = this._getItemCached(id)
+
+                if(cachedResponse)
+                {
+                    this._buildHovercard(cachedResponse)
+                    this._updateHovercard(cachedResponse)
+                    return
+                }
             }
 
             this._fetchGlossaryItem(id)
@@ -369,7 +373,8 @@ export class Glossary
 
                 response.text().then((htmlContent) => {
                     // Write into cache
-                    this._setItemCache(id, htmlContent);
+                    if(this.options.route.cache)
+                        this._setItemCache(id, htmlContent);
 
                     // Build or parse content into hovercard
                     if(!this.options.hovercard.showLoadingAnimation)
