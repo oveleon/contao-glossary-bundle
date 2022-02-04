@@ -110,7 +110,7 @@ class GlossaryController extends AbstractController
         $arrResponse = [
             'title' => $objGlossaryItem->keyword,
             'url' => Glossary::generateUrl($objGlossaryItem, true),
-            'teaser' => $objGlossaryItem->teaser,
+            'teaser' => Controller::replaceInsertTags($objGlossaryItem->teaser), // (see #13)
             'class' => $objGlossaryItem->cssClass,
         ];
 
