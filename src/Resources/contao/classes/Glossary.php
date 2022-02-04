@@ -251,6 +251,9 @@ class Glossary extends Frontend
             $objTemplate->hasTeaser = true;
             $objTemplate->teaser = StringUtil::toHtml5($objGlossaryItem->teaser);
             $objTemplate->teaser = StringUtil::encodeEmail($objTemplate->teaser);
+
+            // Replace insert tags within teaser when fetching items via controller (see #13)
+            $objTemplate->teaser = Controller::replaceInsertTags($objTemplate->teaser);
         }
 
         // Display the "read more" button for external/article links
