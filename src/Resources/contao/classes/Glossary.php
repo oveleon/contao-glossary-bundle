@@ -25,6 +25,7 @@ use Contao\FrontendTemplate;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use function Symfony\Component\String\u;
 
 /**
  * Provide methods regarding glossaries.
@@ -384,5 +385,13 @@ class Glossary extends Frontend
 
         // Link to the default page
         return sprintf(preg_replace('/%(?!s)/', '%%', $strUrl), ($objItem->alias ?: $objItem->id));
+    }
+
+    /**
+     * Returns a transliterated string
+     */
+    public static function transliterateAscii(string $string): string
+    {
+        return (string) u($string)->ascii();
     }
 }

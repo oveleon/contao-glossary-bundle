@@ -17,9 +17,9 @@ namespace Oveleon\ContaoGlossaryBundle;
 use Contao\FilesModel;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
+use Contao\Module;
 use Contao\StringUtil;
 use Contao\System;
-use Patchwork\Utf8;
 
 /**
  * Parent class for glossary modules.
@@ -30,7 +30,7 @@ use Patchwork\Utf8;
  * @author Fabian Ekert <https://github.com/eki89>
  * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
-abstract class ModuleGlossary extends \Module
+abstract class ModuleGlossary extends Module
 {
     /**
      * Sort out protected glossaries.
@@ -117,7 +117,7 @@ abstract class ModuleGlossary extends \Module
             foreach ($objAvailableGlossaryItems as $item)
             {
                 // Transliterate letters to valid Ascii
-                $itemGroup = $blnTransliteration ? Utf8::toAscii($item->letter) : $item->letter;
+                $itemGroup = $blnTransliteration ? Glossary::transliterateAscii($item->letter) : $item->letter;
 
                 $availableGroups[$itemGroup] = [
                     'item' => $this->generateGroupAnchorLink($itemGroup, $blnSingleGroup),
@@ -163,7 +163,7 @@ abstract class ModuleGlossary extends \Module
         foreach ($objGlossaryItems as $objGlossaryItem)
         {
             // Transliterate letters to valid Ascii
-            $itemGroup = $blnTransliteration ? Utf8::toAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
+            $itemGroup = $blnTransliteration ?  Glossary::transliterateAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
 
             $arrGlossaryGroups[$itemGroup]['id'] = 'group'.$this->id.'_'.$itemGroup;
             $arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem);

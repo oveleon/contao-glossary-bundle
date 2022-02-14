@@ -17,7 +17,8 @@
         "php": "^7.4 || ^8.0",
         "ext-json":"*",
         "contao/core-bundle": "^4.9",
-        "symfony/http-foundation":"4.4.* || ^5.2"
+        "symfony/http-foundation":"4.4.* || ^5.2",
+        "symfony/string": "^5.4"
     },
     "conflict": {
         "contao/core": "*",

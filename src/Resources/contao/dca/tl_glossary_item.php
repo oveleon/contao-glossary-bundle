@@ -27,7 +27,6 @@ use Contao\Versions;
 use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\GlossaryModel;
-use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 System::loadLanguageFile('tl_content');
@@ -531,7 +530,7 @@ class tl_glossary_item extends Backend
      */
     public function setGlossaryItemGroup(DataContainer $dc): void
     {
-        $newGroup = Utf8::strtoupper(mb_substr($dc->activeRecord->keyword, 0, 1, 'UTF-8'));
+        $newGroup = mb_strtoupper(mb_substr($dc->activeRecord->keyword, 0, 1, 'UTF-8'));
 
         if ($dc->activeRecord->letter !== $newGroup)
         {
