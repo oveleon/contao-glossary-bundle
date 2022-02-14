@@ -55,7 +55,7 @@ class ModuleGlossaryList extends ModuleGlossary
         if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
         {
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '. $GLOBALS['TL_LANG']['FMD']['glossary'][0] .' ###';
+            $objTemplate->wildcard = '### '. mb_strtoupper($GLOBALS['TL_LANG']['FMD']['glossary'][0], 'UTF-8') .' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
