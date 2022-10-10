@@ -69,7 +69,7 @@ class Glossary extends Frontend
                 }
 
                 // Skip glossaries outside the root nodes
-                if (!empty($arrRoot) && !\in_array($objGlossary->jumpTo, $arrRoot, true))
+                if (!empty($arrRoot) && !\in_array($objGlossary->jumpTo, $arrRoot))
                 {
                     continue;
                 }
