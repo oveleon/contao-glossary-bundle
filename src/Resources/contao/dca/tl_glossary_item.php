@@ -429,14 +429,14 @@ class tl_glossary_item extends Backend
             case 'paste':
             case 'select':
                 // Check CURRENT_ID here (see #247)
-                if (!in_array(CURRENT_ID, $root, true))
+                if (!in_array(CURRENT_ID, $root))
                 {
                     throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
                 }
                 break;
 
             case 'create':
-                if (!Input::get('pid') || !in_array(Input::get('pid'), $root, true))
+                if (!Input::get('pid') || !in_array(Input::get('pid'), $root))
                 {
                     throw new AccessDeniedException('Not enough permissions to create glossary items in glossary ID '.Input::get('pid').'.');
                 }
@@ -463,7 +463,7 @@ class tl_glossary_item extends Backend
                     $pid = Input::get('pid');
                 }
 
-                if (!in_array($pid, $root, true))
+                if (!in_array($pid, $root))
                 {
                     throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary item ID '.$id.' to glossary ID '.$pid.'.');
                 }
@@ -483,7 +483,7 @@ class tl_glossary_item extends Backend
                     throw new AccessDeniedException('Invalid glossary item ID '.$id.'.');
                 }
 
-                if (!in_array($objGlossary->pid, $root, true))
+                if (!in_array($objGlossary->pid, $root))
                 {
                     throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary item ID '.$id.' of glossary  ID '.$objGlossary->pid.'.');
                 }
@@ -494,7 +494,7 @@ class tl_glossary_item extends Backend
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!in_array($id, $root, true))
+                if (!in_array($id, $root))
                 {
                     throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
                 }
@@ -517,7 +517,7 @@ class tl_glossary_item extends Backend
                     throw new AccessDeniedException('Invalid command "'.Input::get('act').'".');
                 }
 
-                if (!in_array($id, $root, true))
+                if (!in_array($id, $root))
                 {
                     throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
                 }

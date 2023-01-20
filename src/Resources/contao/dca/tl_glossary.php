@@ -240,7 +240,7 @@ class tl_glossary extends Backend
             case 'copy':
             case 'delete':
             case 'show':
-                if (!in_array(Input::get('id'), $root, true) || ('delete' === Input::get('act') && !$this->User->hasAccess('delete', 'glossaryp')))
+                if (!in_array(Input::get('id'), $root) || ('delete' === Input::get('act') && !$this->User->hasAccess('delete', 'glossaryp')))
                 {
                     throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary ID '.Input::get('id').'.');
                 }
@@ -301,7 +301,7 @@ class tl_glossary extends Backend
         }
 
         // The glossary is enabled already
-        if (in_array($insertId, $root, true))
+        if (in_array($insertId, $root))
         {
             return;
         }
@@ -311,7 +311,7 @@ class tl_glossary extends Backend
 
         $arrNew = $objSessionBag->get('new_records');
 
-        if (is_array($arrNew['tl_glossary']) && in_array($insertId, $arrNew['tl_glossary'], true))
+        if (is_array($arrNew['tl_glossary']) && in_array($insertId, $arrNew['tl_glossary']))
         {
             // Add the permissions on group level
             if ('custom' !== $this->User->inherit)
@@ -322,7 +322,7 @@ class tl_glossary extends Backend
                 {
                     $arrGlossaryp = StringUtil::deserialize($objGroup->glossaryp);
 
-                    if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp, true))
+                    if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp))
                     {
                         $arrGlossarys = StringUtil::deserialize($objGroup->glossarys, true);
                         $arrGlossarys[] = $insertId;
@@ -344,7 +344,7 @@ class tl_glossary extends Backend
 
                 $arrGlossaryp = StringUtil::deserialize($objUser->glossaryp);
 
-                if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp, true))
+                if (is_array($arrGlossaryp) && in_array('create', $arrGlossaryp))
                 {
                     $arrGlossarys = StringUtil::deserialize($objUser->glossarys, true);
                     $arrGlossarys[] = $insertId;
