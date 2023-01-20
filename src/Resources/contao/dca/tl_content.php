@@ -67,10 +67,13 @@ class tl_content_glossary extends Backend
         {
             case '': // empty
             case 'paste':
-            case 'create':
             case 'select':
                 // Check access to the glossary item
                 $this->checkAccessToElement(CURRENT_ID, $root, true);
+                break;
+            case 'create':
+                // Check access to the parent element if a content element is created
+                $this->checkAccessToElement(Input::get('pid'), $root, 2 === (int) Input::get('mode'));
                 break;
 
             case 'editAll':
@@ -79,7 +82,7 @@ class tl_content_glossary extends Backend
             case 'cutAll':
             case 'copyAll':
                 // Check access to the parent element if a content element is moved
-                if (in_array(Input::get('act'), ['cutAll', 'copyAll'], true))
+                if (in_array(Input::get('act'), ['cutAll', 'copyAll']))
                 {
                     $this->checkAccessToElement(Input::get('pid'), $root, 2 === (int) Input::get('mode'));
                 }
@@ -142,7 +145,7 @@ class tl_content_glossary extends Backend
         }
 
         // The glossary is not mounted
-        if (!in_array($objArchive->id, $root, true))
+        if (!in_array($objArchive->id, $root))
         {
             throw new AccessDeniedException('Not enough permissions to modify article ID '.$objArchive->nid.' in glossary ID '.$objArchive->id.'.');
         }
