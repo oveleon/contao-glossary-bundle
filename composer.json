@@ -61,5 +61,11 @@
         "cs-fixer": [
             "vendor/bin/ecs check src/ --fix --ansi"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }

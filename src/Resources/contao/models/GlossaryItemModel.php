@@ -165,6 +165,27 @@ class GlossaryItemModel extends Model
     }
 
     /**
+     * Find a published glossary item by its ID or alias.
+     *
+     * @param mixed $varId      The numeric ID or alias name
+     * @param array $arrOptions An optional options array
+     *
+     * @return GlossaryItemModel|null The model or null if there are no glossary items
+     */
+    public static function findPublishedByIdOrAlias($varId, array $arrOptions = [])
+    {
+        $t = static::$strTable;
+        $arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? ["$t.alias=?"] : ["$t.id=?"];
+
+        if (!static::isPreviewMode($arrOptions))
+        {
+            $arrColumns[] = "$t.published='1'";
+        }
+
+        return static::findOneBy($arrColumns, $varId, $arrOptions);
+    }
+
+    /**
      * Find a published glossary item from one or more glossaries by its ID or alias.
      *
      * @param mixed $varId      The numeric ID or alias name

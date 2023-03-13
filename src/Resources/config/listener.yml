@@ -14,3 +14,9 @@ services:
         tags:
           - { name: contao.hook, hook: replaceInsertTags }
         public: true
+
+    contao_glossary.listener.breadcrumb:
+        class: Oveleon\ContaoGlossaryBundle\EventListener\BreadcrumbListener
+        tags:
+          - { name: contao.hook, hook: generateBreadcrumb }
+        public: true
