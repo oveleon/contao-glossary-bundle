@@ -9,7 +9,7 @@
  * copyright   Oveleon                  <https://www.oveleon.de/>
  */
 
-import { extend } from "./helper/extend";
+import { extend } from "./core/options";
 import { createPopper } from '@popperjs/core';
 
 export class Glossary
@@ -202,7 +202,7 @@ export class Glossary
                     else
                     {
                         // Lookbehind regex for other browsers
-                        const matchRgx = new RegExp("(?<=\\s|>|^|\\()(" + match + ")\\b", 'gu')
+                        const matchRgx = new RegExp("(?<!glc=\"1\">)(?<=\\s|>|^|\\()(" + match + ")\\b", 'gu')
                         node.textContent = node.textContent.replace(matchRgx, elementMarkup)
                     }
                 }
@@ -242,6 +242,9 @@ export class Glossary
                 el.setAttribute(key, this.options.markupAttr[key])
             }
         }
+
+        // Set glossary attribute to prevent already conversed elements to be taken into consideration
+        el.setAttribute('glc','1')
 
         return el.outerHTML;
     }
