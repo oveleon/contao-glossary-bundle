@@ -19,6 +19,10 @@ export class Glossary
             entrySelector: '#wrapper',          // Selectors for glossary-term search
             markup: 'a',                        // Markup attribute for parsed glossary terms (e.g. 'mark', 'span', 'a')
             markupAttr: null,                   // Markup attributes for created markups
+            language: {
+                active: false,                  // Activates the lang attribute (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang)
+                lang:   ''                      // Language attribute
+            },
             hovercard: {
                 active: true,                   // Whether the hover-card feature should be enabled or not
                 id: 'gs-hovercard',             // id for the hover-card
@@ -259,10 +263,12 @@ export class Glossary
                     el.title = title
         }
 
+        if (this.options.language.active)
+            el.setAttribute('lang',this.options.language.lang)
+
         // Set markup attributes
         if (null !== this.options.markupAttr)
         {
-
             for (const key in this.options.markupAttr)
             {
                 el.setAttribute(key, this.options.markupAttr[key])

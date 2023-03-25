@@ -56,18 +56,20 @@ Terms appearing on your website can be automatically replaced links (or another 
 - Frontend- and Backend permissions for glossaries and terms
 - Access protection for modules
 - Paginated glossary lists
-- Quicklinks
+- Quick-links
 - Navigation/Pagination grouping for umlauts (UTF8 to ASCII conversion)
 - Automatic keyword conversion of glossary terms (markup or link)
 - Case sensitivity for keyword conversion
-- Hovercard-preview for glossary terms
-- Loading animation for hovercards
+- Hover-card-preview for glossary terms
+- Loading animation for hover-cards
 - Insert tags
-- Linkpicker
+- Link-picker
 - Meta title and description for detail pages
 - Sitemap-Integration
 - Cache invalidation
-- Caching for hovercard content (Sessionstorage)
+- Caching for hover-card content (session-storage)
+- Caching for abbr descriptions (session-storage)
+  - can be enabled using the markup feature with 'abbr'
 
 ## Installation
 
@@ -533,6 +535,20 @@ markupAttr: {
 }
 </pre>
     </td>
+  </tr>
+
+  <tr>
+    <th colspan="3"><strong>language</strong></th>
+  </tr>
+  <tr>
+    <td>active</td>
+    <td>true</td>
+    <td>Whether the language attribute 'lang' should be parsed</td>
+  </tr>
+  <tr>
+    <td>lang</td>
+    <td>''</td>
+    <td>Language attribute</td>
   </tr>
   <tr>
     <th colspan="3"><strong>hovercard</strong></th>

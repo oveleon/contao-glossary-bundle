@@ -5,6 +5,11 @@
 
 <script>
   const GN = new Glossary({
+    'markup': 'abbr',
+    'language': {
+      'active': true,
+      'lang': '<?= $this->language ?>'
+    },
     'hovercard': {
         'active': <?= $this->hoverCardMode ?: 0 ?>
     },

@@ -116,6 +116,9 @@ class GeneratePageListener
                 break;
         }
 
+        // Adds a 'lang' attribute (#24)
+        $objTemplate->language = $pageModel->rootLanguage;
+
         // Disable glossary cache in contao debug mode
         $objTemplate->cacheStatus = !Config::get('debugMode');
 
