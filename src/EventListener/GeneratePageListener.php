@@ -74,7 +74,7 @@ class GeneratePageListener
         // Load glossary configuration template
         $objTemplate = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
 
-        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives);
+        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives, ['order' => "LENGTH(tl_glossary_item.keyword) DESC"]);
 
         $glossaryConfig = null;
 
