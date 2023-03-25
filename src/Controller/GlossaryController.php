@@ -18,6 +18,7 @@ use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
+use Exception;
 use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\GlossaryModel;
@@ -28,9 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * ContentApiController provides all routes.
- *
- * @Route(defaults={"_scope" = "frontend"})
+ * @Route("/api/glossary", defaults={"_scope" = "frontend"})
  */
 class GlossaryController extends AbstractController
 {
@@ -45,13 +44,9 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * Runs the command scheduler. (prepare).
-     *
-     * @Route("/api/glossary/glossarizer", name="glossary_table")
-     *
-     * @return JsonResponse|string
+     * @Route("/glossarizer", name="glossary_table")
      */
-    public function showGlossarizer(Request $request)
+    public function showGlossarizer(Request $request): JsonResponse
     {
         $this->framework->initialize();
 
@@ -88,15 +83,35 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * Runs the command scheduler. (prepare).
-     *
-     * @Route("/api/glossary/item/{id}/json", name="glossary_item_json")
-     *
-     * @param $id
-     *
-     * @return JsonResponse|string
+     * @Route("/info", name="glossary_descriptions")
      */
-    public function getGlossaryItem(Request $request, $id)
+    public function showGlossaryDescriptions(Request $request): JsonResponse
+    {
+        $this->framework->initialize();
+
+        $objGlossaryItems = GlossaryItemModel::findAll();
+
+        $arrResponse = [];
+
+        if (null === $objGlossaryItems)
+        {
+            return new JsonResponse($arrResponse);
+        }
+
+        while ($objGlossaryItems->next())
+        {
+            $arrResponse[$objGlossaryItems->id] = [
+                strip_tags($objGlossaryItems->teaser)
+            ];
+        }
+
+        return new JsonResponse($arrResponse);
+    }
+
+    /**
+     * @Route("/item/{id}/json", name="glossary_item_json")
+     */
+    public function getGlossaryItem(Request $request, $id): JsonResponse
     {
         $this->framework->initialize();
 
@@ -137,13 +152,10 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * Runs the command scheduler. (prepare).
+     * @Route("/item/{id}/html", name="glossary_item_html")
      *
-     * @Route("/api/glossary/item/{id}/html", name="glossary_item_html")
-     *
-     * @param $id
-     *
-     * @return Response|string
+     * @return JsonResponse|Response
+     * @throws Exception
      */
     public function getGlossaryItemContent(Request $request, $id)
     {
@@ -161,7 +173,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * Return error.
+     * Return error
      */
     private function error(string $msg, int $status): JsonResponse
     {
