@@ -74,7 +74,7 @@ class GeneratePageListener
         // Load glossary configuration template
         $objTemplate = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
 
-        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives);
+        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives, ['order' => "LENGTH(tl_glossary_item.keyword) DESC"]);
 
         $glossaryConfig = null;
 
@@ -115,6 +115,9 @@ class GeneratePageListener
                 $objTemplate->hoverCardMode = false;
                 break;
         }
+
+        // Adds a 'lang' attribute (#24)
+        $objTemplate->language = $pageModel->rootLanguage;
 
         // Disable glossary cache in contao debug mode
         $objTemplate->cacheStatus = !Config::get('debugMode');
