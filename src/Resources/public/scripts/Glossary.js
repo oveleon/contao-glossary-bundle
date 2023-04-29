@@ -222,6 +222,9 @@ export class Glossary
                         }
 
                         node.textContent = sentence.join(' ')
+
+                        // Manipulate length to activate text conversion
+                        substitutes[0] = '';
                     }
                     else
                     {
@@ -244,7 +247,12 @@ export class Glossary
         if (!!Object.keys(substitutes).length)
         {
             const wrap = document.createElement('span')
-            wrap.innerHTML = node.textContent.replace(new RegExp(Object.keys(substitutes).join("|"),"gu"),(m)=>{return substitutes[m]})
+
+            if (this.isNewIE)
+                wrap.innerHTML = node.textContent
+            else
+                wrap.innerHTML = node.textContent.replace(new RegExp(Object.keys(substitutes).join("|"),"gu"),(m)=>{return substitutes[m]})
+
             node.replaceWith(wrap)
             wrap.outerHTML = wrap.innerHTML
         }
