@@ -81,6 +81,7 @@ export class Glossary
 
         this.showDelay = null
         this.hideTimeout = null
+        this.matchIndex = 0
 
         // User agent check
         this.isNewIE = this._isNewIE()
@@ -184,7 +185,8 @@ export class Glossary
         if (!node.textContent.trim())
             return
 
-        let termCache = []
+        let termCache     = []
+        const substitutes = {}
 
         for (const term of this.options.config)
         {
@@ -225,17 +227,27 @@ export class Glossary
                     {
                         // Lookbehind regex for other browsers
                         const matchRgx = new RegExp("(?<!glc=\"1\">)(?<=\\s|>|^|\\()(" + match + ")\\b", 'gu')
-                        node.textContent = node.textContent.replace(matchRgx, elementMarkup)
+
+                        if (matchRgx.test(node.textContent))
+                        {
+                            let matchIdent = 'glw-' + this.matchIndex
+                            node.textContent = node.textContent.replace(matchRgx, matchIdent)
+                            substitutes[matchIdent] = elementMarkup
+                            this.matchIndex++
+                        }
                     }
                 }
             }
         }
 
         // Conversion from text to element
-        const wrap = document.createElement('span')
-        wrap.innerHTML = node.textContent
-        node.replaceWith(wrap)
-        wrap.outerHTML = wrap.innerHTML
+        if (!!Object.keys(substitutes).length)
+        {
+            const wrap = document.createElement('span')
+            wrap.innerHTML = node.textContent.replace(new RegExp(Object.keys(substitutes).join("|"),"gu"),(m)=>{return substitutes[m]})
+            node.replaceWith(wrap)
+            wrap.outerHTML = wrap.innerHTML
+        }
     }
 
     /**
