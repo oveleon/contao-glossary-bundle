@@ -28,12 +28,12 @@ class BreadcrumbListener
 {
     public function __invoke(array $items): array
     {
-        $alias = Input::get('items', 0, 1);
+        $alias = Input::get('items', false, true);
 
         // Set the item from the auto_item parameter
         if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem'))
         {
-            $alias = Input::get('auto_item', 0, 1);
+            $alias = Input::get('auto_item', false, true);
         }
 
         if ($alias && ($glossaryItem = GlossaryItemModel::findPublishedByIdOrAlias($alias)) !== null)
