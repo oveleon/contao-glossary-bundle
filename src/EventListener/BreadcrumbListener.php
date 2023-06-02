@@ -27,14 +27,16 @@ class BreadcrumbListener
 {
     public function __invoke(array $items): array
     {
-        $alias = Input::get('items');
+        $alias = Input::get('items', 0, 1);
 
         // Set the item from the auto_item parameter
-        if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem')) {
-            $alias = Input::get('auto_item');
+        if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem'))
+        {
+            $alias = Input::get('auto_item', 0 , 1);
         }
 
-        if ($alias && ($glossaryItem = GlossaryItemModel::findPublishedByIdOrAlias($alias)) !== null) {
+        if ($alias && ($glossaryItem = GlossaryItemModel::findPublishedByIdOrAlias($alias)) !== null)
+        {
             // Mark the last item as inactive
             $items[\count($items) - 1]['href'] = $GLOBALS['objPage']->getFrontendUrl();
             $items[\count($items) - 1]['isActive'] = false;
