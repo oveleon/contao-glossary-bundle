@@ -213,7 +213,7 @@ export class Glossary
                     // Lookbehind in JS regular expressions ( ?>= ) : https://caniuse.com/js-regexp-lookbehind
                     if (this.isNewIE)
                     {
-                        const matchRgx = new RegExp("(?:>|^|\\()(" + match + ")\\b", 'gu')
+                        const matchRgx = new RegExp("(?:>|^|\\()(" + match + ")(?!\-)\\b", 'gu')
                         let sentence = []
 
                         for (let word of node.textContent.split(' '))
@@ -232,7 +232,7 @@ export class Glossary
                     else
                     {
                         // Lookbehind regex for other browsers
-                        const matchRgx = new RegExp("(?<!glc=\"1\">)(?<=\\s|>|^|\\()(" + match + ")\\b", 'gu')
+                        const matchRgx = new RegExp("(?<!glc=\"1\">)(?<=\\s|>|^|\\()(" + match + ")(?!\-)\\b", 'gu')
 
                         if (matchRgx.test(node.textContent))
                         {
