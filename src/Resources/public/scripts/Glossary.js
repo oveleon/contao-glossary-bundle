@@ -65,6 +65,9 @@ export class Glossary
                 'mark,abbr',
                 'sub,sup'
             ],
+            excludeClasses: [                   // Exclude-classes to skip allowed nodes
+                'gl-none'
+            ],
             route: {                            // API settings
                 prefix: '/api/glossary/item/',
                 suffix: '/html',
@@ -173,7 +176,7 @@ export class Glossary
      */
     _isValidNode(node)
     {
-        return node.nodeType === Node.TEXT_NODE || (node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')))
+        return node.nodeType === Node.TEXT_NODE || (node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')) && !(!!node.classList.length && node.matches(this.options.excludeClasses.map(c=>'.'+c).join(','))))
     }
 
     /**
@@ -210,7 +213,7 @@ export class Glossary
                     // Lookbehind in JS regular expressions ( ?>= ) : https://caniuse.com/js-regexp-lookbehind
                     if (this.isNewIE)
                     {
-                        const matchRgx = new RegExp("(?:>|^|\\()(" + match + ")\\b", 'gu')
+                        const matchRgx = new RegExp("(?:>|^|\\()(" + match + ")(?!\-)\\b", 'gu')
                         let sentence = []
 
                         for (let word of node.textContent.split(' '))
@@ -229,7 +232,7 @@ export class Glossary
                     else
                     {
                         // Lookbehind regex for other browsers
-                        const matchRgx = new RegExp("(?<!glc=\"1\">)(?<=\\s|>|^|\\()(" + match + ")\\b", 'gu')
+                        const matchRgx = new RegExp("(?<!glc=\"1\">)(?<=\\s|>|^|\\()(" + match + ")(?!\-)\\b", 'gu')
 
                         if (matchRgx.test(node.textContent))
                         {

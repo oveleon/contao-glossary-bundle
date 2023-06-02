@@ -17,6 +17,7 @@ namespace Oveleon\ContaoGlossaryBundle\EventListener;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendTemplate;
+use Contao\Input;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
@@ -72,11 +73,18 @@ class GeneratePageListener
         }
 
         // Load glossary configuration template
-        $objTemplate = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
-
+        $objTemplate      = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
         $objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives, ['order' => "LENGTH(tl_glossary_item.keyword) DESC"]);
+        $glossaryConfig   = null;
 
-        $glossaryConfig = null;
+        $pageId = $pageModel->id;
+        $alias  = Input::get('items');
+
+        // Set the item from the auto_item parameter
+        if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem'))
+        {
+            $alias = Input::get('auto_item');
+        }
 
         if (null !== $objGlossaryItems)
         {
@@ -87,6 +95,23 @@ class GeneratePageListener
                 // Check if keywords exist
                 if (array_filter($arrKeywords = StringUtil::deserialize($objGlossaryItem->keywords, true)))
                 {
+                    switch ($objGlossaryItem->source)
+                    {
+                        case 'default':
+                            if ($alias === $objGlossaryItem->alias)
+                            {
+                                continue 2; // Skip config entry if we are on the same page
+                            }
+                            break;
+
+                        case 'internal':
+                            if ($pageId === $objGlossaryItem->jumpTo)
+                            {
+                                continue 2; // Skip config entry if we are on the same page
+                            }
+                            break;
+                    }
+
                     $arrGlossaryItems[] = [
                         'id' => $objGlossaryItem->id,
 
