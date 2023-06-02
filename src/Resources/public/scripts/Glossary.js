@@ -65,6 +65,9 @@ export class Glossary
                 'mark,abbr',
                 'sub,sup'
             ],
+            excludeClasses: [                   // Exclude-classes to skip allowed nodes
+                'gl-none'
+            ],
             route: {                            // API settings
                 prefix: '/api/glossary/item/',
                 suffix: '/html',
@@ -173,7 +176,7 @@ export class Glossary
      */
     _isValidNode(node)
     {
-        return node.nodeType === Node.TEXT_NODE || (node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')))
+        return node.nodeType === Node.TEXT_NODE || (node.nodeType === Node.ELEMENT_NODE && !!node.matches(this.options.includes.join(',')) && !(!!node.classList.length && node.matches(this.options.excludeClasses.map(c=>'.'+c).join(','))))
     }
 
     /**

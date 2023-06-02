@@ -597,7 +597,7 @@ markupAttr: {
     <td>PopperJS options -> check https://popper.js.org/docs/v2/</td>
   </tr>
   <tr>
-    <td>includes</td>
+    <td>includes (array)</td>
     <td>
 <pre>
 'body',
@@ -611,6 +611,15 @@ markupAttr: {
 </pre>
 </td>
     <td>Readable nodes for glossary item markup. Elements (and thus it's children) that are not listed within the includes, will not be converted.</td>
+  </tr>
+<tr>
+    <td>excludeClasses (array)</td>
+    <td>
+<pre>
+'gl-none'
+</pre>
+</td>
+    <td>Readable nodes matching one or more classes within excludeClasses will not be converted.</td>
   </tr>
   <tr>
     <td>route: {<br/>&nbsp;&nbsp;&nbsp;prefix:<br/>&nbsp;&nbsp;&nbsp;suffix:<br/>&nbsp;&nbsp;&nbsp;cache:<br/>}</td>
