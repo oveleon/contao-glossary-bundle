@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Oveleon\ContaoGlossaryBundle\EventListener\ProductInstaller\AddGlossaryValidatorListener;
+
 /*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
@@ -37,3 +39,6 @@ $GLOBALS['TL_HOOKS']['getSearchablePages'][] = ['Oveleon\ContaoGlossaryBundle\Gl
 // Add permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'glossarys';
 $GLOBALS['TL_PERMISSIONS'][] = 'glossaryp';
+
+// Add product installer validators
+$GLOBALS['PI_HOOKS']['addValidator'][] = [AddGlossaryValidatorListener::class, 'addValidators'];
