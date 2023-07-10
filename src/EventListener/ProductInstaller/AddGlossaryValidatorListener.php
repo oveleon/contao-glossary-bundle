@@ -19,9 +19,6 @@ use Oveleon\ProductInstaller\Import\Validator;
 use Oveleon\ProductInstaller\Import\Validator\ContentValidator;
 use Oveleon\ProductInstaller\Import\Validator\ValidatorMode;
 
-/**
- * @internal
- */
 class AddGlossaryValidatorListener
 {
     public function addValidators(): void
