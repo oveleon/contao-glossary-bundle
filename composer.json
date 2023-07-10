@@ -11,6 +11,10 @@
         {
             "name": "Sebastian Zoglowek",
             "homepage": "https://github.com/zoglo"
+        },
+        {
+            "name": "Daniele Sciannimanica",
+            "homepage": "https://github.com/doishub"
         }
     ],
     "require": {
