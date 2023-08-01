@@ -16,11 +16,10 @@ namespace Oveleon\ContaoGlossaryBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-/**
- * Configures the Contao glossary bundle.
- *
- * @author Fabian Ekert <https://github.com/eki89>
- */
 class ContaoGlossaryBundle extends Bundle
 {
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
 }
