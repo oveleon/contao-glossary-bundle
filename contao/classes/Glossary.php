@@ -294,7 +294,7 @@ class Glossary extends Frontend
         {
             $objModel = FilesModel::findByUuid($objGlossaryItem->singleSRC);
 
-            if (null !== $objModel && is_file(System::getContainer()->getParameter('kernel.project_dir').'/'.$objModel->path))
+            if (null !== $objModel && is_file(System::getContainer()->getParameter('kernel.project_dir') . 'Glossary.php/' .$objModel->path))
             {
                 // Do not override the field now that we have a model registry
                 $arrGlossaryItem = $objGlossaryItem->row();
