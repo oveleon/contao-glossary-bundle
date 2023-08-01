@@ -25,12 +25,6 @@ if ('glossary' === Input::get('do'))
     array_unshift($GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'], ['tl_content_glossary', 'checkPermission']);
 }
 
-/**
- * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Fabian Ekert <https://github.com/eki89>
- * @author Sebastian Zoglowek <https://github.com/zoglo>
- */
 class tl_content_glossary extends Backend
 {
     /**

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Contao\ArrayUtil;
+
 /*
  * This file is part of Oveleon Contao Glossary Bundle.
  *
@@ -13,22 +15,22 @@ declare(strict_types=1);
  */
 
 // Back end modules
-array_insert($GLOBALS['BE_MOD']['content'], 5, [
+ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['content'], 5, [
     'glossary' => [
         'tables' => ['tl_glossary', 'tl_glossary_item', 'tl_content'],
     ],
 ]);
 
 // Front end modules
-array_insert($GLOBALS['FE_MOD'], 3, [
+ArrayUtil::arrayInsert($GLOBALS['FE_MOD'], 3, [
     'glossaries' => [
-        'glossary' => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryList',
+        'glossary'       => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryList',
         'glossaryreader' => 'Oveleon\ContaoGlossaryBundle\ModuleGlossaryReader',
     ],
 ]);
 
 // Models
-$GLOBALS['TL_MODELS']['tl_glossary'] = 'Oveleon\ContaoGlossaryBundle\GlossaryModel';
+$GLOBALS['TL_MODELS']['tl_glossary']      = 'Oveleon\ContaoGlossaryBundle\GlossaryModel';
 $GLOBALS['TL_MODELS']['tl_glossary_item'] = 'Oveleon\ContaoGlossaryBundle\GlossaryItemModel';
 
 // Register hooks

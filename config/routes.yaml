@@ -1,3 +1,3 @@
 glossary:
-    resource: '@ContaoGlossaryBundle/Controller'
+    resource: '../src/Controller'
     type: annotation

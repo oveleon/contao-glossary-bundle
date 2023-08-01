@@ -14,11 +14,11 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.1",
         "ext-json":"*",
-        "contao/core-bundle": "^4.9",
-        "symfony/http-foundation":"4.4.* || ^5.2",
-        "symfony/string": "^5.4"
+        "contao/core-bundle": "^4.13 || ^5.1",
+        "symfony/http-foundation": "^5.4 || ^6.0",
+        "symfony/string": "^5.4 || ^6.0"
     },
     "conflict": {
         "contao/core": "*",
@@ -26,11 +26,12 @@
     },
     "require-dev": {
         "contao/manager-plugin": "^2.3.1",
-        "contao/easy-coding-standard": "^3.4"
+        "contao/easy-coding-standard": "^3.4",
+        "rector/rector": "^0.17.7"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "2.0.x-dev"
+            "dev-main": "2.1.x-dev"
         },
         "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin"
     },
@@ -65,7 +66,8 @@
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "contao/manager-plugin": true
         }
     }
 }
