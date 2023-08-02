@@ -33,15 +33,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class GlossaryController extends AbstractController
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
-    }
+    public function __construct(private ContaoFramework $framework) {}
 
     /**
      * @Route("/glossarizer", name="glossary_table")

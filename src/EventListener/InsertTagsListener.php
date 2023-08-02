@@ -98,7 +98,7 @@ class InsertTagsListener
                 return StringUtil::specialcharsAttribute($model->keyword);
 
             case 'glossaryitem_teaser':
-                return StringUtil::toHtml5($model->teaser);
+                return $model->teaser;
         }
 
         return '';
