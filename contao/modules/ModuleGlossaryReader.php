@@ -18,6 +18,7 @@ use Contao\BackendTemplate;
 use Contao\Config;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
 use Contao\Environment;
 use Contao\Input;
 use Contao\PageModel;
@@ -55,11 +56,11 @@ class ModuleGlossaryReader extends ModuleGlossary
         if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
         {
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '. mb_strtoupper($GLOBALS['TL_LANG']['FMD']['glossaryreader'][0], 'UTF-8') .' ###';
+            $objTemplate->wildcard = '### '. $GLOBALS['TL_LANG']['FMD']['glossaryreader'][0] .' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
-            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+            $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', array('do'=>'themes', 'table'=>'tl_module', 'act'=>'edit', 'id'=>$this->id)));
 
             return $objTemplate->parse();
         }
@@ -116,24 +117,31 @@ class ModuleGlossaryReader extends ModuleGlossary
         $arrGlossaryItem = $this->parseGlossaryItem($objGlossaryItem);
         $this->Template->glossaryentry = $arrGlossaryItem;
 
-        // Overwrite the page title (see #2853, #4955 and #87)
-        if ($objGlossaryItem->pageTitle)
-        {
-            $objPage->pageTitle = $objGlossaryItem->pageTitle;
-        }
-        elseif ($objGlossaryItem->keyword)
-        {
-            $objPage->pageTitle = strip_tags(StringUtil::stripInsertTags($objGlossaryItem->keyword));
-        }
+        $responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext();
 
-        // Overwrite the page description
-        if ($objGlossaryItem->description)
+        if ($responseContext && $responseContext->has(HtmlHeadBag::class))
         {
-            $objPage->description = $objGlossaryItem->description;
-        }
-        elseif ($objGlossaryItem->teaser)
-        {
-            $objPage->description = $this->prepareMetaDescription($objGlossaryItem->teaser);
+            /** @var HtmlHeadBag $htmlHeadBag */
+            $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
+            $htmlDecoder = System::getContainer()->get('contao.string.html_decoder');
+
+            if ($objGlossaryItem->pageTitle)
+            {
+                $htmlHeadBag->setTitle($objGlossaryItem->pageTitle); // Already stored decoded
+            }
+            elseif ($objGlossaryItem->keyword)
+            {
+                $htmlHeadBag->setTitle($htmlDecoder->inputEncodedToPlainText($objGlossaryItem->keyword));
+            }
+
+            if ($objGlossaryItem->description)
+            {
+                $htmlHeadBag->setMetaDescription($htmlDecoder->inputEncodedToPlainText($objGlossaryItem->description));
+            }
+            elseif ($objGlossaryItem->teaser)
+            {
+                $htmlHeadBag->setMetaDescription($htmlDecoder->htmlToPlainText($objGlossaryItem->teaser));
+            }
         }
     }
 }
