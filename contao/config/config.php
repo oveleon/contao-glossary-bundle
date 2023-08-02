@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Contao\ArrayUtil;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 
 /*
  * This file is part of Oveleon Contao Glossary Bundle.
@@ -30,8 +32,8 @@ ArrayUtil::arrayInsert($GLOBALS['FE_MOD'], 3, [
 ]);
 
 // Models
-$GLOBALS['TL_MODELS']['tl_glossary']      = 'Oveleon\ContaoGlossaryBundle\GlossaryModel';
-$GLOBALS['TL_MODELS']['tl_glossary_item'] = 'Oveleon\ContaoGlossaryBundle\GlossaryItemModel';
+$GLOBALS['TL_MODELS']['tl_glossary']      = GlossaryModel::class;
+$GLOBALS['TL_MODELS']['tl_glossary_item'] = GlossaryItemModel::class;
 
 // Register hooks
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = ['Oveleon\ContaoGlossaryBundle\Glossary', 'getSearchablePages'];

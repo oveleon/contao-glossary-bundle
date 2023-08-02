@@ -12,6 +12,7 @@ declare(strict_types=1);
  * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
+use Contao\Automator;
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\Config;
@@ -25,8 +26,8 @@ use Contao\StringUtil;
 use Contao\System;
 use Contao\Versions;
 use Oveleon\ContaoGlossaryBundle\Glossary;
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
-use Oveleon\ContaoGlossaryBundle\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 System::loadLanguageFile('tl_content');
@@ -34,7 +35,7 @@ System::loadLanguageFile('tl_content');
 $GLOBALS['TL_DCA']['tl_glossary_item'] = [
     // Config
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ptable' => 'tl_glossary',
         'ctable' => ['tl_content'],
         'switchToEdit' => true,
@@ -284,7 +285,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
             'exclude' => true,
             'inputType' => 'trbl',
-            'options' => $GLOBALS['TL_CSS_UNITS'],
+            'options' => ['px', '%', 'em', 'rem'],
             'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(128) NOT NULL default ''",
         ],
@@ -396,7 +397,7 @@ class tl_glossary_item extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('Contao\BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
@@ -607,12 +608,24 @@ class tl_glossary_item extends Backend
             return '';
         }
 
-        global $objPage;
+        $origObjPage = $GLOBALS['objPage'] ?? null;
 
-        // Set the global page object so we can replace the insert tags
-        $objPage = $page;
+        // Override the global page object, so we can replace the insert tags
+        $GLOBALS['objPage'] = $page;
 
-        return self::replaceInsertTags(str_replace('{{page::pageTitle}}', '%s', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}'));
+        $title = implode(
+            '%s',
+            array_map(
+                static function ($strVal) {
+                    return str_replace('%', '%%', System::getContainer()->get('contao.insert_tag.parser')->replaceInline($strVal));
+                },
+                explode('{{page::pageTitle}}', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}', 2)
+            )
+        );
+
+        $GLOBALS['objPage'] = $origObjPage;
+
+        return $title;
     }
 
     /**
@@ -642,7 +655,7 @@ class tl_glossary_item extends Backend
             return;
         }
 
-        $this->import('Contao\Automator', 'Automator');
+        $this->import(Automator::class, 'Automator');
         $this->Automator->generateSitemap();
 
         $objSession->set('glossaryitems_updater', null);

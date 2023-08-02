@@ -23,8 +23,8 @@ use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\StringUtil;
 use Oveleon\ContaoGlossaryBundle\Glossary;
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
-use Oveleon\ContaoGlossaryBundle\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 
 /**
  * @internal

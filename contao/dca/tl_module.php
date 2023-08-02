@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Contao\Backend;
+use Contao\BackendUser;
 use Contao\Controller;
 
 // Add a palette selector
@@ -109,7 +110,7 @@ class tl_module_glossary extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('Contao\BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**

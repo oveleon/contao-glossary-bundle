@@ -24,6 +24,7 @@ use Contao\Input;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 
 /**
  * Front end module "glossary reader".

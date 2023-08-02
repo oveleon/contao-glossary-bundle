@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\Environment;
 use Contao\FilesModel;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
 use Contao\Module;
 use Contao\StringUtil;
 use Contao\System;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 
 /**
  * Parent class for glossary modules.
@@ -200,10 +203,10 @@ abstract class ModuleGlossary extends Module
     {
         if ($blnPageUrl)
         {
-            return sprintf('<a href="%s?page_g%s=%s">%s</a>', explode('?', $this->Environment->get('request'), 2)[0], $this->id, $letter, $letter);
+            return sprintf('<a href="%s?page_g%s=%s">%s</a>', explode('?', Environment::get('request'), 2)[0], $this->id, $letter, $letter);
         }
 
-        return sprintf('<a href="%s#group%s_%s">%s</a>', $this->Environment->get('request'), $this->id, $letter, $letter);
+        return sprintf('<a href="%s#group%s_%s">%s</a>', Environment::get('request'), $this->id, $letter, $letter);
     }
 
     /**
@@ -213,7 +216,7 @@ abstract class ModuleGlossary extends Module
     {
         return sprintf(
             '<a href="%s#g_entry_%s">%s</a>',
-            $this->Environment->get('request'),
+            Environment::get('request'),
             $objGlossaryItem->id,
             $strLink
         );

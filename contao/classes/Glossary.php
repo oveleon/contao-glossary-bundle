@@ -25,6 +25,8 @@ use Contao\FrontendTemplate;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use function Symfony\Component\String\u;
 
 /**
@@ -154,7 +156,7 @@ class Glossary extends Frontend
                 }
                 else
                 {
-                    self::$arrUrlCache[$strCacheKey] = ampersand($objItem->url);
+                    self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($objItem->url);
                 }
                 break;
 
@@ -163,7 +165,7 @@ class Glossary extends Frontend
                 if (($objTarget = $objItem->getRelated('jumpTo')) instanceof PageModel)
                 {
                     /** @var PageModel $objTarget */
-                    self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objTarget->getAbsoluteUrl() : $objTarget->getFrontendUrl());
+                    self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($blnAbsolute ? $objTarget->getAbsoluteUrl() : $objTarget->getFrontendUrl());
                 }
                 break;
 
@@ -174,7 +176,7 @@ class Glossary extends Frontend
                     $params = '/articles/'.($objArticle->alias ?: $objArticle->id);
 
                     /** @var PageModel $objPid */
-                    self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params));
+                    self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($blnAbsolute ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params));
                 }
                 break;
         }
@@ -186,13 +188,13 @@ class Glossary extends Frontend
 
             if (!$objPage instanceof PageModel)
             {
-                self::$arrUrlCache[$strCacheKey] = ampersand(Environment::get('request'));
+                self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand(Environment::get('request'));
             }
             else
             {
                 $params = (Config::get('useAutoItem') ? '/' : '/items/').($objItem->alias ?: $objItem->id);
 
-                self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
+                self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
             }
         }
 
@@ -250,11 +252,12 @@ class Glossary extends Frontend
         if ($objGlossaryItem->teaser)
         {
             $objTemplate->hasTeaser = true;
-            $objTemplate->teaser = StringUtil::toHtml5($objGlossaryItem->teaser);
+            $objTemplate->teaser = $objGlossaryItem->teaser;
             $objTemplate->teaser = StringUtil::encodeEmail($objTemplate->teaser);
 
             // Replace insert tags within teaser when fetching items via controller (see #13)
-            $objTemplate->teaser = Controller::replaceInsertTags($objTemplate->teaser);
+            // ToDo: rewrite
+            //$objTemplate->teaser = Controller::replaceInsertTags($objTemplate->teaser);
         }
 
         // Display the "read more" button for external/article links
@@ -372,7 +375,7 @@ class Glossary extends Frontend
                 if (($objArticle = ArticleModel::findByPk($objItem->articleId)) instanceof ArticleModel && ($objPid = $objArticle->getRelated('pid')) instanceof PageModel)
                 {
                     /** @var PageModel $objPid */
-                    return ampersand($objPid->getAbsoluteUrl('/articles/'.($objArticle->alias ?: $objArticle->id)));
+                    return StringUtil::ampersand($objPid->getAbsoluteUrl('/articles/'.($objArticle->alias ?: $objArticle->id)));
                 }
                 break;
         }

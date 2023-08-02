@@ -17,7 +17,7 @@ namespace Oveleon\ContaoGlossaryBundle\EventListener;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Oveleon\ContaoGlossaryBundle\Glossary;
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 
 /**
  * @internal

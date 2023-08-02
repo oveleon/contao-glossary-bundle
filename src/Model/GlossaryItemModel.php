@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle;
+namespace Oveleon\ContaoGlossaryBundle\Model;
 
 use Contao\Model;
 use Contao\Model\Collection;
@@ -258,10 +258,11 @@ class GlossaryItemModel extends Model
         $arrColumns = ["$t.pid IN(".implode(',', array_map('\intval', $arrPids)).')'];
 
         // Never return unpublished elements in the back end
-        if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
+        // ToDo: Check later
+        /*if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
         {
             $arrColumns[] = "$t.published='1'";
-        }
+        }*/
 
         if (!isset($arrOptions['order']))
         {
@@ -293,10 +294,11 @@ class GlossaryItemModel extends Model
         $arrValues = [$strLetter];
 
         // Never return unpublished elements in the back end
-        if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
+        // ToDo: Check later
+        /*if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
         {
             $arrColumns[] = "$t.published='1'";
-        }
+        }*/
 
         if (!isset($arrOptions['order']))
         {
@@ -306,3 +308,5 @@ class GlossaryItemModel extends Model
         return static::findBy($arrColumns, $arrValues, $arrOptions);
     }
 }
+
+class_alias(GlossaryItemModel::class, 'GlossaryItemModel');

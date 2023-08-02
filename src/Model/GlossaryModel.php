@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle;
+namespace Oveleon\ContaoGlossaryBundle\Model;
 
 use Contao\Model;
 use Contao\Model\Collection;
@@ -68,3 +68,5 @@ class GlossaryModel extends Model
      */
     protected static $strTable = 'tl_glossary';
 }
+
+class_alias(GlossaryModel::class, 'GlossaryModel');

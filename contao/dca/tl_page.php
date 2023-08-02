@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Contao\Backend;
+use Contao\BackendUser;
 use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
@@ -96,7 +97,7 @@ class tl_page_glossary extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('Contao\BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
