@@ -1,19 +1,21 @@
 services:
-    _defaults:
-        autowire: true
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
 
-    Oveleon\ContaoGlossaryBundle\Controller\GlossaryController:
-        arguments:
-            - '@contao.framework'
-        tags:
-            - controller.service_arguments
+  Oveleon\ContaoGlossaryBundle\Controller\GlossaryController:
+    arguments:
+      - '@contao.framework'
+    tags:
+      - controller.service_arguments
 
-    contao_glossary.picker.glossary_provider:
-        class: Oveleon\ContaoGlossaryBundle\Picker\GlossaryPickerProvider
-        arguments:
-            - '@knp_menu.factory'
-            - '@router'
-            - '@?translator'
-            - '@security.helper'
-        tags:
-            - { name: contao.picker_provider, priority: 0 }
+  contao_glossary.picker.glossary_provider:
+    class: Oveleon\ContaoGlossaryBundle\Picker\GlossaryPickerProvider
+    arguments:
+      - '@knp_menu.factory'
+      - '@router'
+      - '@?translator'
+      - '@security.helper'
+    tags:
+      - { name: contao.picker_provider, priority: 0 }
