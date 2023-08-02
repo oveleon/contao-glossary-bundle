@@ -17,6 +17,7 @@ use Contao\BackendUser;
 use Contao\Controller;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
+use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\Image;
 use Contao\Input;
@@ -30,11 +31,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 $GLOBALS['TL_DCA']['tl_glossary'] = [
     // Config
     'config' => [
-        'dataContainer' => DC_Table::class,
-        'ctable' => ['tl_glossary_item'],
-        'switchToEdit' => true,
-        'enableVersioning' => true,
-        'markAsCopy' => 'title',
+        'dataContainer'               => DC_Table::class,
+        'ctable'                      => ['tl_glossary_item'],
+        'switchToEdit'                => true,
+        'enableVersioning'            => true,
+        'markAsCopy'                  => 'title',
         'onload_callback' => [
             ['tl_glossary', 'checkPermission'],
         ],
@@ -57,122 +58,122 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
     // List
     'list' => [
         'sorting' => [
-            'mode' => 1,
-            'fields' => ['title'],
-            'flag' => 1,
-            'panelLayout' => 'filter;search,limit',
+            'mode'                    => DataContainer::MODE_SORTED,
+            'fields'                  => ['title'],
+            'flag'                    => DataContainer::SORT_INITIAL_LETTER_ASC,
+            'panelLayout'             => 'filter;search,limit',
         ],
         'label' => [
-            'fields' => ['title'],
-            'format' => '%s',
+            'fields'                  => ['title'],
+            'format'                  => '%s',
         ],
         'global_operations' => [
             'all' => [
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+                'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
+                'href'                => 'act=select',
+                'class'               => 'header_edit_all',
+                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
         ],
         'operations' => [
             'edit' => [
-                'href' => 'table=tl_glossary_item',
-                'icon' => 'edit.svg',
+                'href'                => 'table=tl_glossary_item',
+                'icon'                => 'edit.svg',
             ],
             'editheader' => [
-                'href' => 'act=edit',
-                'icon' => 'header.svg',
-                'button_callback' => ['tl_glossary', 'editHeader'],
+                'href'                => 'act=edit',
+                'icon'                => 'header.svg',
+                'button_callback'     => ['tl_glossary', 'editHeader'],
             ],
             'copy' => [
-                'href' => 'act=copy',
-                'icon' => 'copy.svg',
-                'button_callback' => ['tl_glossary', 'copyArchive'],
+                'href'                => 'act=copy',
+                'icon'                => 'copy.svg',
+                'button_callback'     => ['tl_glossary', 'copyArchive'],
             ],
             'delete' => [
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
-                'button_callback' => ['tl_glossary', 'deleteArchive'],
+                'href'                => 'act=delete',
+                'icon'                => 'delete.svg',
+                'attributes'          => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
+                'button_callback'     => ['tl_glossary', 'deleteArchive'],
             ],
             'show' => [
-                'href' => 'act=show',
-                'icon' => 'show.svg',
+                'href'                => 'act=show',
+                'icon'                => 'show.svg',
             ],
         ],
     ],
 
     // Palettes
     'palettes' => [
-        '__selector__' => ['protected'],
-        'default' => '{title_legend},title,jumpTo;{template_legend},glossaryHoverCardTemplate;{image_legend},hoverCardImgSize;{protected_legend:hide},protected',
+        '__selector__'                => ['protected'],
+        'default'                     => '{title_legend},title,jumpTo;{template_legend},glossaryHoverCardTemplate;{image_legend},hoverCardImgSize;{protected_legend:hide},protected',
     ],
 
     // Subpalettes
     'subpalettes' => [
-        'protected' => 'groups',
+        'protected'                   => 'groups',
     ],
 
     // Fields
     'fields' => [
         'id' => [
-            'sql' => 'int(10) unsigned NOT NULL auto_increment',
+            'sql'                     => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'tstamp' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['tstamp'],
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['tstamp'],
+            'sql'                     => "int(10) unsigned NOT NULL default '0'",
         ],
         'title' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['title'],
-            'exclude' => true,
-            'search' => true,
-            'inputType' => 'text',
-            'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['title'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'sql'                     => "varchar(255) NOT NULL default ''",
         ],
         'jumpTo' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['jumpTo'],
-            'exclude' => true,
-            'inputType' => 'pageTree',
-            'foreignKey' => 'tl_page.title',
-            'eval' => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr'],
-            'sql' => "int(10) unsigned NOT NULL default '0'",
-            'relation' => ['type' => 'hasOne', 'load' => 'lazy'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['jumpTo'],
+            'exclude'                 => true,
+            'inputType'               => 'pageTree',
+            'foreignKey'              => 'tl_page.title',
+            'eval'                    => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr'],
+            'sql'                     => "int(10) unsigned NOT NULL default '0'",
+            'relation'                => ['type' => 'hasOne', 'load' => 'lazy'],
         ],
         'glossaryHoverCardTemplate' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['glossaryHoverCardTemplate'],
-            'default' => 'hovercard_glossary_default',
-            'exclude' => true,
-            'inputType' => 'select',
-            'options_callback' => static fn () => Controller::getTemplateGroup('hovercard_glossary_'),
-            'eval' => ['mandatory' => true, 'chosen' => true, 'tl_class' => 'w50 clr'],
-            'sql' => "varchar(64) NOT NULL default 'hovercard_glossary_default'",
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['glossaryHoverCardTemplate'],
+            'default'                 => 'hovercard_glossary_default',
+            'exclude'                 => true,
+            'inputType'               => 'select',
+            'options_callback'        => static fn () => Controller::getTemplateGroup('hovercard_glossary_'),
+            'eval'                    => ['mandatory' => true, 'chosen' => true, 'tl_class' => 'w50 clr'],
+            'sql'                     => "varchar(64) NOT NULL default 'hovercard_glossary_default'",
         ],
         'hoverCardImgSize' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['hoverCardImgSize'],
-            'exclude' => true,
-            'inputType' => 'imageSize',
-            'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'eval' => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
-            'options_callback' => static fn () => System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance()),
-            'sql' => "varchar(64) NOT NULL default ''",
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['hoverCardImgSize'],
+            'exclude'                 => true,
+            'inputType'               => 'imageSize',
+            'reference'               => &$GLOBALS['TL_LANG']['MSC'],
+            'eval'                    => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
+            'options_callback'        => static fn () => System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance()),
+            'sql'                     => "varchar(64) NOT NULL default ''",
         ],
         'protected' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['protected'],
-            'exclude' => true,
-            'filter' => true,
-            'inputType' => 'checkbox',
-            'eval' => ['submitOnChange' => true],
-            'sql' => "char(1) NOT NULL default ''",
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['protected'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => ['submitOnChange' => true],
+            'sql'                     => "char(1) NOT NULL default ''",
         ],
         'groups' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['groups'],
-            'exclude' => true,
-            'inputType' => 'checkbox',
-            'foreignKey' => 'tl_member_group.name',
-            'eval' => ['mandatory' => true, 'multiple' => true],
-            'sql' => 'blob NULL',
-            'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_glossary']['groups'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'foreignKey'              => 'tl_member_group.name',
+            'eval'                    => ['mandatory' => true, 'multiple' => true],
+            'sql'                     => 'blob NULL',
+            'relation'                => ['type' => 'hasMany', 'load' => 'lazy'],
         ],
     ],
 ];

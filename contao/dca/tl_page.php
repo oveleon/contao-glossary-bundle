@@ -24,46 +24,46 @@ $GLOBALS['TL_DCA']['tl_page']['subpalettes']['activateGlossary'] = 'glossaryArch
 
 // Fields
 $GLOBALS['TL_DCA']['tl_page']['fields']['activateGlossary'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['activateGlossary'],
-    'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
-    'sql' => "char(1) NOT NULL default ''",
+    'label'                 => &$GLOBALS['TL_LANG']['tl_page']['activateGlossary'],
+    'inputType'             => 'checkbox',
+    'eval'                  => ['tl_class' => 'w50', 'submitOnChange' => true],
+    'sql'                   => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryArchives'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['glossaryArchives'],
-    'exclude' => true,
-    'inputType' => 'checkbox',
-    'options_callback' => ['tl_page_glossary', 'getGlossaries'],
-    'eval' => ['mandatory' => true, 'multiple' => true],
-    'sql' => 'blob NULL',
+    'label'                 => &$GLOBALS['TL_LANG']['tl_page']['glossaryArchives'],
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'options_callback'      => ['tl_page_glossary', 'getGlossaries'],
+    'eval'                  => ['mandatory' => true, 'multiple' => true],
+    'sql'                   => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryHoverCard'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['activateGlossaryHoverCards'],
-    'exclude' => true,
-    'inputType' => 'select',
+    'label'                 => &$GLOBALS['TL_LANG']['tl_page']['activateGlossaryHoverCards'],
+    'exclude'               => true,
+    'inputType'             => 'select',
     'options' => [
-        'disabled' => &$GLOBALS['TL_LANG']['tl_page']['hoverCardDisabled'],
-        'enabled' => &$GLOBALS['TL_LANG']['tl_page']['hoverCardEnabled'],
+        'disabled'          => &$GLOBALS['TL_LANG']['tl_page']['hoverCardDisabled'],
+        'enabled'           => &$GLOBALS['TL_LANG']['tl_page']['hoverCardEnabled'],
     ],
-    'eval' => ['tl_class' => 'w50 clr'],
-    'sql' => "varchar(32) NOT NULL default 'disabled'",
+    'eval'                  => ['tl_class' => 'w50 clr'],
+    'sql'                   => "varchar(32) NOT NULL default 'disabled'",
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['glossaryConfigTemplate'],
-    'inputType' => 'select',
-    'options_callback' => static fn () => Controller::getTemplateGroup('config_glossary_'),
-    'eval' => ['tl_class' => 'w50 clr'],
-    'sql' => "varchar(64) NOT NULL default ''",
+    'label'                 => &$GLOBALS['TL_LANG']['tl_page']['glossaryConfigTemplate'],
+    'inputType'             => 'select',
+    'options_callback'      => static fn () => Controller::getTemplateGroup('config_glossary_'),
+    'eval'                  => ['tl_class' => 'w50 clr'],
+    'sql'                   => "varchar(64) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['disableGlossary'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['disableGlossary'],
-    'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
-    'sql' => "char(1) NOT NULL default ''",
+    'label'                 => &$GLOBALS['TL_LANG']['tl_page']['disableGlossary'],
+    'inputType'             => 'checkbox',
+    'eval'                  => ['tl_class' => 'w50'],
+    'sql'                   => "char(1) NOT NULL default ''",
 ];
 
 // Extend the root palettes

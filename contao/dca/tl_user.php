@@ -24,20 +24,20 @@ PaletteManipulator::create()
 
 // Add fields to tl_user
 $GLOBALS['TL_DCA']['tl_user']['fields']['glossarys'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_user']['glossarys'],
-    'exclude' => true,
-    'inputType' => 'checkbox',
-    'foreignKey' => 'tl_glossary.title',
-    'eval' => ['multiple' => true],
-    'sql' => 'blob NULL',
+    'label'                 => &$GLOBALS['TL_LANG']['tl_user']['glossarys'],
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'foreignKey'            => 'tl_glossary.title',
+    'eval'                  => ['multiple' => true],
+    'sql'                   => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['glossaryp'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_user']['glossaryp'],
-    'exclude' => true,
-    'inputType' => 'checkbox',
-    'options' => ['create', 'delete'],
-    'reference' => &$GLOBALS['TL_LANG']['MSC'],
-    'eval' => ['multiple' => true],
-    'sql' => 'blob NULL',
+    'label'                 => &$GLOBALS['TL_LANG']['tl_user']['glossaryp'],
+    'exclude'               => true,
+    'inputType'             => 'checkbox',
+    'options'               => ['create', 'delete'],
+    'reference'             => &$GLOBALS['TL_LANG']['MSC'],
+    'eval'                  => ['multiple' => true],
+    'sql'                   => 'blob NULL',
 ];
