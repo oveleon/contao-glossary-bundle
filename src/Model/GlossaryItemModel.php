@@ -257,12 +257,10 @@ class GlossaryItemModel extends Model
         $t = static::$strTable;
         $arrColumns = ["$t.pid IN(".implode(',', array_map('\intval', $arrPids)).')'];
 
-        // Never return unpublished elements in the back end
-        // ToDo: Check later
-        /*if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
+        if (!static::isPreviewMode($arrOptions))
         {
             $arrColumns[] = "$t.published='1'";
-        }*/
+        }
 
         if (!isset($arrOptions['order']))
         {
@@ -293,12 +291,10 @@ class GlossaryItemModel extends Model
         $arrColumns[] = "$t.pid IN(".implode(',', array_map('\intval', $arrPids)).')';
         $arrValues = [$strLetter];
 
-        // Never return unpublished elements in the back end
-        // ToDo: Check later
-        /*if (!BE_USER_LOGGED_IN || TL_MODE === 'BE')
+        if (!static::isPreviewMode($arrOptions))
         {
             $arrColumns[] = "$t.published='1'";
-        }*/
+        }
 
         if (!isset($arrOptions['order']))
         {
