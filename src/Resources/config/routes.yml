@@ -1,3 +1,0 @@
-glossary:
-    resource: '@ContaoGlossaryBundle/Controller'
-    type: annotation

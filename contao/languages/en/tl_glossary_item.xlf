@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_glossary_item.php" source-language="en">
+    <body>
+      <trans-unit id="tl_glossary_item.letter.0">
+        <source>Group</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keyword.0">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keyword.1">
+        <source>Please enter the glossary item title.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.alias.0">
+        <source>Glossary item alias</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.alias.1">
+        <source>The glossary item alias is a unique reference to the glossary item which can be called instead of its numeric ID.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keywords.0">
+        <source>Search terms</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keywords.1">
+        <source>Here you can enter search terms that should be taken into account during the automatic replacement of search terms.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.sensitiveSearch.0">
+        <source>Case-sensitive markup</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.sensitiveSearch.1">
+        <source>Here you can select if the search for keywords should be case-sensitive.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.pageTitle.0">
+        <source>Meta title</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.pageTitle.1">
+        <source>Here you can add a custom meta title to overwrite the default page title.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.robots.0">
+        <source>Robots tag</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.robots.1">
+        <source>Here you can overwrite how search engines handle the glossary item.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.description.0">
+        <source>Meta description</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.description.1">
+        <source>Here you can add a custom meta description to overwrite the default page description.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.subheadline.0">
+        <source>Subheadline</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.subheadline.1">
+        <source>Here you can enter a subheadline.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.teaser.0">
+        <source>Glossary item teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.teaser.1">
+        <source>The glossary item teaser can be used in a hovercard or can be shown in a glossary list instead of the full content.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.addImage.0">
+        <source>Add an image</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.addImage.1">
+        <source>Add an image to the glossary item.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.source.0">
+        <source>Redirect target</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.source.1">
+        <source>Here you can override the default redirect target.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.default.0">
+        <source>Use default</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.default.1">
+        <source>By clicking the glossary item link, visitors will be redirected to the default page of the glossary.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.internal.0">
+        <source>Page</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.internal.1">
+        <source>By clicking the glossary item link, visitors will be redirected to a page.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.article.0">
+        <source>Article</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.article.1">
+        <source>By clicking the glossary item link, visitors will be redirected to an article.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.external.0">
+        <source>Custom URL</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.external.1">
+        <source>By clicking the glossary item link, visitors will be redirected to a custom URL.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.jumpTo.0">
+        <source>Redirect page</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.jumpTo.1">
+        <source>Please choose the page to which visitors will be redirected when clicking the glossary item.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.articleId.0">
+        <source>Article</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.articleId.1">
+        <source>Please choose the article to which visitors will be redirected when clicking the glossary item.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.cssClass.0">
+        <source>CSS class</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.cssClass.1">
+        <source>Here you can enter one or more classes.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.published.0">
+        <source>Publish item</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.published.1">
+        <source>Make the glossary item publicly visible on the website.</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.tstamp.0">
+        <source>Revision date</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.tstamp.1">
+        <source>Date and time of the latest revision</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.title_legend">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.keyword_legend">
+        <source>Keywords</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.meta_legend">
+        <source>Meta data</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.teaser_legend">
+        <source>Subheadline and teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.source_legend">
+        <source>Redirect target</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.template_legend">
+        <source>Template settings</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.image_legend">
+        <source>Image settings</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.expert_legend">
+        <source>Expert settings</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.publish_legend">
+        <source>Publish settings</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.new.0">
+        <source>New</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.new.1">
+        <source>Create a new glossary item</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.show">
+        <source>Show the details of glossary item ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.edit">
+        <source>Edit glossary item ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.copy">
+        <source>Duplicate glossary item ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.cut">
+        <source>Move glossary item ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.delete">
+        <source>Delete glossary item ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.toggle">
+        <source>Publish/unpublish glossary item ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.editheader">
+        <source>Edit the settings of glossary item ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_glossary_item.pasteafter.0">
+        <source>Paste into this glossary</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

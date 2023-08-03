@@ -23,34 +23,28 @@ use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\StringUtil;
 use Oveleon\ContaoGlossaryBundle\Glossary;
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
-use Oveleon\ContaoGlossaryBundle\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 
 /**
  * @internal
  */
 class GeneratePageListener
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    public function __construct(ContaoFramework $framework)
+    public function __construct(private ContaoFramework $framework)
     {
-        $this->framework = $framework;
     }
 
     public function __invoke(PageModel $pageModel, LayoutModel $layoutModel, PageRegular $pageRegular): void
     {
-        //$this->framework->initialize();
+        $this->framework->initialize();
 
         if ($pageModel->disableGlossary)
         {
             return;
         }
 
-        // Get Rootpage Settings
+        // Get Root page Settings
         $objRootPage = PageModel::findByPk($pageModel->rootId);
 
         if (null === $objRootPage || !$objRootPage->activateGlossary)

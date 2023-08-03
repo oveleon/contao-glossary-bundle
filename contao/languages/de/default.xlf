@@ -1,0 +1,14 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/default.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="MSC.emptyGlossaryList">
+        <source>No items available.</source>
+        <target>Keine Einträge vorhanden.</target>
+      </trans-unit>
+      <trans-unit id="MSC.glossaryPicker">
+        <source>Glossary</source>
+        <target>Glossar</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

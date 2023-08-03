@@ -20,8 +20,8 @@ use Contao\CoreBundle\Picker\AbstractInsertTagPickerProvider;
 use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerConfig;
 use Knp\Menu\FactoryInterface;
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
-use Oveleon\ContaoGlossaryBundle\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -31,18 +31,11 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
     use FrameworkAwareTrait;
 
     /**
-     * @var Security
-     */
-    private $security;
-
-    /**
      * @internal Do not inherit from this class; decorate the "contao_glossary.picker.glossary_provider" service instead
      */
-    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, ?TranslatorInterface $translator, Security $security)
+    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, TranslatorInterface|null $translator, private Security $security)
     {
         parent::__construct($menuFactory, $router, $translator);
-
-        $this->security = $security;
     }
 
     public function getName(): string
@@ -60,7 +53,7 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         return $this->isMatchingInsertTag($config);
     }
 
-    public function getDcaTable(): string
+    public function getDcaTable(PickerConfig $config = null): string
     {
         return 'tl_glossary_item';
     }
@@ -118,7 +111,7 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
     /**
      * @param int|string $id
      */
-    private function getGlossaryId($id): ?int
+    private function getGlossaryId(int|string $id): int|null
     {
         /** @var GlossaryItemModel $glossaryAdapter */
         $glossaryAdapter = $this->framework->getAdapter(GlossaryItemModel::class);

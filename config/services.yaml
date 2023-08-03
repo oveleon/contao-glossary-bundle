@@ -1,0 +1,32 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  Oveleon\ContaoGlossaryBundle\:
+    resource: '../src/'
+    exclude: '../src/{Model,DependencyInjection,Resources}'
+
+  Oveleon\ContaoGlossaryBundle\Controller\GlossaryController:
+    arguments:
+      - '@contao.framework'
+    tags:
+      - controller.service_arguments
+
+  contao_glossary.picker.glossary_provider:
+    class: Oveleon\ContaoGlossaryBundle\Picker\GlossaryPickerProvider
+    arguments:
+      - '@knp_menu.factory'
+      - '@router'
+      - '@?translator'
+      - '@security.helper'
+    tags:
+      - { name: contao.picker_provider, priority: 0 }
+
+  contao_glossary.listener.sitemap:
+    class: Oveleon\ContaoGlossaryBundle\EventListener\SitemapListener
+    arguments:
+      - '@contao.framework'
+    tags:
+      - kernel.event_listener

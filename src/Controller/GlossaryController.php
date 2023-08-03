@@ -20,8 +20,8 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Exception;
 use Oveleon\ContaoGlossaryBundle\Glossary;
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
-use Oveleon\ContaoGlossaryBundle\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,15 +33,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class GlossaryController extends AbstractController
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
-    }
+    public function __construct(private ContaoFramework $framework) {}
 
     /**
      * @Route("/glossarizer", name="glossary_table")

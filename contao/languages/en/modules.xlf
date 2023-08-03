@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/modules.php" source-language="en">
+    <body>
+      <trans-unit id="MOD.glossary.0">
+        <source>Glossaries</source>
+      </trans-unit>
+      <trans-unit id="MOD.glossary.1">
+        <source>Manage glossaries and display them in a glossary list</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossaries">
+        <source>Glossaries</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossary.0">
+        <source>Glossary</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossary.1">
+        <source>Adds a list of glossary items to the page</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossaryreader.0">
+        <source>Glossaryreader</source>
+      </trans-unit>
+      <trans-unit id="FMD.glossaryreader.1">
+        <source>Shows the details of a glossary item</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

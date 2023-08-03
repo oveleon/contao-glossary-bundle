@@ -19,7 +19,7 @@ use Contao\CoreBundle\Exception\RouteParametersException;
 use Contao\Input;
 use Contao\StringUtil;
 use Oveleon\ContaoGlossaryBundle\Glossary;
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 
 /**
  * @internal

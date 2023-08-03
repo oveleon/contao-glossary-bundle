@@ -1,1 +1,13 @@
+# Composer
 /composer.lock
+/vendor/
+
+# PhpUnit
+/.phpunit.result.cache
+/phpunit.xml
+
+# IDE
+/.idea
+
+# Node modules
+/node_modules
