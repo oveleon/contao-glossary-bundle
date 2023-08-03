@@ -3,13 +3,11 @@
 namespace Oveleon\ContaoGlossaryBundle\EventListener\DataContainer;
 
 use Contao\Automator;
-use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\DataContainer;
-use Contao\Date;
 use Contao\Input;
 use Contao\PageModel;
 use Contao\System;

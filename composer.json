@@ -5,12 +5,12 @@
   "license": "AGPL-3.0-or-later",
   "authors": [
     {
-      "name": "Fabian Ekert",
-      "homepage": "https://github.com/eki89"
-    },
-    {
       "name": "Sebastian Zoglowek",
       "homepage": "https://github.com/zoglo"
+    },
+    {
+      "name": "Fabian Ekert",
+      "homepage": "https://github.com/eki89"
     }
   ],
   "require": {
@@ -43,7 +43,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "2.1.x-dev"
+      "dev-main": "2.2.x-dev"
     },
     "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin"
   },

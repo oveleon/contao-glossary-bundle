@@ -12,23 +12,18 @@ declare(strict_types=1);
  * @copyright   Oveleon             <https://www.oveleon.de/>
  */
 
-use Contao\Automator;
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\Config;
-use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\DataContainer;
-use Contao\Image;
-use Contao\Input;
+use Contao\DC_Table;
 use Contao\LayoutModel;
 use Contao\PageModel;
-use Contao\StringUtil;
 use Contao\System;
-use Contao\Versions;
+use Oveleon\ContaoGlossaryBundle\EventListener\DataContainer\GlossaryItemListener;
 use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 System::loadLanguageFile('tl_content');
 
@@ -42,21 +37,21 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
         'enableVersioning'            => true,
         'markAsCopy'                  => 'keyword',
         'onload_callback' => [
-            ['tl_glossary_item', 'checkPermission'],
-            ['tl_glossary_item', 'generateSitemap'],
+            [GlossaryItemListener::class, 'checkPermission'],
+            [GlossaryItemListener::class, 'generateSitemap'],
         ],
         'oncut_callback' => [
-            ['tl_glossary_item', 'scheduleUpdate'],
+            [GlossaryItemListener::class, 'scheduleUpdate'],
         ],
         'ondelete_callback' => [
-            ['tl_glossary_item', 'scheduleUpdate'],
+            [GlossaryItemListener::class, 'scheduleUpdate'],
         ],
         'onsubmit_callback' => [
-            ['tl_glossary_item', 'setGlossaryItemGroup'],
-            ['tl_glossary_item', 'scheduleUpdate'],
+            [GlossaryItemListener::class, 'setGlossaryItemGroup'],
+            [GlossaryItemListener::class, 'scheduleUpdate'],
         ],
         'oninvalidate_cache_tags_callback' => [
-            ['tl_glossary_item', 'addSitemapCacheInvalidationTag'],
+            [GlossaryItemListener::class, 'addSitemapCacheInvalidationTag'],
         ],
         'sql' => [
             'keys' => [
@@ -70,12 +65,12 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
     // List
     'list' => [
         'sorting' => [
-            'mode' => 4,
+            'mode'                    => DataContainer::MODE_PARENT,
             'fields'                  => ['keyword'],
             'headerFields'            => ['title', 'jumpTo', 'tstamp', 'protected'],
             'panelLayout'             => 'filter;sort,search,limit',
-            'child_record_callback'   => ['tl_glossary_item', 'listGlossaryItems'],
-            'child_record_class'      => 'no_padding',
+            'child_record_callback'   => [GlossaryItemListener::class, 'listItems'],
+            'child_record_class'      => 'no_padding'
         ],
         'global_operations' => [
             'all' => [
@@ -107,9 +102,8 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
                 'attributes'          => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
+                'href'                => 'act=toggle&amp;field=published',
                 'icon'                => 'visible.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback'     => ['tl_glossary_item', 'toggleIcon'],
                 'showInHeader'        => true,
             ],
             'show' => [
@@ -278,7 +272,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'inputType'               => 'imageSize',
             'reference'               => &$GLOBALS['TL_LANG']['MSC'],
             'eval'                    => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
-            'options_callback'        => static fn () => System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance()),
+            'options_callback'        => static fn () => System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance()),
             'sql'                     => "varchar(64) NOT NULL default ''",
         ],
         'imagemargin' => [
@@ -372,6 +366,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql'                     => "varchar(255) NOT NULL default ''",
         ],
         'published' => [
+            'toggle'                  => true,
             'label'                   => &$GLOBALS['TL_LANG']['tl_glossary_item']['published'],
             'exclude'                 => true,
             'filter'                  => true,
@@ -401,147 +396,6 @@ class tl_glossary_item extends Backend
     }
 
     /**
-     * Check permissions to edit table tl_glossary_item.
-     *
-     * @throws AccessDeniedException
-     */
-    public function checkPermission(): void
-    {
-        if ($this->User->isAdmin)
-        {
-            return;
-        }
-
-        // Set the root IDs
-        if (empty($this->User->glossarys) || !is_array($this->User->glossarys))
-        {
-            $root = [0];
-        }
-        else
-        {
-            $root = $this->User->glossarys;
-        }
-
-        $id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
-
-        // Check current action
-        switch (Input::get('act'))
-        {
-            case 'paste':
-            case 'select':
-                // Check CURRENT_ID here (see #247)
-                if (!in_array(CURRENT_ID, $root))
-                {
-                    throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
-                }
-                break;
-
-            case 'create':
-                if (!Input::get('pid') || !in_array(Input::get('pid'), $root))
-                {
-                    throw new AccessDeniedException('Not enough permissions to create glossary items in glossary ID '.Input::get('pid').'.');
-                }
-                break;
-
-            case 'cut':
-            case 'copy':
-                if ('cut' === Input::get('act') && 1 === (int) Input::get('mode'))
-                {
-                    $objGlossary = $this->Database->prepare('SELECT pid FROM tl_glossary_item WHERE id=?')
-                        ->limit(1)
-                        ->execute(Input::get('pid'))
-                    ;
-
-                    if ($objGlossary->numRows < 1)
-                    {
-                        throw new AccessDeniedException('Invalid glossary item ID '.Input::get('pid').'.');
-                    }
-
-                    $pid = $objGlossary->pid;
-                }
-                else
-                {
-                    $pid = Input::get('pid');
-                }
-
-                if (!in_array($pid, $root))
-                {
-                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary item ID '.$id.' to glossary ID '.$pid.'.');
-                }
-                // no break
-
-            case 'edit':
-            case 'show':
-            case 'delete':
-            case 'toggle':
-                $objGlossary = $this->Database->prepare('SELECT pid FROM tl_glossary_item WHERE id=?')
-                    ->limit(1)
-                    ->execute($id)
-                ;
-
-                if ($objGlossary->numRows < 1)
-                {
-                    throw new AccessDeniedException('Invalid glossary item ID '.$id.'.');
-                }
-
-                if (!in_array($objGlossary->pid, $root))
-                {
-                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary item ID '.$id.' of glossary  ID '.$objGlossary->pid.'.');
-                }
-                break;
-
-            case 'editAll':
-            case 'deleteAll':
-            case 'overrideAll':
-            case 'cutAll':
-            case 'copyAll':
-                if (!in_array($id, $root))
-                {
-                    throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
-                }
-
-                $objGlossary = $this->Database->prepare('SELECT id FROM tl_glossary_item WHERE pid=?')
-                    ->execute($id)
-                ;
-
-                /** @var SessionInterface $objSession */
-                $objSession = System::getContainer()->get('session');
-
-                $session = $objSession->all();
-                $session['CURRENT']['IDS'] = array_intersect((array) $session['CURRENT']['IDS'], $objGlossary->fetchEach('id'));
-                $objSession->replace($session);
-                break;
-
-            default:
-                if (Input::get('act'))
-                {
-                    throw new AccessDeniedException('Invalid command "'.Input::get('act').'".');
-                }
-
-                if (!in_array($id, $root))
-                {
-                    throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
-                }
-                break;
-        }
-    }
-
-    /**
-     * Set group by keyword.
-     */
-    public function setGlossaryItemGroup(DataContainer $dc): void
-    {
-        $newGroup = mb_strtoupper(mb_substr($dc->activeRecord->keyword, 0, 1, 'UTF-8'));
-
-        if ($dc->activeRecord->letter !== $newGroup)
-        {
-            $this->Database->prepare('UPDATE tl_glossary_item SET letter=? WHERE id=?')
-                ->execute($newGroup, $dc->id)
-            ;
-        }
-    }
-
-    /**
      * Auto-generate the glossary item alias if it has not been set yet.
      *
      * @param mixed $varValue
@@ -552,7 +406,9 @@ class tl_glossary_item extends Backend
      */
     public function generateAlias($varValue, DataContainer $dc)
     {
-        $aliasExists = fn (string $alias): bool => $this->Database->prepare('SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?')->execute($alias, $dc->id)->numRows > 0;
+        $aliasExists = function (string $alias) use ($dc): bool {
+            return $this->Database->prepare("SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+        };
 
         // Generate alias if there is none
         if (!$varValue)
@@ -629,64 +485,6 @@ class tl_glossary_item extends Backend
     }
 
     /**
-     * List a glossary item.
-     *
-     * @param array $arrRow
-     *
-     * @return string
-     */
-    public function listGlossaryItems($arrRow)
-    {
-        return '<div class="tl_content_left">'.$arrRow['keyword'].'</div>';
-    }
-
-    /**
-     * Check for modified glossary items and update the XML files if necessary.
-     */
-    public function generateSitemap(): void
-    {
-        /** @var SessionInterface $objSession */
-        $objSession = System::getContainer()->get('session');
-
-        $session = $objSession->get('glossaryitems_updater');
-
-        if (empty($session) || !is_array($session))
-        {
-            return;
-        }
-
-        $this->import(Automator::class, 'Automator');
-        $this->Automator->generateSitemap();
-
-        $objSession->set('glossaryitems_updater', null);
-    }
-
-    /**
-     * Schedule a glossary item update.
-     *
-     * This method is triggered when a single glossary item or multiple glossary items
-     * are modified (edit/editAll), moved (cut/cutAll) or deleted (delete/deleteAll).
-     * Since duplicated items are unpublished by default, it is not necessary to
-     * schedule updates on copyAll as well.
-     */
-    public function scheduleUpdate(DataContainer $dc): void
-    {
-        // Return if there is no ID
-        if (!$dc->activeRecord || !$dc->activeRecord->pid || 'copy' === Input::get('act'))
-        {
-            return;
-        }
-
-        /** @var SessionInterface $objSession */
-        $objSession = System::getContainer()->get('session');
-
-        // Store the ID in the session
-        $session = $objSession->get('glossaryitems_updater');
-        $session[] = $dc->activeRecord->pid;
-        $objSession->set('glossaryitems_updater', array_unique($session));
-    }
-
-    /**
      * Get all articles and return them as array.
      *
      * @return array
@@ -713,13 +511,13 @@ class tl_glossary_item extends Backend
                 return $arrAlias;
             }
 
-            $objAlias = $this->Database->prepare('SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN('.implode(',', array_map('\intval', array_unique($arrPids))).') ORDER BY parent, a.sorting')
+            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN('.implode(',', array_map('\intval', array_unique($arrPids))).') ORDER BY parent, a.sorting")
                 ->execute($dc->id)
             ;
         }
         else
         {
-            $objAlias = $this->Database->prepare('SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting')
+            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting")
                 ->execute($dc->id)
             ;
         }
@@ -777,184 +575,5 @@ class tl_glossary_item extends Backend
         }
 
         return $arrOptions;
-    }
-
-    /**
-     * Add a link to the list items import wizard.
-     *
-     * @return string
-     */
-    public function listImportWizard()
-    {
-        return ' <a href="'.$this->addToUrl('key=list').'" title="'.StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['lw_import'][1]).'" onclick="Backend.getScrollOffset()">'.Image::getHtml('tablewizard.svg', $GLOBALS['TL_LANG']['MSC']['tw_import'][0]).'</a>';
-    }
-
-    /**
-     * Return the "toggle visibility" button.
-     *
-     * @param array  $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
-     */
-    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
-    {
-        if (Input::get('tid'))
-        {
-            $this->toggleVisibility(Input::get('tid'), 1 === (int) Input::get('state'), (func_num_args() <= 12 ? null : func_get_arg(12)));
-            $this->redirect($this->getReferer());
-        }
-
-        // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$this->User->hasAccess('tl_glossary_item::published', 'alexf'))
-        {
-            return '';
-        }
-
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
-
-        if (!$row['published'])
-        {
-            $icon = 'invisible.svg';
-        }
-
-        return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"').'</a> ';
-    }
-
-    /**
-     * Disable/enable a user group.
-     *
-     * @param int           $intId
-     * @param bool          $blnVisible
-     * @param DataContainer $dc
-     */
-    public function toggleVisibility($intId, $blnVisible, DataContainer $dc = null): void
-    {
-        // Set the ID and action
-        Input::setGet('id', $intId);
-        Input::setGet('act', 'toggle');
-
-        if ($dc)
-        {
-            $dc->id = $intId;
-        }
-
-        // Trigger the onload_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onload_callback'] ?? null))
-        {
-            foreach ($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onload_callback'] as $callback)
-            {
-                if (is_array($callback))
-                {
-                    $this->import($callback[0]);
-                    $this->{$callback[0]}->{$callback[1]}($dc);
-                }
-                elseif (is_callable($callback))
-                {
-                    $callback($dc);
-                }
-            }
-        }
-
-        // Check the field access
-        if (!$this->User->hasAccess('tl_glossary_item::published', 'alexf'))
-        {
-            throw new AccessDeniedException('Not enough permissions to publish/unpublish glossary item ID '.$intId.'.');
-        }
-
-        // Set the current record
-        $objRow = $this->Database->prepare('SELECT * FROM tl_glossary_item WHERE id=?')
-            ->limit(1)
-            ->execute($intId)
-        ;
-
-        if ($objRow->numRows < 1)
-        {
-            throw new AccessDeniedException('Invalid glossary item ID '.$intId.'.');
-        }
-
-        if ($dc)
-        {
-            $dc->activeRecord = $objRow;
-        }
-
-        $objVersions = new Versions('tl_glossary_item', $intId);
-        $objVersions->initialize();
-
-        // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['fields']['published']['save_callback'] ?? null))
-        {
-            foreach ($GLOBALS['TL_DCA']['tl_glossary_item']['fields']['published']['save_callback'] as $callback)
-            {
-                if (is_array($callback))
-                {
-                    $this->import($callback[0]);
-                    $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
-                }
-                elseif (is_callable($callback))
-                {
-                    $blnVisible = $callback($blnVisible, $dc);
-                }
-            }
-        }
-
-        $time = time();
-
-        // Update the database
-        $this->Database->prepare("UPDATE tl_glossary_item SET tstamp=$time, published='".($blnVisible ? '1' : '')."' WHERE id=?")
-            ->execute($intId)
-        ;
-
-        if ($dc)
-        {
-            $dc->activeRecord->tstamp = $time;
-            $dc->activeRecord->published = ($blnVisible ? '1' : '');
-        }
-
-        // Trigger the onsubmit_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onsubmit_callback'] ?? null))
-        {
-            foreach ($GLOBALS['TL_DCA']['tl_glossary_item']['config']['onsubmit_callback'] as $callback)
-            {
-                if (is_array($callback))
-                {
-                    $this->import($callback[0]);
-                    $this->{$callback[0]}->{$callback[1]}($dc);
-                }
-                elseif (is_callable($callback))
-                {
-                    $callback($dc);
-                }
-            }
-        }
-
-        $objVersions->create();
-
-        if ($dc)
-        {
-            $dc->invalidateCacheTags();
-        }
-    }
-
-    /**
-     * @param DataContainer $dc
-     *
-     * @return array
-     */
-    public function addSitemapCacheInvalidationTag($dc, array $tags)
-    {
-        $archiveModel = GlossaryModel::findByPk($dc->activeRecord->pid);
-        $pageModel = PageModel::findWithDetails($archiveModel->jumpTo);
-
-        if (null === $pageModel)
-        {
-            return $tags;
-        }
-
-        return array_merge($tags, ['contao.sitemap.'.$pageModel->rootId]);
     }
 }

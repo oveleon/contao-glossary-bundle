@@ -25,8 +25,8 @@ use Contao\FrontendTemplate;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Validator;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
-use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use function Symfony\Component\String\u;
 
 /**
@@ -40,95 +40,6 @@ class Glossary extends Frontend
      * URL cache array.
      */
     private static array $arrUrlCache = [];
-
-    /**
-     * Add glossary items to the indexer.
-     */
-    public function getSearchablePages(array $arrPages, $intRoot = 0, bool $blnIsSitemap = false): array
-    {
-        $arrRoot = [];
-
-        if ($intRoot > 0)
-        {
-            $arrRoot = $this->Database->getChildRecords($intRoot, PageModel::getTable());
-        }
-
-        $arrProcessed = [];
-        $time = time();
-
-        // Get all glossaries
-        $objGlossary = GlossaryModel::findByProtected('');
-
-        // Walk through each glossary
-        if (null !== $objGlossary)
-        {
-            while ($objGlossary->next())
-            {
-                // Skip glossaries without target page
-                if (!$objGlossary->jumpTo)
-                {
-                    continue;
-                }
-
-                // Skip glossaries outside the root nodes
-                if (!empty($arrRoot) && !\in_array($objGlossary->jumpTo, $arrRoot))
-                {
-                    continue;
-                }
-
-                // Get the URL of the jumpTo page
-                if (!isset($arrProcessed[$objGlossary->jumpTo]))
-                {
-                    $objParent = PageModel::findWithDetails($objGlossary->jumpTo);
-
-                    // The target page does not exist
-                    if (null === $objParent)
-                    {
-                        continue;
-                    }
-
-                    // The target page has not been published (see #5520)
-                    if (!$objParent->published || ($objParent->start && $objParent->start > $time) || ($objParent->stop && $objParent->stop <= $time))
-                    {
-                        continue;
-                    }
-
-                    if ($blnIsSitemap)
-                    {
-                        // The target page is protected (see #8416)
-                        if ($objParent->protected)
-                        {
-                            continue;
-                        }
-
-                        // The target page is exempt from the sitemap (see #6418)
-                        if ('noindex,nofollow' === $objParent->robots)
-                        {
-                            continue;
-                        }
-                    }
-
-                    // Generate the URL
-                    $arrProcessed[$objGlossary->jumpTo] = $objParent->getAbsoluteUrl(Config::get('useAutoItem') ? '/%s' : '/items/%s');
-                }
-
-                $strUrl = $arrProcessed[$objGlossary->jumpTo];
-
-                // Get the items
-                $objArticle = GlossaryItemModel::findPublishedDefaultByPid($objGlossary->id);
-
-                if (null !== $objArticle)
-                {
-                    while ($objArticle->next())
-                    {
-                        $arrPages[] = $this->getLink($objArticle, $strUrl);
-                    }
-                }
-            }
-        }
-
-        return $arrPages;
-    }
 
     /**
      * Generate a URL and return it as string.
@@ -156,7 +67,14 @@ class Glossary extends Frontend
                 }
                 else
                 {
-                    self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($objItem->url);
+                    $url = $objItem->url;
+
+                    if (Validator::isRelativeUrl($url))
+                    {
+                        $url = Environment::get('path') . '/' . $url;
+                    }
+
+                    self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($url);
                 }
                 break;
 
@@ -188,7 +106,7 @@ class Glossary extends Frontend
 
             if (!$objPage instanceof PageModel)
             {
-                self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand(Environment::get('request'));
+                self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand(Environment::get('requestUri'));
             }
             else
             {
@@ -256,8 +174,8 @@ class Glossary extends Frontend
             $objTemplate->teaser = StringUtil::encodeEmail($objTemplate->teaser);
 
             // Replace insert tags within teaser when fetching items via controller (see #13)
-            // ToDo: rewrite
-            //$objTemplate->teaser = Controller::replaceInsertTags($objTemplate->teaser);
+            $parser = System::getContainer()->get('contao.insert_tag.parser');
+            $objTemplate->teaser = $parser->replace((string) $objTemplate->teaser);
         }
 
         // Display the "read more" button for external/article links
@@ -293,15 +211,16 @@ class Glossary extends Frontend
         $objTemplate->addImage = false;
 
         // Add an image
-        if ($objGlossaryItem->addImage && $objGlossaryItem->singleSRC)
+        if ($objGlossaryItem->addImage)
         {
             $objModel = FilesModel::findByUuid($objGlossaryItem->singleSRC);
 
-            if (null !== $objModel && is_file(System::getContainer()->getParameter('kernel.project_dir') . 'Glossary.php/' .$objModel->path))
+            if (null !== $objModel)
             {
                 // Do not override the field now that we have a model registry
                 $arrGlossaryItem = $objGlossaryItem->row();
 
+                // ToDo: Move method into src
                 // Override the default image size
                 if ($imgSize)
                 {
@@ -309,33 +228,37 @@ class Glossary extends Frontend
 
                     if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]) || ($size[2][0] ?? null) === '_')
                     {
-                        $arrGlossaryItem['size'] = $imgSize;
+                        $imgSize = $imgSize;
                     }
                 }
 
-                $arrGlossaryItem['singleSRC'] = $objModel->path;
-                Controller::addImageToTemplate($objTemplate, $arrGlossaryItem, null, null, $objModel);
+                $figureBuilder = System::getContainer()
+                    ->get('contao.image.studio')
+                    ->createFigureBuilder()
+                    ->from($objModel->path)
+                    ->setSize($imgSize)
+                    ->enableLightbox((bool) $objGlossaryItem->fullsize);
 
-                // Link to the glossary item if no image link has been defined
-                if (!$objTemplate->fullsize && !$objTemplate->imageUrl)
+                // If the external link is opened in a new window, open the image link in a new window as well (see #210)
+                if ('external' === $objTemplate->source && $objTemplate->target)
                 {
-                    // Load language for 'read more' link
-                    System::loadLanguageFile('default');
+                    $figureBuilder->setLinkAttribute('target', '_blank');
+                }
 
-                    // Unset the image title attribute
-                    $picture = $objTemplate->picture;
-                    unset($picture['title']);
-                    $objTemplate->picture = $picture;
-
-                    // Link to the glossary item
-                    $objTemplate->href = $objTemplate->link;
-                    $objTemplate->linkTitle = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objGlossaryItem->keyword), true);
-
-                    // If the external link is opened in a new window, open the image link in a new window, too
-                    if ('external' === $objTemplate->source && $objTemplate->target && false === strpos($objTemplate->attributes, 'target="_blank"'))
+                if (null !== ($figure = $figureBuilder->buildIfResourceExists()))
+                {
+                    // ToDo: intCount (see contao #5708/#5851).
+                    if (!$figure->getLinkHref())
                     {
-                        $objTemplate->attributes .= ' target="_blank"';
+                        $linkTitle = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objGlossaryItem->keyword), true);
+
+                        $figure = $figureBuilder
+                            ->setLinkHref($objTemplate->link)
+                            ->setLinkAttribute('title', $linkTitle)
+                            ->build();
                     }
+
+                    $figure->applyLegacyTemplateData($objTemplate, $objGlossaryItem->imagemargin, $objGlossaryItem->floating);
                 }
             }
         }

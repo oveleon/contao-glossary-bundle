@@ -53,16 +53,16 @@ class SitemapListener
             return;
         }
 
-        // Walk through each recommendation archive
+        // Walk through each glossary
         foreach ($objGlossaries as $objGlossary)
         {
-            // Skip recommendation archives without target page
+            // Skip glossaries  without target page
             if (!$objGlossary->jumpTo)
             {
                 continue;
             }
 
-            // Skip recommendation archives outside the root nodes
+            // Skip glossaries outside the root nodes
             if (!\in_array($objGlossary->jumpTo, $arrRoot, true))
             {
                 continue;

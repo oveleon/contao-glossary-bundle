@@ -135,7 +135,7 @@ class GlossaryListener
 
             // Add the new element to the user object
             $root[] = $insertId;
-            $objUser->recommendations = $root;
+            $objUser->glossarys = $root;
         }
     }
 

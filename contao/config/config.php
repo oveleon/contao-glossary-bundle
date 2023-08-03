@@ -35,9 +35,6 @@ ArrayUtil::arrayInsert($GLOBALS['FE_MOD'], 3, [
 $GLOBALS['TL_MODELS']['tl_glossary']      = GlossaryModel::class;
 $GLOBALS['TL_MODELS']['tl_glossary_item'] = GlossaryItemModel::class;
 
-// Register hooks
-$GLOBALS['TL_HOOKS']['getSearchablePages'][] = ['Oveleon\ContaoGlossaryBundle\Glossary', 'getSearchablePages'];
-
 // Add permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'glossarys';
 $GLOBALS['TL_PERMISSIONS'][] = 'glossaryp';
