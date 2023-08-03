@@ -4,6 +4,10 @@ services:
     autoconfigure: true
     public: true
 
+  Oveleon\ContaoGlossaryBundle\:
+    resource: '../src/'
+    exclude: '../src/{Model,DependencyInjection,Resources}'
+
   Oveleon\ContaoGlossaryBundle\Controller\GlossaryController:
     arguments:
       - '@contao.framework'
@@ -19,3 +23,10 @@ services:
       - '@security.helper'
     tags:
       - { name: contao.picker_provider, priority: 0 }
+
+  contao_glossary.listener.sitemap:
+    class: Oveleon\ContaoGlossaryBundle\EventListener\SitemapListener
+    arguments:
+      - '@contao.framework'
+    tags:
+      - kernel.event_listener

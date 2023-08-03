@@ -32,20 +32,11 @@ class InsertTagsListener
         'glossaryitem_teaser',
     ];
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    public function __construct(ContaoFramework $framework)
+    public function __construct(private ContaoFramework $framework)
     {
-        $this->framework = $framework;
     }
 
-    /**
-     * @return string|false
-     */
-    public function __invoke(string $tag, bool $useCache, $cacheValue, array $flags)
+    public function __invoke(string $tag, bool $useCache, $cacheValue, array $flags): string|false
     {
         $elements = explode('::', $tag);
         $key = strtolower($elements[0]);
@@ -62,45 +53,32 @@ class InsertTagsListener
     {
         $this->framework->initialize();
 
-        /** @var GlossaryItemModel $adapter */
         $adapter = $this->framework->getAdapter(GlossaryItemModel::class);
 
-        if (null === ($model = $adapter->findByIdOrAlias($idOrAlias)))
+        if (!$model = $adapter->findByIdOrAlias($idOrAlias))
         {
             return '';
         }
 
-        /** @var Glossary $glossaryItem */
         $glossaryItem = $this->framework->getAdapter(Glossary::class);
 
-        switch ($insertTag) {
-            case 'glossaryitem':
-                return sprintf(
-                    '<a href="%s" title="%s" data-glossary-id="%s">%s</a>',
-                    $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
-                    StringUtil::specialcharsAttribute($model->keyword),
-                    $model->id,
-                    $model->keyword
-                );
-
-            case 'glossaryitem_open':
-                return sprintf(
-                    '<a href="%s" title="%s" data-glossary-id="%s">',
-                    $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
-                    StringUtil::specialcharsAttribute($model->keyword),
-                    $model->id
-                );
-
-            case 'glossaryitem_url':
-                return $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './';
-
-            case 'glossaryitem_keyword':
-                return StringUtil::specialcharsAttribute($model->keyword);
-
-            case 'glossaryitem_teaser':
-                return $model->teaser;
-        }
-
-        return '';
+        return match ($insertTag)
+        {
+            'glossaryitem' => vsprintf('<a href="%s" title="%s" data-glossary-id="%s">%s</a>', [
+                $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+                StringUtil::specialcharsAttribute($model->keyword),
+                $model->id,
+                $model->keyword
+            ]),
+            'glossaryitem_open' => vsprintf('<a href="%s" title="%s" data-glossary-id="%s">', [
+                $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+                StringUtil::specialcharsAttribute($model->keyword),
+                $model->id
+            ]),
+            'glossaryitem_url' => $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+            'glossaryitem_keyword' => StringUtil::specialcharsAttribute($model->keyword),
+            'glossaryitem_teaser' => $model->teaser,
+            default => '',
+        };
     }
 }
