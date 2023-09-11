@@ -69,7 +69,7 @@ class Glossary extends Frontend
                 {
                     $url = $objItem->url;
 
-                    if (Validator::isRelativeUrl($url))
+                    if (self::isRelativeUrl($url))
                     {
                         $url = Environment::get('path') . '/' . $url;
                     }
@@ -319,5 +319,18 @@ class Glossary extends Frontend
     public static function transliterateAscii(string $string): string
     {
         return (string) u($string)->ascii();
+    }
+
+    /**
+     * ToDo: Remove when Contao 4.13 support ends
+     * Valid relative URL
+     *
+     * @param mixed $varValue The value to be validated
+     *
+     * @return boolean True if the value is a relative URL
+     */
+    private static function isRelativeUrl($varValue)
+    {
+        return Validator::isUrl($varValue) && !preg_match('(^([0-9a-z+.-]+:|#|/|\{\{))i', $varValue);
     }
 }
