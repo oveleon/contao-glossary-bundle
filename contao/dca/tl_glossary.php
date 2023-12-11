@@ -124,7 +124,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'exclude'                 => true,
             'inputType'               => 'pageTree',
             'foreignKey'              => 'tl_page.title',
-            'eval'                    => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr'],
+            'eval'                    => ['fieldType' => 'radio', 'tl_class' => 'clr'],
             'sql'                     => "int(10) unsigned NOT NULL default '0'",
             'relation'                => ['type' => 'hasOne', 'load' => 'lazy'],
         ],

@@ -1,0 +1,10 @@
+
+<div id="g_entry_<?= $this->id ?>" class="layout_teaser item glossary_<?= $this->glossary->id ?> block<?= $this->class ?>">
+
+  <h4><?= $this->headline ?></h4>
+
+  <div class="ce_text block">
+    <?= $this->teaser ?>
+  </div>
+
+</div>
