@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Contao\ArrayUtil;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\EventListener\ProductInstaller\AddGlossaryValidatorListener;
 
 /*
  * This file is part of Oveleon Contao Glossary Bundle.
@@ -38,3 +39,6 @@ $GLOBALS['TL_MODELS']['tl_glossary_item'] = GlossaryItemModel::class;
 // Add permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'glossarys';
 $GLOBALS['TL_PERMISSIONS'][] = 'glossaryp';
+
+// Add product installer validators
+$GLOBALS['PI_HOOKS']['addValidator'][] = [AddGlossaryValidatorListener::class, 'addValidators'];

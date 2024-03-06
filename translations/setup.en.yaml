@@ -1,0 +1,17 @@
+setup:
+    tables:
+        tl_glossary:                    'Glossary archives'
+        tl_glossary_item:               'Glossary entries'
+        tl_content:
+            tl_glossary_item:           'Content elements (Glossary)'
+    prompt:
+        glossary:
+            jumpTo:
+                label:                  'Glossary archive → Forwarding page'
+                description:            'One or more glossary archive reference a redirect page that cannot be resolved. Your selection will be applied to all other redirects that reference the same page.'
+                explanation:            'When importing one or more glossary archives, the associated redirect page could not be found. Please select a page from your Contao instance to create a link between these glossary archives and a page.<br/><br/><b>The following page was not imported and needs an alternative:</b>'
+        content:
+            glossary:
+                title:                  'Content item → Glossary entry'
+                description:            'One or more content elements could not be assigned. Your selection will be applied to all other content elements that reference the same glossary entry.'
+                explanation:            'When importing one or more content elements, the corresponding glossary entry could not be found. Please select an entry from your Contao instance to create a link between these content elements and a glossary entry.<br/><br/><b>The following glossary entry was not imported and needs an alternative:</b>'
