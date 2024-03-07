@@ -228,7 +228,7 @@ class Glossary extends Frontend
 
                     if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]) || ($size[2][0] ?? null) === '_')
                     {
-                        $imgSize = $imgSize;
+                        $imgSize = $size;
                     }
                 }
 
@@ -247,7 +247,6 @@ class Glossary extends Frontend
 
                 if (null !== ($figure = $figureBuilder->buildIfResourceExists()))
                 {
-                    // ToDo: intCount (see contao #5708/#5851).
                     if (!$figure->getLinkHref())
                     {
                         $linkTitle = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objGlossaryItem->keyword), true);
