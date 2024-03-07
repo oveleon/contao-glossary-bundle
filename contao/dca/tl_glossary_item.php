@@ -15,6 +15,7 @@ declare(strict_types=1);
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\Config;
+use Contao\Database;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\LayoutModel;
@@ -386,15 +387,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
  */
 class tl_glossary_item extends Backend
 {
-    /**
-     * Import the back end user object.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->import(BackendUser::class, 'User');
-    }
-
     /**
      * Auto-generate the glossary item alias if it has not been set yet.
      *

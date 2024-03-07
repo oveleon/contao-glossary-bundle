@@ -15,6 +15,7 @@ declare(strict_types=1);
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\Controller;
+use Contao\Database;
 
 // Add a palette selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'glossary_singleGroup';
@@ -112,19 +113,20 @@ class tl_module_glossary extends Backend
      */
     public function getGlossaries()
     {
+        $db = Database::getInstance();
         $user = BackendUser::getInstance();
 
-        if (!$this->User->isAdmin && !is_array($this->User->glossaries))
+        if (!$user->isAdmin && !is_array($user->glossaries))
         {
             return [];
         }
 
         $arrGlossary = [];
-        $objGlossary = $this->Database->execute('SELECT id, title FROM tl_glossary ORDER BY title');
+        $objGlossary = $db->execute('SELECT id, title FROM tl_glossary ORDER BY title');
 
         while ($objGlossary->next())
         {
-            if ($this->User->hasAccess($objGlossary->id, 'glossarys'))
+            if ($user->hasAccess($objGlossary->id, 'glossarys'))
             {
                 $arrGlossary[$objGlossary->id] = $objGlossary->title;
             }
@@ -140,8 +142,10 @@ class tl_module_glossary extends Backend
      */
     public function getReaderModules()
     {
+        $db = Database::getInstance();
+
         $arrModules = [];
-        $objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='glossaryreader' ORDER BY t.name, m.name");
+        $objModules = $db->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='glossaryreader' ORDER BY t.name, m.name");
 
         while ($objModules->next())
         {

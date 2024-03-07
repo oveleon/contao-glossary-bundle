@@ -15,6 +15,7 @@ declare(strict_types=1);
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\Database;
 use Contao\Input;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -33,6 +34,7 @@ class tl_content_glossary extends Backend
      */
     public function checkPermission(DataContainer $dc): void
     {
+        $db = Database::getInstance();
         $user = BackendUser::getInstance();
 
         if ($user->isAdmin)
@@ -76,7 +78,7 @@ class tl_content_glossary extends Backend
                     $this->checkAccessToElement(Input::get('pid'), $root, 2 === (int) Input::get('mode'));
                 }
 
-                $objCes = $this->Database->prepare("SELECT id FROM tl_content WHERE ptable='tl_glossary_item' AND pid=?")
+                $objCes = $db->prepare("SELECT id FROM tl_content WHERE ptable='tl_glossary_item' AND pid=?")
                     ->execute($dc->currentPid)
                 ;
 
@@ -112,16 +114,18 @@ class tl_content_glossary extends Backend
      */
     protected function checkAccessToElement($id, $root, $blnIsPid = false): void
     {
+        $db = Database::getInstance();
+
         if ($blnIsPid)
         {
-            $objArchive = $this->Database->prepare('SELECT a.id, n.id AS nid FROM tl_glossary_item n, tl_glossary a WHERE n.id=? AND n.pid=a.id')
+            $objArchive = $db->prepare('SELECT a.id, n.id AS nid FROM tl_glossary_item n, tl_glossary a WHERE n.id=? AND n.pid=a.id')
                 ->limit(1)
                 ->execute($id)
             ;
         }
         else
         {
-            $objArchive = $this->Database->prepare('SELECT a.id, n.id AS nid FROM tl_content c, tl_glossary_item n, tl_glossary a WHERE c.id=? AND c.pid=n.id AND n.pid=a.id')
+            $objArchive = $db->prepare('SELECT a.id, n.id AS nid FROM tl_content c, tl_glossary_item n, tl_glossary a WHERE c.id=? AND c.pid=n.id AND n.pid=a.id')
                 ->limit(1)
                 ->execute($id)
             ;
