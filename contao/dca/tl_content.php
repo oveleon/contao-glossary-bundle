@@ -29,32 +29,25 @@ if ('glossary' === Input::get('do'))
 class tl_content_glossary extends Backend
 {
     /**
-     * Import the back end user object.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->import(BackendUser::class, 'User');
-    }
-
-    /**
      * Check permissions to edit table tl_content.
      */
-    public function checkPermission(): void
+    public function checkPermission(DataContainer $dc): void
     {
-        if ($this->User->isAdmin)
+        $user = BackendUser::getInstance();
+
+        if ($user->isAdmin)
         {
             return;
         }
 
         // Set the root IDs
-        if (empty($this->User->glossarys) || !is_array($this->User->glossarys))
+        if (empty($user->glossarys) || !is_array($user->glossarys))
         {
             $root = [0];
         }
         else
         {
-            $root = $this->User->glossarys;
+            $root = $user->glossarys;
         }
 
         // Check the current action
@@ -64,8 +57,9 @@ class tl_content_glossary extends Backend
             case 'paste':
             case 'select':
                 // Check access to the glossary item
-                $this->checkAccessToElement(CURRENT_ID, $root, true);
+                $this->checkAccessToElement($dc->currentPid, $root, true);
                 break;
+
             case 'create':
                 // Check access to the parent element if a content element is created
                 $this->checkAccessToElement(Input::get('pid'), $root, 2 === (int) Input::get('mode'));
@@ -83,11 +77,11 @@ class tl_content_glossary extends Backend
                 }
 
                 $objCes = $this->Database->prepare("SELECT id FROM tl_content WHERE ptable='tl_glossary_item' AND pid=?")
-                    ->execute(CURRENT_ID)
+                    ->execute($dc->currentPid)
                 ;
 
                 /** @var SessionInterface $objSession */
-                $objSession = System::getContainer()->get('session');
+                $objSession = System::getContainer()->get('request_stack')->getSession();
 
                 $session = $objSession->all();
                 $session['CURRENT']['IDS'] = array_intersect((array) $session['CURRENT']['IDS'], $objCes->fetchEach('id'));

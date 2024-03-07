@@ -106,21 +106,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = [
 class tl_module_glossary extends Backend
 {
     /**
-     * Import the back end user object.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->import(BackendUser::class, 'User');
-    }
-
-    /**
      * Get all glossaries and return them as array.
      *
      * @return array
      */
     public function getGlossaries()
     {
+        $user = BackendUser::getInstance();
+
         if (!$this->User->isAdmin && !is_array($this->User->glossaries))
         {
             return [];

@@ -92,32 +92,26 @@ PaletteManipulator::create()
 class tl_page_glossary extends Backend
 {
     /**
-     * Import the back end user object.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->import(BackendUser::class, 'User');
-    }
-
-    /**
      * Get all glossaries and return them as array.
      *
      * @return array
      */
     public function getGlossaries()
     {
-        if (!$this->User->isAdmin && !is_array($this->User->glossaries))
+        $db = Database::getInstance();
+        $user = BackendUser::getInstance();
+        
+        if (!$user->isAdmin && !is_array($user->glossaries))
         {
             return [];
         }
 
         $arrGlossary = [];
-        $objGlossary = $this->Database->execute('SELECT id, title FROM tl_glossary ORDER BY title');
+        $objGlossary = $db->execute('SELECT id, title FROM tl_glossary ORDER BY title');
 
         while ($objGlossary->next())
         {
-            if ($this->User->hasAccess($objGlossary->id, 'glossarys'))
+            if ($user->hasAccess($objGlossary->id, 'glossarys'))
             {
                 $arrGlossary[$objGlossary->id] = $objGlossary->title;
             }

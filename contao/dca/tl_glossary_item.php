@@ -407,7 +407,11 @@ class tl_glossary_item extends Backend
     public function generateAlias($varValue, DataContainer $dc)
     {
         $aliasExists = function (string $alias) use ($dc): bool {
-            return $this->Database->prepare("SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+            $result = Database::getInstance()
+                ->prepare("SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?")
+                ->execute($alias, $dc->id);
+
+            return $result->numRows > 0;
         };
 
         // Generate alias if there is none
@@ -444,22 +448,19 @@ class tl_glossary_item extends Backend
      */
     public function getTitleTag(GlossaryItemModel $model)
     {
-        /** @var GlossaryModel $glossary */
-        if (!$glossary = $model->getRelated('pid'))
+        if (!$glossary = GlossaryModel::findByPk($model->pid))
         {
             return '';
         }
 
-        /** @var PageModel $page */
-        if (!$page = $glossary->getRelated('jumpTo'))
+        if (!$page = PageModel::findByPk($glossary->jumpTo))
         {
             return '';
         }
 
         $page->loadDetails();
 
-        /** @var LayoutModel $layout */
-        if (!$layout = $page->getRelated('layout'))
+        if (!$layout = LayoutModel::findByPk($page->layout))
         {
             return '';
         }
@@ -494,12 +495,15 @@ class tl_glossary_item extends Backend
         $arrPids = [];
         $arrAlias = [];
 
-        if (!$this->User->isAdmin)
+        $db = Database::getInstance();
+        $user = BackendUser::getInstance();
+
+        if (!$user->isAdmin)
         {
-            foreach ($this->User->pagemounts as $id)
+            foreach ($user->pagemounts as $id)
             {
                 $arrPids[] = [$id];
-                $arrPids[] = $this->Database->getChildRecords($id, 'tl_page');
+                $arrPids[] = $db->getChildRecords($id, 'tl_page');
             }
 
             if (!empty($arrPids))
@@ -511,15 +515,11 @@ class tl_glossary_item extends Backend
                 return $arrAlias;
             }
 
-            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN('.implode(',', array_map('\intval', array_unique($arrPids))).') ORDER BY parent, a.sorting")
-                ->execute($dc->id)
-            ;
+            $objAlias = $db->execute("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN(" . implode(',', array_map('\intval', array_unique($arrPids))) . ") ORDER BY parent, a.sorting");
         }
         else
         {
-            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting")
-                ->execute($dc->id)
-            ;
+            $objAlias = $db->execute("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting");
         }
 
         if ($objAlias->numRows)
@@ -528,7 +528,7 @@ class tl_glossary_item extends Backend
 
             while ($objAlias->next())
             {
-                $arrAlias[$objAlias->parent][$objAlias->id] = $objAlias->title.' ('.($GLOBALS['TL_LANG']['COLS'][$objAlias->inColumn] ?: $objAlias->inColumn).', ID '.$objAlias->id.')';
+                $arrAlias[$objAlias->parent][$objAlias->id] = $objAlias->title . ' (' . ($GLOBALS['TL_LANG']['COLS'][$objAlias->inColumn] ?? $objAlias->inColumn) . ', ID ' . $objAlias->id . ')';
             }
         }
 
@@ -542,7 +542,9 @@ class tl_glossary_item extends Backend
      */
     public function getSourceOptions(DataContainer $dc)
     {
-        if ($this->User->isAdmin)
+        $user = BackendUser::getInstance();
+
+        if ($user->isAdmin)
         {
             return ['default', 'internal', 'article', 'external'];
         }
@@ -550,19 +552,19 @@ class tl_glossary_item extends Backend
         $arrOptions = ['default'];
 
         // Add the "internal" option
-        if ($this->User->hasAccess('tl_glossary_item::jumpTo', 'alexf'))
+        if ($user->hasAccess('tl_glossary_item::jumpTo', 'alexf'))
         {
             $arrOptions[] = 'internal';
         }
 
         // Add the "article" option
-        if ($this->User->hasAccess('tl_glossary_item::articleId', 'alexf'))
+        if ($user->hasAccess('tl_glossary_item::articleId', 'alexf'))
         {
             $arrOptions[] = 'article';
         }
 
         // Add the "external" option
-        if ($this->User->hasAccess('tl_glossary_item::url', 'alexf'))
+        if ($user->hasAccess('tl_glossary_item::url', 'alexf'))
         {
             $arrOptions[] = 'external';
         }
