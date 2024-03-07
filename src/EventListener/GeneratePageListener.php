@@ -75,6 +75,7 @@ class GeneratePageListener
         $alias  = Input::get('items');
 
         // Set the item from the auto_item parameter
+        // ToDo: See #5983
         if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem'))
         {
             $alias = Input::get('auto_item');
@@ -139,7 +140,9 @@ class GeneratePageListener
         $objTemplate->language = $pageModel->rootLanguage;
 
         // Disable glossary cache in contao debug mode
-        $objTemplate->cacheStatus = !Config::get('debugMode');
+        $debugMode = System::getContainer()->getParameter('kernel.debug');
+
+        $objTemplate->cacheStatus = !$debugMode;
 
         $objTemplate->glossaryConfig = $glossaryConfig;
 
