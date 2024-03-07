@@ -42,3 +42,5 @@ $GLOBALS['TL_PERMISSIONS'][] = 'glossaryp';
 
 // Add product installer validators
 $GLOBALS['PI_HOOKS']['addValidator'][] = [AddGlossaryValidatorListener::class, 'addValidators'];
+$GLOBALS['PI_HOOKS']['setModuleValidatorArchiveConnections'][] = [AddGlossaryValidatorListener::class, 'setModuleArchiveConnections'];
+$GLOBALS['PI_HOOKS']['setUserGroupValidatorArchiveConnections'][] = [AddGlossaryValidatorListener::class, 'setUserGroupArchiveConnections'];

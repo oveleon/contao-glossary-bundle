@@ -15,6 +15,7 @@ namespace Oveleon\ContaoGlossaryBundle\EventListener\ProductInstaller;
 
 use Oveleon\ContaoGlossaryBundle\Import\Validator\ContentGlossaryValidator;
 use Oveleon\ContaoGlossaryBundle\Import\Validator\GlossaryValidator;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Oveleon\ProductInstaller\Import\Validator;
 use Oveleon\ProductInstaller\Import\Validator\ContentValidator;
 use Oveleon\ProductInstaller\Import\Validator\ValidatorMode;
@@ -42,5 +43,18 @@ class AddGlossaryValidatorListener
             'setCustomElementSingleFileConnections',
             'setInsertTagConnections'
         ]);
+    }
+
+    public function setModuleArchiveConnections(array $row): array
+    {
+        return match ($row['type']) {
+            'glossary', 'glossaryreader' => ['field' => 'glossary_archives', 'table' => GlossaryModel::getTable()],
+            default => [],
+        };
+    }
+
+    public function setUserGroupArchiveConnections(array &$connections): void
+    {
+        $connections['glossarys'] = GlossaryModel::getTable();
     }
 }
