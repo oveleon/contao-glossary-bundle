@@ -2,15 +2,14 @@
 
 namespace Oveleon\ContaoGlossaryBundle\Import\Validator;
 
-use Oveleon\ContaoGlossaryBundle\GlossaryItemModel;
-use Oveleon\ProductInstaller\Import\Validator\ValidatorInterface;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 
 /**
  * Validator class for validating the glossary item records during and after import.
  *
  * @author Daniele Sciannimanica <https://github.com/doishub>
  */
-class GlossaryItemValidator implements ValidatorInterface
+class GlossaryItemValidator
 {
     static public function getTrigger(): string
     {
