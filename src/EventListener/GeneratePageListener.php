@@ -22,6 +22,7 @@ use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\StringUtil;
+use Contao\System;
 use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
@@ -140,9 +141,8 @@ class GeneratePageListener
         $objTemplate->language = $pageModel->rootLanguage;
 
         // Disable glossary cache in contao debug mode
-        $debugMode = System::getContainer()->getParameter('kernel.debug');
-
-        $objTemplate->cacheStatus = !$debugMode;
+        $blnDebug = System::getContainer()->getParameter('kernel.debug');
+        $objTemplate->cacheStatus = !$blnDebug;
 
         $objTemplate->glossaryConfig = $glossaryConfig;
 
