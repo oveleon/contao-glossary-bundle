@@ -143,6 +143,11 @@ class ModuleGlossaryReader extends ModuleGlossary
             {
                 $htmlHeadBag->setMetaDescription($htmlDecoder->htmlToPlainText($objGlossaryItem->teaser));
             }
+
+            if ($objGlossaryItem->robots)
+            {
+                $htmlHeadBag->setMetaRobots($objGlossaryItem->robots);
+            }
         }
     }
 }
