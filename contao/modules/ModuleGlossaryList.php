@@ -74,7 +74,7 @@ class ModuleGlossaryList extends ModuleGlossary
         }
 
         // Show the glossary reader if an item has been selected
-        if ($this->glossary_readerModule > 0 && (isset($_GET['items']) || (Config::get('useAutoItem') && isset($_GET['auto_item']))))
+        if ($this->glossary_readerModule > 0 && (isset($_GET['items']) || ($this->useAutoItem() && isset($_GET['auto_item']))))
         {
             return $this->getFrontendModule($this->glossary_readerModule, $this->strColumn);
         }

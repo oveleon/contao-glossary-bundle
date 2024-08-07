@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoGlossaryBundle;
 
+use Contao\Config;
+use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\Environment;
 use Contao\FilesModel;
 use Contao\FrontendTemplate;
@@ -220,5 +222,16 @@ abstract class ModuleGlossary extends Module
             $objGlossaryItem->id,
             $strLink
         );
+    }
+
+    /**
+     * Checks weather auto_item should be used to provide BC
+     *
+     * @deprecated - To be removed when contao 4.13 support ends
+     * @internal
+     */
+    public static function useAutoItem(): bool
+    {
+        return !str_starts_with(ContaoCoreBundle::getVersion(), '5.') ? Config::get('useAutoItem') : true;
     }
 }

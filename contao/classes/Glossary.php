@@ -110,7 +110,7 @@ class Glossary extends Frontend
             }
             else
             {
-                $params = (Config::get('useAutoItem') ? '/' : '/items/').($objItem->alias ?: $objItem->id);
+                $params = (ModuleGlossary::useAutoItem() ? '/' : '/items/').($objItem->alias ?: $objItem->id);
 
                 self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
             }
