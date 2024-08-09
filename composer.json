@@ -21,11 +21,29 @@
     "php": "^8.1",
     "ext-json": "*",
     "contao/core-bundle": "^4.13 || ^5.1",
-    "symfony/http-foundation": "^5.4 || ^6.0",
-    "symfony/string": "^5.4 || ^6.0"
+    "doctrine/dbal": "^3.3",
+    "knplabs/knp-menu": "^3.1",
+    "symfony/config": "^5.4 || ^6.4 || ^7.0",
+    "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.0",
+    "symfony/framework-bundle": "^5.4 || ^6.4 || ^7.0",
+    "symfony/http-foundation": "^5.4 || ^6.4 || ^7.0",
+    "symfony/http-kernel": "^5.4 || ^6.4 || ^7.0",
+    "symfony/routing": "^5.4 || ^6.4 || ^7.0",
+    "symfony/security-core": "^5.4 || ^6.4 || ^7.0",
+    "symfony/string": "^5.4 || ^6.4 || ^7.0",
+    "symfony/translation-contracts": "^3.0"
   },
   "require-dev": {
-    "contao/manager-plugin": "^2.3.1"
+    "contao/contao-rector": "@dev",
+    "contao/easy-coding-standard": "^6.12",
+    "contao/manager-plugin": "^2.3.1",
+    "phpstan/phpstan": "^1.0",
+    "phpstan/phpstan-doctrine": "^1.3",
+    "phpstan/phpstan-phpunit": "^1.0",
+    "phpstan/phpstan-symfony": "^1.0",
+    "shipmonk/composer-dependency-analyser": "^1.5",
+    "slam/phpstan-extensions": "^6.0",
+    "thecodingmachine/phpstan-strict-rules": "^1.0"
   },
   "conflict": {
     "contao/core": "*",
@@ -47,7 +65,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "2.2.x-dev"
+      "dev-main": "2.3.x-dev"
     },
     "contao-manager-plugin": "Oveleon\\ContaoGlossaryBundle\\ContaoManager\\Plugin"
   },
@@ -61,5 +79,16 @@
   "support": {
     "issues": "https://github.com/oveleon/contao-glossary-bundle/issues",
     "source": "https://github.com/oveleon/contao-glossary-bundle"
+  },
+  "scripts": {
+    "all": [
+      "@rector",
+      "@ecs",
+      "@phpstan"
+    ],
+    "ecs": "@php vendor/bin/ecs check --fix",
+    "rector": "@php vendor/bin/rector --debug",
+    "phpstan": "@php vendor/bin/phpstan analyze",
+    "depcheck": "@php vendor/bin/composer-dependency-analyser --config=depcheck.php"
   }
 }
