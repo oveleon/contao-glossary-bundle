@@ -21,8 +21,7 @@ class GlossaryListener
 {
     public function __construct(
         protected ContaoFramework $framework,
-        protected Connection $connection,
-        protected Security $security
+        protected Connection $connection
     ){}
 
     /**

@@ -20,8 +20,7 @@ class GlossaryItemListener
 {
     public function __construct(
         protected ContaoFramework $framework,
-        protected Connection $connection,
-        protected Security $security
+        protected Connection $connection
     ){}
 
     public function checkPermission(DataContainer $dc): void

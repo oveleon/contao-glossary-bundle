@@ -23,7 +23,7 @@ use Knp\Menu\FactoryInterface;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
@@ -33,7 +33,7 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
     /**
      * @internal Do not inherit from this class; decorate the "contao_glossary.picker.glossary_provider" service instead
      */
-    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, TranslatorInterface|null $translator, private Security $security)
+    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, TranslatorInterface|null $translator, private readonly AuthorizationCheckerInterface $security)
     {
         parent::__construct($menuFactory, $router, $translator);
     }
