@@ -275,6 +275,10 @@ class Glossary extends Frontend
 
     /**
      * Valid relative URL.
+     *
+     * @deprecated Will be removed when Contao 4.13 support ends
+     *
+     * @internal
      */
     private static function isRelativeUrl(mixed $varValue): bool
     {
