@@ -16,16 +16,23 @@ declare(strict_types=1);
 namespace Oveleon\ContaoGlossaryBundle\EventListener\DataContainer;
 
 use Contao\Automator;
+use Contao\BackendUser;
 use Contao\Controller;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\Input;
+use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\System;
+use Contao\User;
 use Doctrine\DBAL\Connection;
+use Oveleon\ContaoGlossaryBundle\Glossary;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Utils\AliasException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class GlossaryItemListener
@@ -34,6 +41,182 @@ class GlossaryItemListener
         protected ContaoFramework $framework,
         protected Connection $connection,
     ) {
+    }
+
+    /**
+     * Return the SERP URL.
+     */
+    public function getSerpUrl(GlossaryItemModel $model): string
+    {
+        return Glossary::generateUrl($model, true);
+    }
+
+    /**
+     * Return the title tag from the associated page layout.
+     */
+    public function getTitleTag(GlossaryItemModel $model): string
+    {
+        if (!$glossary = GlossaryModel::findById($model->pid))
+        {
+            return '';
+        }
+
+        if (!$page = PageModel::findById($glossary->jumpTo))
+        {
+            return '';
+        }
+
+        $page->loadDetails();
+
+        if (!$layout = LayoutModel::findById($page->layout))
+        {
+            return '';
+        }
+
+        $origObjPage = $GLOBALS['objPage'] ?? null;
+
+        // Override the global page object, so we can replace the insert tags
+        $GLOBALS['objPage'] = $page;
+
+        $title = implode(
+            '%s',
+            array_map(
+                static fn ($strVal) => str_replace('%', '%%', System::getContainer()->get('contao.insert_tag.parser')->replaceInline($strVal)),
+                explode('{{page::pageTitle}}', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}', 2),
+            ),
+        );
+
+        $GLOBALS['objPage'] = $origObjPage;
+
+        return $title;
+    }
+
+    /**
+     * Auto-generate the glossary item alias if it has not been set yet.
+     *
+     * @throws AliasException
+     */
+    #[AsCallback(table: 'tl_glossary_item', target: 'fields.alias.save')]
+    public function generateAlias(mixed $varValue, DataContainer $dc): string
+    {
+        $aliasExists = static function (string $alias) use ($dc): bool
+        {
+            $result = Database::getInstance()
+                ->prepare('SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?')
+                ->execute($alias, $dc->id)
+            ;
+
+            return $result->numRows > 0;
+        };
+
+        // Generate alias if there is none
+        if (!$varValue)
+        {
+            $varValue = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->keyword, GlossaryModel::findById($dc->activeRecord->pid)->jumpTo, $aliasExists);
+        }
+        elseif (preg_match('/^[1-9]\d*$/', (string) $varValue))
+        {
+            throw new AliasException(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $varValue));
+        }
+        elseif ($aliasExists($varValue))
+        {
+            throw new AliasException(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+        }
+
+        return $varValue;
+    }
+
+    /**
+     * Get all articles and return them as array.
+     */
+    #[AsCallback(table: 'tl_glossary_item', target: 'fields.articleId.options')]
+    public function getArticleAlias(DataContainer $dc): array
+    {
+        $arrPids = [];
+        $arrAlias = [];
+
+        $db = Database::getInstance();
+        $user = BackendUser::getInstance();
+
+        if (!$user->isAdmin)
+        {
+            foreach ($user->pagemounts as $id)
+            {
+                $arrPids[] = [$id];
+                $arrPids[] = $db->getChildRecords($id, 'tl_page');
+            }
+
+            if ([] !== $arrPids)
+            {
+                $arrPids = array_merge(...$arrPids);
+            }
+            else
+            {
+                return $arrAlias;
+            }
+
+            $objAlias = $db->execute('SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN('.implode(',', array_map('\intval', array_unique($arrPids))).') ORDER BY parent, a.sorting');
+        }
+        else
+        {
+            $objAlias = $db->execute('SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting');
+        }
+
+        if ($objAlias->numRows)
+        {
+            System::loadLanguageFile('tl_article');
+
+            while ($objAlias->next())
+            {
+                $arrAlias[$objAlias->parent][$objAlias->id] = $objAlias->title.' ('.($GLOBALS['TL_LANG']['COLS'][$objAlias->inColumn] ?? $objAlias->inColumn).', ID '.$objAlias->id.')';
+            }
+        }
+
+        return $arrAlias;
+    }
+
+    /**
+     * Add the source options depending on the allowed fields.
+     */
+    #[AsCallback(table: 'tl_glossary_item', target: 'fields.source.options')]
+    public function getSourceOptions(DataContainer $dc): array
+    {
+        /** @var BackendUser|User $user */
+        $user = BackendUser::getInstance();
+
+        if ($user->isAdmin)
+        {
+            return ['default', 'internal', 'article', 'external'];
+        }
+
+        $arrOptions = ['default'];
+
+        // Add the "internal" option
+        if ($user->hasAccess('tl_glossary_item::jumpTo', 'alexf')) /** @phpstan-ignore-line */
+        {
+            $arrOptions[] = 'internal';
+        }
+
+        // Add the "article" option
+        if ($user->hasAccess('tl_glossary_item::articleId', 'alexf')) /** @phpstan-ignore-line */
+        {
+            $arrOptions[] = 'article';
+        }
+
+        // Add the "external" option
+        if ($user->hasAccess('tl_glossary_item::url', 'alexf')) /** @phpstan-ignore-line */
+        {
+            $arrOptions[] = 'external';
+        }
+
+        // Add the option currently set
+        if ($dc->activeRecord?->source)
+        {
+            $arrOptions[] = $dc->activeRecord->source;
+            $arrOptions = array_unique($arrOptions);
+        }
+
+        return $arrOptions;
     }
 
     public function checkPermission(DataContainer $dc): void

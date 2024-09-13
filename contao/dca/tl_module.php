@@ -13,11 +13,7 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-use Contao\Backend;
-use Contao\BackendUser;
 use Contao\Controller;
-use Contao\Database;
-use Contao\User;
 
 // Add a palette selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'glossary_singleGroup';
@@ -34,7 +30,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_archives'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['glossary_archives'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'options_callback' => ['tl_module_glossary', 'getGlossaries'],
     'eval' => ['mandatory' => true, 'multiple' => true],
     'sql' => 'blob NULL',
 ];
@@ -43,7 +38,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['glossary_readerModule'],
     'exclude' => true,
     'inputType' => 'select',
-    'options_callback' => ['tl_module_glossary', 'getReaderModules'],
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
     'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql' => 'int(10) unsigned NOT NULL default 0',
@@ -99,60 +93,3 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = [
     'eval' => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 clr'],
     'sql' => "varchar(64) NOT NULL default ''",
 ];
-
-/**
- * Provide miscellaneous methods that are used by the data configuration array.
- */
-class tl_module extends Backend
-{
-    /**
-     * Get all glossaries and return them as array.
-     *
-     * @return array
-     */
-    public function getGlossaries()
-    {
-        $db = Database::getInstance();
-
-        /** @var BackendUser|User $user */
-        $user = BackendUser::getInstance();
-
-        if (!$user->isAdmin && !is_array($user->glossarys))
-        {
-            return [];
-        }
-
-        $arrGlossary = [];
-        $objGlossary = $db->execute('SELECT id, title FROM tl_glossary ORDER BY title');
-
-        while ($objGlossary->next())
-        {
-            if ($user->hasAccess($objGlossary->id, 'glossarys')) /** @phpstan-ignore-line */
-            {
-                $arrGlossary[$objGlossary->id] = $objGlossary->title;
-            }
-        }
-
-        return $arrGlossary;
-    }
-
-    /**
-     * Get all glossary reader modules and return them as array.
-     *
-     * @return array
-     */
-    public function getReaderModules()
-    {
-        $db = Database::getInstance();
-
-        $arrModules = [];
-        $objModules = $db->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='glossaryreader' ORDER BY t.name, m.name");
-
-        while ($objModules->next())
-        {
-            $arrModules[$objModules->theme][$objModules->id] = $objModules->name.' (ID '.$objModules->id.')';
-        }
-
-        return $arrModules;
-    }
-}

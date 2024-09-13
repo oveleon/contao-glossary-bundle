@@ -13,12 +13,8 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-use Contao\Backend;
-use Contao\BackendUser;
 use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\Database;
-use Contao\User;
 
 // Palettes
 $GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = 'activateGlossary';
@@ -37,7 +33,6 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryArchives'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_page']['glossaryArchives'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'options_callback' => ['tl_page_glossary', 'getGlossaries'],
     'eval' => ['mandatory' => true, 'multiple' => true],
     'sql' => 'blob NULL',
 ];
@@ -86,40 +81,3 @@ PaletteManipulator::create()
     ->addField(['disableGlossary'], 'expert_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('regular', 'tl_page')
 ;
-
-/**
- * Provide miscellaneous methods that are used by the data configuration array.
- */
-class tl_page extends Backend
-{
-    /**
-     * Get all glossaries and return them as array.
-     *
-     * @return array
-     */
-    public function getGlossaries()
-    {
-        $db = Database::getInstance();
-
-        /** @var BackendUser|User $user */
-        $user = BackendUser::getInstance();
-
-        if (!$user->isAdmin && !is_array($user->glossarys))
-        {
-            return [];
-        }
-
-        $arrGlossary = [];
-        $objGlossary = $db->execute('SELECT id, title FROM tl_glossary ORDER BY title');
-
-        while ($objGlossary->next())
-        {
-            if ($user->hasAccess($objGlossary->id, 'glossarys')) /** @phpstan-ignore-line */
-            {
-                $arrGlossary[$objGlossary->id] = $objGlossary->title;
-            }
-        }
-
-        return $arrGlossary;
-    }
-}
