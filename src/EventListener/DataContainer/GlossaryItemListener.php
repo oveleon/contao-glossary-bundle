@@ -1,5 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Oveleon Contao Glossary Bundle.
+ *
+ * @package     contao-glossary-bundle
+ * @license     AGPL-3.0
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
+ */
+
 namespace Oveleon\ContaoGlossaryBundle\EventListener\DataContainer;
 
 use Contao\Automator;
@@ -14,14 +27,14 @@ use Contao\System;
 use Doctrine\DBAL\Connection;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Security;
 
 class GlossaryItemListener
 {
     public function __construct(
         protected ContaoFramework $framework,
-        protected Connection $connection
-    ){}
+        protected Connection $connection,
+    ) {
+    }
 
     public function checkPermission(DataContainer $dc): void
     {
@@ -33,7 +46,7 @@ class GlossaryItemListener
         }
 
         // Set the root IDs
-        if (empty($objUser->glossarys) || !is_array($objUser->glossarys))
+        if (empty($objUser->glossarys) || !\is_array($objUser->glossarys))
         {
             $root = [0];
         }
@@ -42,7 +55,7 @@ class GlossaryItemListener
             $root = $objUser->glossarys;
         }
 
-        $id = strlen(Input::get('id')) ? Input::get('id') : $dc->currentPid;
+        $id = 0 !== \strlen(Input::get('id')) ? Input::get('id') : $dc->currentPid;
         $db = Database::getInstance();
 
         // Check current action
@@ -50,25 +63,25 @@ class GlossaryItemListener
         {
             case 'paste':
             case 'select':
-            // Check currentPid
-            if (!in_array($dc->currentPid, $root))
-            {
-                throw new AccessDeniedException('Not enough permissions to access glossary ID ' . $id . '.');
-            }
-            break;
+                // Check currentPid
+                if (!\in_array($dc->currentPid, $root, true))
+                {
+                    throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
+                }
+                break;
 
             case 'create':
-                if (!Input::get('pid') || !in_array(Input::get('pid'), $root))
+                if (!Input::get('pid') || !\in_array(Input::get('pid'), $root, true))
                 {
-                    throw new AccessDeniedException('Not enough permissions to create glossary items in glossary ID ' . Input::get('pid') . '.');
+                    throw new AccessDeniedException('Not enough permissions to create glossary items in glossary ID '.Input::get('pid').'.');
                 }
                 break;
 
             case 'cut':
             case 'copy':
-                if (Input::get('act') == 'cut' && Input::get('mode') == 1)
+                if ('cut' === Input::get('act') && 1 === (int) Input::get('mode'))
                 {
-                    $objGlossary = $db->prepare("SELECT pid FROM tl_glossary_item WHERE id=?")
+                    $objGlossary = $db->prepare('SELECT pid FROM tl_glossary_item WHERE id=?')
                         ->limit(1)
                         ->execute(Input::get('pid'))
                     ;
@@ -85,17 +98,17 @@ class GlossaryItemListener
                     $pid = Input::get('pid');
                 }
 
-                if (!in_array($pid, $root))
+                if (!\in_array($pid, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary item ID '.$id.' to glossary ID '.$pid.'.');
                 }
-            // no break
+                // no break
 
             case 'edit':
             case 'show':
             case 'delete':
             case 'toggle':
-                $objGlossary = $db->prepare("SELECT pid FROM tl_glossary_item WHERE id=?")
+                $objGlossary = $db->prepare('SELECT pid FROM tl_glossary_item WHERE id=?')
                     ->limit(1)
                     ->execute($id)
                 ;
@@ -105,7 +118,7 @@ class GlossaryItemListener
                     throw new AccessDeniedException('Invalid glossary item ID '.$id.'.');
                 }
 
-                if (!in_array($objGlossary->pid, $root))
+                if (!\in_array($objGlossary->pid, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary item ID '.$id.' of glossary  ID '.$objGlossary->pid.'.');
                 }
@@ -116,13 +129,14 @@ class GlossaryItemListener
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!in_array($id, $root))
+                if (!\in_array($id, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
                 }
 
-                $objGlossary = $db->prepare("SELECT id FROM tl_glossary_item WHERE pid=?")
-                    ->execute($id);
+                $objGlossary = $db->prepare('SELECT id FROM tl_glossary_item WHERE pid=?')
+                    ->execute($id)
+                ;
 
                 $objSession = System::getContainer()->get('request_stack')->getSession();
 
@@ -137,7 +151,7 @@ class GlossaryItemListener
                     throw new AccessDeniedException('Invalid command "'.Input::get('act').'".');
                 }
 
-                if (!in_array($id, $root))
+                if (!\in_array($id, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
                 }
@@ -155,7 +169,7 @@ class GlossaryItemListener
 
         $session = $objSession->get('glossaryitems_updater');
 
-        if (empty($session) || !is_array($session))
+        if (empty($session) || !\is_array($session))
         {
             return;
         }
@@ -165,7 +179,6 @@ class GlossaryItemListener
 
         $objSession->set('glossaryitems_updater', null);
     }
-
 
     /**
      * Schedule a glossary item update.
@@ -178,7 +191,7 @@ class GlossaryItemListener
     public function scheduleUpdate(DataContainer $dc): void
     {
         // Return if there is no ID
-        if (!$dc->activeRecord || !$dc->activeRecord->pid || Input::get('act') == 'copy')
+        if (!$dc->activeRecord || !$dc->activeRecord->pid || 'copy' === Input::get('act'))
         {
             return;
         }
@@ -194,7 +207,7 @@ class GlossaryItemListener
 
     public function addSitemapCacheInvalidationTag(DataContainer $dc, array $tags): array
     {
-        $archiveModel = GlossaryModel::findByPk($dc->activeRecord->pid);
+        $archiveModel = GlossaryModel::findById($dc->activeRecord->pid);
         $pageModel = PageModel::findWithDetails($archiveModel->jumpTo);
 
         if (null === $pageModel)
@@ -215,8 +228,9 @@ class GlossaryItemListener
         if ($dc->activeRecord->letter !== $newGroup)
         {
             $db = Database::getInstance();
-            $db->prepare("UPDATE tl_glossary_item SET letter=? WHERE id=?")
-               ->execute($newGroup, $dc->id);
+            $db->prepare('UPDATE tl_glossary_item SET letter=? WHERE id=?')
+               ->execute($newGroup, $dc->id)
+            ;
         }
     }
 

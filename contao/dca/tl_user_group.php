@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
@@ -23,20 +24,20 @@ PaletteManipulator::create()
 
 // Add fields to tl_user_group
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['glossarys'] = [
-    'label'                 => &$GLOBALS['TL_LANG']['tl_user_group']['glossarys'],
-    'exclude'               => true,
-    'inputType'             => 'checkbox',
-    'foreignKey'            => 'tl_glossary.title',
-    'eval'                  => ['multiple' => true],
-    'sql'                   => 'blob NULL',
+    'label' => &$GLOBALS['TL_LANG']['tl_user_group']['glossarys'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'foreignKey' => 'tl_glossary.title',
+    'eval' => ['multiple' => true],
+    'sql' => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['glossaryp'] = [
-    'label'                 => &$GLOBALS['TL_LANG']['tl_user_group']['glossaryp'],
-    'exclude'               => true,
-    'inputType'             => 'checkbox',
-    'options'               => ['create', 'delete'],
-    'reference'             => &$GLOBALS['TL_LANG']['MSC'],
-    'eval'                  => ['multiple' => true],
-    'sql'                   => 'blob NULL',
+    'label' => &$GLOBALS['TL_LANG']['tl_user_group']['glossaryp'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'options' => ['create', 'delete'],
+    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+    'eval' => ['multiple' => true],
+    'sql' => 'blob NULL',
 ];

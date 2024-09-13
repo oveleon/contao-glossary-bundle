@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle\EventListener;
@@ -28,7 +29,7 @@ use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
  */
 class SitemapListener
 {
-    public function __construct(private ContaoFramework $framework)
+    public function __construct(private readonly ContaoFramework $framework)
     {
     }
 
@@ -104,7 +105,7 @@ class SitemapListener
 
             foreach ($objGlossaryItems as $objGlossaryItem)
             {
-                $arrPages[] = $objParent->getAbsoluteUrl('/' . ($objGlossaryItem->alias ?: $objGlossaryItem->id));
+                $arrPages[] = $objParent->getAbsoluteUrl('/'.($objGlossaryItem->alias ?: $objGlossaryItem->id));
             }
         }
 
@@ -114,7 +115,7 @@ class SitemapListener
         }
     }
 
-    private function addUrlToDefaultUrlSet(string $url, $event): self
+    private function addUrlToDefaultUrlSet(string $url, SitemapEvent $event): self
     {
         $sitemap = $event->getDocument();
         $urlSet = $sitemap->getElementsByTagNameNS('https://www.sitemaps.org/schemas/sitemap/0.9', 'urlset')->item(0);

@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle\DependencyInjection;
@@ -23,7 +24,7 @@ class ContaoGlossaryExtension extends Extension
 {
     public function load(array $mergedConfig, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
 
         $loader->load('listener.yaml');
         $loader->load('services.yaml');

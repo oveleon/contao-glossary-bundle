@@ -7,15 +7,15 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle;
 
 use Contao\BackendTemplate;
-use Contao\Config;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
@@ -31,9 +31,6 @@ use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
  * @property bool   $glossary_utf8Transliteration
  * @property bool   $glossary_quickLinks
  * @property string $glossary_letter
- *
- * @author Fabian Ekert <https://github.com/eki89>
- * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 class ModuleGlossaryList extends ModuleGlossary
 {
@@ -56,11 +53,11 @@ class ModuleGlossaryList extends ModuleGlossary
         if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
         {
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '. $GLOBALS['TL_LANG']['FMD']['glossary'][0] .' ###';
+            $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD']['glossary'][0].' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
-            $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', array('do'=>'themes', 'table'=>'tl_module', 'act'=>'edit', 'id'=>$this->id)));
+            $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', ['do' => 'themes', 'table' => 'tl_module', 'act' => 'edit', 'id' => $this->id]));
 
             return $objTemplate->parse();
         }
@@ -68,7 +65,7 @@ class ModuleGlossaryList extends ModuleGlossary
         $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives));
 
         // Return if there are no glossaries
-        if (empty($this->glossary_archives) || !\is_array($this->glossary_archives))
+        if ([] === $this->glossary_archives || !\is_array($this->glossary_archives))
         {
             return '';
         }

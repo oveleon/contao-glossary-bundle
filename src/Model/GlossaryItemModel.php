@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle\Model;
@@ -76,34 +77,36 @@ use Contao\Model\Collection;
  * @method static GlossaryItemModel|null findOneByTarget($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByCssClass($val, array $opt=array())
  * @method static GlossaryItemModel|null findOneByPublished($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByPid($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTstamp($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByKeyword($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySensitiveSearch($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAlias($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByPageTitle($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByDescription($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySubheadline($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTeaser($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAddImage($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySingleSRC($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByAlt($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySize($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByImagemargin($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByImageUrl($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByFullsize($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByCaption($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByFloating($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBySource($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByJumpTo($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByArticleId($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByUrl($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByTarget($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByCssClass($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findByPublished($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findMultipleByIds($val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findBy($col, $val, array $opt=array())
- * @method static Collection|GlossaryItemModel[]|GlossaryItemModel|null findAll(array $opt=array())
+ *
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByPid($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByTstamp($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByKeyword($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findBySensitiveSearch($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByAlias($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByPageTitle($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByDescription($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findBySubheadline($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByTeaser($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByAddImage($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findBySingleSRC($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByAlt($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findBySize($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByImagemargin($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByImageUrl($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByFullsize($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByCaption($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByFloating($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findBySource($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByJumpTo($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByArticleId($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByUrl($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByTarget($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByCssClass($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findByPublished($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findMultipleByIds($val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findBy($col, $val, array $opt=array())
+ * @method static Collection<GlossaryItemModel>|GlossaryItemModel[]|GlossaryItemModel|null findAll(array $opt=array())
+ *
  * @method static integer countById($id, array $opt=array())
  * @method static integer countByPid($val, array $opt=array())
  * @method static integer countByTstamp($val, array $opt=array())
@@ -130,9 +133,6 @@ use Contao\Model\Collection;
  * @method static integer countByTarget($val, array $opt=array())
  * @method static integer countByCssClass($val, array $opt=array())
  * @method static integer countByPublished($val, array $opt=array())
- *
- * @author Fabian Ekert <https://github.com/eki89>
- * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 class GlossaryItemModel extends Model
 {
@@ -145,13 +145,8 @@ class GlossaryItemModel extends Model
 
     /**
      * Find a published glossary item by its ID.
-     *
-     * @param int   $intId      The glossary item ID
-     * @param array $arrOptions An optional options array
-     *
-     * @return GlossaryItemModel|null The model or null if there are no glossary items
      */
-    public static function findPublishedById($intId, array $arrOptions = [])
+    public static function findPublishedById(int $intId, array $arrOptions = []): self|null
     {
         $t = static::$strTable;
         $arrColumns = ["$t.id=?"];
@@ -166,16 +161,11 @@ class GlossaryItemModel extends Model
 
     /**
      * Find a published glossary item by its ID or alias.
-     *
-     * @param mixed $varId      The numeric ID or alias name
-     * @param array $arrOptions An optional options array
-     *
-     * @return GlossaryItemModel|null The model or null if there are no glossary items
      */
-    public static function findPublishedByIdOrAlias($varId, array $arrOptions = [])
+    public static function findPublishedByIdOrAlias(mixed $varId, array $arrOptions = []): self|null
     {
         $t = static::$strTable;
-        $arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? ["$t.alias=?"] : ["$t.id=?"];
+        $arrColumns = preg_match('/^[1-9]\d*$/', (string) $varId) ? ["$t.id=?"] : ["$t.alias=?"];
 
         if (!static::isPreviewMode($arrOptions))
         {
@@ -187,22 +177,16 @@ class GlossaryItemModel extends Model
 
     /**
      * Find a published glossary item from one or more glossaries by its ID or alias.
-     *
-     * @param mixed $varId      The numeric ID or alias name
-     * @param array $arrPids    An array of parent IDs
-     * @param array $arrOptions An optional options array
-     *
-     * @return GlossaryItemModel|null The model or null if there are no glossary items
      */
-    public static function findPublishedByParentAndIdOrAlias($varId, $arrPids, array $arrOptions = [])
+    public static function findPublishedByParentAndIdOrAlias(mixed $varId, array $arrPids, array $arrOptions = []): self|null
     {
-        if (empty($arrPids) || !\is_array($arrPids))
+        if ([] === $arrPids)
         {
             return null;
         }
 
         $t = static::$strTable;
-        $arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? ["$t.alias=?"] : ["$t.id=?"];
+        $arrColumns = preg_match('/^[1-9]\d*$/', (string) $varId) ? ["$t.id=?"] : ["$t.alias=?"];
         $arrColumns[] = "$t.pid IN(".implode(',', array_map('\intval', $arrPids)).')';
 
         if (!static::isPreviewMode($arrOptions))
@@ -216,12 +200,9 @@ class GlossaryItemModel extends Model
     /**
      * Find published glossary items with the default redirect target by their parent ID.
      *
-     * @param int   $intPid     The glossary ID
-     * @param array $arrOptions An optional options array
-     *
-     * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossary items
+     * @return Collection<GlossaryItemModel>|GlossaryItemModel|array|null
      */
-    public static function findPublishedDefaultByPid($intPid, array $arrOptions = [])
+    public static function findPublishedDefaultByPid(int $intPid, array $arrOptions = []): Collection|self|array|null
     {
         $t = static::$strTable;
         $arrColumns = ["$t.pid=? AND $t.source='default'"];
@@ -242,14 +223,11 @@ class GlossaryItemModel extends Model
     /**
      * Find published glossary items by their parent ID.
      *
-     * @param array $arrPids    An array of glossary IDs
-     * @param array $arrOptions An optional options array
-     *
-     * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossaries
+     * @return Collection<GlossaryItemModel>|GlossaryItemModel|array|null
      */
-    public static function findPublishedByPids($arrPids, array $arrOptions = [])
+    public static function findPublishedByPids(array $arrPids, array $arrOptions = []): Collection|self|array|null
     {
-        if (empty($arrPids) || !\is_array($arrPids))
+        if ([] === $arrPids)
         {
             return null;
         }
@@ -273,15 +251,11 @@ class GlossaryItemModel extends Model
     /**
      * Find published glossary items by letter and their parent ID.
      *
-     * @param string $strLetter  First glossary item letter
-     * @param array  $arrPids    An array of glossary IDs
-     * @param array  $arrOptions An optional options array
-     *
-     * @return Collection|GlossaryItemModel[]|GlossaryItemModel|null A collection of models or null if there are no glossaries
+     * @return Collection<GlossaryItemModel>|GlossaryItemModel|array|null
      */
-    public static function findPublishedByLetterAndPids($strLetter, $arrPids, array $arrOptions = [])
+    public static function findPublishedByLetterAndPids(string $strLetter, array $arrPids, array $arrOptions = []): Collection|self|array|null
     {
-        if (empty($arrPids) || !\is_array($arrPids))
+        if ([] === $arrPids)
         {
             return null;
         }
