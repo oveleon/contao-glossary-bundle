@@ -104,7 +104,7 @@ class tl_page extends Backend
         /** @var BackendUser|User $user */
         $user = BackendUser::getInstance();
 
-        if (!$user->isAdmin && !is_array($user->glossaries))
+        if (!$user->isAdmin && !is_array($user->glossarys))
         {
             return [];
         }
