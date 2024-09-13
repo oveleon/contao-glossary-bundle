@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Contao\Rector\Set\ContaoLevelSetList;
 use Contao\Rector\Set\ContaoSetList;
+use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 
@@ -29,6 +30,10 @@ return RectorConfig::configure()
     ->withImportNames(removeUnusedImports: true)
     ->withRules([
         AddVoidReturnTypeWhereNoReturnRector::class,
+    ])
+    ->withSkip([
+        SimplifyIfElseToTernaryRector::class,
+        __DIR__.'/src/Utils/AliasException.php',
     ])
     ->withParallel()
 ;

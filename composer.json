@@ -43,7 +43,8 @@
     "phpstan/phpstan-symfony": "^1.0",
     "shipmonk/composer-dependency-analyser": "^1.5",
     "slam/phpstan-extensions": "^6.0",
-    "thecodingmachine/phpstan-strict-rules": "^1.0"
+    "thecodingmachine/phpstan-strict-rules": "^1.0",
+    "shipmonk/dead-code-detector": "^0.2.1"
   },
   "conflict": {
     "contao/core": "*",

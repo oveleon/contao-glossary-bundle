@@ -8,13 +8,16 @@ use PhpCsFixer\Fixer\Basic\BracesPositionFixer;
 use PhpCsFixer\Fixer\Comment\HeaderCommentFixer;
 use PhpCsFixer\Fixer\ControlStructure\ControlStructureContinuationPositionFixer;
 use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocSeparationFixer;
 use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
+use SlevomatCodingStandard\Sniffs\TypeHints\DisallowArrayTypeHintSyntaxSniff;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Option;
 
 return ECSConfig::configure()
     ->withSets([SetList::CONTAO])
     ->withPaths([
+        __DIR__.'/contao',
         __DIR__.'/src',
     ])
     ->withRules([
@@ -33,7 +36,7 @@ return ECSConfig::configure()
         'position' => 'next_line',
     ])
     ->withConfiguredRule(HeaderCommentFixer::class, [
-        'header' => "This file is part of Contao Theme Compiler Bundle.\n\n@package     contao-theme-compiler-bundle\n@license     MIT\n@author      Daniele Sciannimanica  <https://github.com/doishub>\n@copyright   Oveleon                <https://www.oveleon.de/>",
+        'header' => "This file is part of Oveleon Contao Glossary Bundle.\n\n@package     contao-glossary-bundle\n@license     AGPL-3.0\n@author      Sebastian Zoglowek    <https://github.com/zoglo>\n@author      Fabian Ekert          <https://github.com/eki89>\n@author      Daniele Sciannimanica <https://github.com/doishub>\n@copyright   Oveleon               <https://www.oveleon.de/>",
         'comment_type' => 'comment',
         'location' => 'after_declare_strict',
     ])
@@ -41,6 +44,8 @@ return ECSConfig::configure()
         '*/languages/*',
         CommentLengthFixer::class,
         MethodChainingIndentationFixer::class,
+        PhpdocSeparationFixer::class,
+        DisallowArrayTypeHintSyntaxSniff::class,
     ])
     ->withParallel()
     ->withSpacing(Option::INDENTATION_SPACES, "\n")
