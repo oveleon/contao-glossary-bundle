@@ -1,0 +1,49 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/slam/phpstan-extensions/conf/symfony-rules.neon
+    #- vendor/shipmonk/dead-code-detector/rules.neon
+
+rules:
+    - TheCodingMachine\PHPStan\Rules\Exceptions\DoNotThrowExceptionBaseClassRule
+    - TheCodingMachine\PHPStan\Rules\Exceptions\ThrowMustBundlePreviousExceptionRule
+
+parameters:
+    level: 6
+
+    featureToggles:
+        alwaysTrueAlwaysReported: false
+        detectDeadTypeInMultiCatch: false
+        disableCheckMissingIterableValueType: false
+
+    paths:
+        - %currentWorkingDirectory%/contao
+        - %currentWorkingDirectory%/src
+
+    excludePaths:
+        - %currentWorkingDirectory%/src/Import/Validator
+        - %currentWorkingDirectory%/src/EventListener/ProductInstaller
+
+    dynamicConstantNames:
+        - BE_USER_LOGGED_IN
+
+    universalObjectCratesClasses:
+        - Contao\BackendUser
+        - Contao\ContentElement
+        - Contao\Database\Result
+        - Contao\Model
+        - Contao\Module
+        - Contao\Template
+        - Contao\User
+
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+
+        # Ignore the undefined property error to still allow Contao 4.13 support
+        - message: '#Access to an undefined property Contao\\DataContainer::\$activeRecord\.#'
+
+    treatPhpDocTypesAsCertain: false
+    rememberPossiblyImpureFunctionValues: false

@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle;
@@ -30,9 +31,6 @@ use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
  * Front end module "glossary reader".
  *
  * @property array $glossary_archives
- *
- * @author Fabian Ekert <https://github.com/eki89>
- * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 class ModuleGlossaryReader extends ModuleGlossary
 {
@@ -46,9 +44,9 @@ class ModuleGlossaryReader extends ModuleGlossary
     /**
      * Display a wildcard in the back end.
      *
-     * @throws InternalServerErrorException
-     *
      * @return string
+     *
+     * @throws InternalServerErrorException
      */
     public function generate()
     {
@@ -57,11 +55,11 @@ class ModuleGlossaryReader extends ModuleGlossary
         if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
         {
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '. $GLOBALS['TL_LANG']['FMD']['glossaryreader'][0] .' ###';
+            $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD']['glossaryreader'][0].' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
-            $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', array('do'=>'themes', 'table'=>'tl_module', 'act'=>'edit', 'id'=>$this->id)));
+            $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', ['do' => 'themes', 'table' => 'tl_module', 'act' => 'edit', 'id' => $this->id]));
 
             return $objTemplate->parse();
         }
@@ -69,10 +67,10 @@ class ModuleGlossaryReader extends ModuleGlossary
         $auto_item = Input::get('auto_item');
 
         if (
-            version_compare(ContaoCoreBundle::getVersion(), '5', '<') &&
-            !isset($_GET['items']) &&
-            isset($_GET['auto_item']) &&
-            $this->useAutoItem()
+            version_compare(ContaoCoreBundle::getVersion(), '5', '<')
+            && !isset($_GET['items'])
+            && isset($_GET['auto_item'])
+            && $this->useAutoItem()
         ) {
             // Set the item from the auto_item parameter - Contao 4.13 BC
             Input::setGet('items', Input::get('auto_item'));
@@ -88,7 +86,7 @@ class ModuleGlossaryReader extends ModuleGlossary
         $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives));
 
         // Return if there are no glossaries
-        if (empty($this->glossary_archives) || !\is_array($this->glossary_archives))
+        if ([] === $this->glossary_archives || !\is_array($this->glossary_archives))
         {
             throw new InternalServerErrorException('The glossary reader ID '.$this->id.' has no archives specified.');
         }
@@ -109,9 +107,9 @@ class ModuleGlossaryReader extends ModuleGlossary
         $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the glossary item
-        $objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->glossary_archives);
+        $objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $this->glossary_archives);
 
-        if (null === $objGlossaryItem)
+        if (!$objGlossaryItem instanceof GlossaryItemModel)
         {
             throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }

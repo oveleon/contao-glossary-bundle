@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle;
@@ -20,6 +21,7 @@ use Contao\Environment;
 use Contao\FilesModel;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
+use Contao\Model\Collection;
 use Contao\Module;
 use Contao\StringUtil;
 use Contao\System;
@@ -31,18 +33,27 @@ use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
  *
  * @property string $glossary_template
  * @property mixed  $glossary_metaFields
- *
- * @author Fabian Ekert <https://github.com/eki89>
- * @author Sebastian Zoglowek <https://github.com/zoglo>
  */
 abstract class ModuleGlossary extends Module
 {
+    /**
+     * Checks weather auto_item should be used to provide BC.
+     *
+     * @deprecated - To be removed when contao 4.13 support ends
+     *
+     * @internal
+     */
+    public static function useAutoItem(): bool
+    {
+        return str_starts_with(ContaoCoreBundle::getVersion(), '5.') ? true : Config::get('useAutoItem');
+    }
+
     /**
      * Sort out protected glossaries.
      */
     protected function sortOutProtected(array $arrGlossaries): array
     {
-        if (empty($arrGlossaries) || !\is_array($arrGlossaries))
+        if ([] === $arrGlossaries)
         {
             return $arrGlossaries;
         }
@@ -66,7 +77,7 @@ abstract class ModuleGlossary extends Module
 
                     $groups = StringUtil::deserialize($objGlossary->groups);
 
-                    if (empty($groups) || !\is_array($groups) || !\count(array_intersect($groups, $this->User->groups)))
+                    if (empty($groups) || !\is_array($groups) || [] === array_intersect($groups, $this->User->groups))
                     {
                         continue;
                     }
@@ -81,8 +92,6 @@ abstract class ModuleGlossary extends Module
 
     /**
      * Parse a glossary item and return it as string.
-     *
-     * @throws \Exception
      */
     protected function parseGlossaryItem(GlossaryItemModel $objGlossaryItem, string $strClass = ''): string
     {
@@ -96,10 +105,13 @@ abstract class ModuleGlossary extends Module
 
     /**
      * Parse glossary groups and injects them to the template.
+     *
+     * @param Collection<GlossaryItemModel>|GlossaryItemModel|array<GlossaryItemModel>|null $objGlossaryItems
      */
-    protected function parseGlossaryGroups($objGlossaryItems, FrontendTemplate &$objTemplate, bool $blnSingleGroup = false, bool $blnHideEmptyGroups = false, bool $blnTransliteration = true, bool $blnQuickLinks = false): void
+    protected function parseGlossaryGroups(Collection|GlossaryItemModel|array|null $objGlossaryItems, FrontendTemplate &$objTemplate, bool $blnSingleGroup = false, bool $blnHideEmptyGroups = false, bool $blnTransliteration = true, bool $blnQuickLinks = false): void
     {
         $availableGroups = [];
+        $arrQuickLinks = [];
 
         if (!$blnHideEmptyGroups)
         {
@@ -108,7 +120,7 @@ abstract class ModuleGlossary extends Module
             foreach ($arrLetterRange as $letter)
             {
                 $availableGroups[$letter] = [
-                    'item' => sprintf('<span>%s</span>', $letter),
+                    'item' => \sprintf('<span>%s</span>', $letter),
                     'class' => 'inactive',
                 ];
             }
@@ -140,12 +152,7 @@ abstract class ModuleGlossary extends Module
 
         $arrGlossaryGroups = [];
 
-        if ($blnQuickLinks)
-        {
-            $arrQuickLinks = [];
-        }
-
-        $limit = $objGlossaryItems->count();
+        $limit = \count($objGlossaryItems);
 
         if ($limit < 1)
         {
@@ -168,7 +175,7 @@ abstract class ModuleGlossary extends Module
         foreach ($objGlossaryItems as $objGlossaryItem)
         {
             // Transliterate letters to valid Ascii
-            $itemGroup = $blnTransliteration ?  Glossary::transliterateAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
+            $itemGroup = $blnTransliteration ? Glossary::transliterateAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
 
             $arrGlossaryGroups[$itemGroup]['id'] = 'group'.$this->id.'_'.$itemGroup;
             $arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem);
@@ -205,10 +212,10 @@ abstract class ModuleGlossary extends Module
     {
         if ($blnPageUrl)
         {
-            return sprintf('<a href="%s?page_g%s=%s">%s</a>', explode('?', Environment::get('request'), 2)[0], $this->id, $letter, $letter);
+            return \sprintf('<a href="%s?page_g%s=%s">%s</a>', explode('?', (string) Environment::get('request'), 2)[0], $this->id, $letter, $letter);
         }
 
-        return sprintf('<a href="%s#group%s_%s">%s</a>', Environment::get('request'), $this->id, $letter, $letter);
+        return \sprintf('<a href="%s#group%s_%s">%s</a>', Environment::get('request'), $this->id, $letter, $letter);
     }
 
     /**
@@ -216,22 +223,11 @@ abstract class ModuleGlossary extends Module
      */
     protected function generateAnchorLink(string $strLink, GlossaryItemModel $objGlossaryItem): string
     {
-        return sprintf(
+        return \sprintf(
             '<a href="%s#g_entry_%s">%s</a>',
             Environment::get('request'),
             $objGlossaryItem->id,
-            $strLink
+            $strLink,
         );
-    }
-
-    /**
-     * Checks weather auto_item should be used to provide BC
-     *
-     * @deprecated - To be removed when contao 4.13 support ends
-     * @internal
-     */
-    public static function useAutoItem(): bool
-    {
-        return !str_starts_with(ContaoCoreBundle::getVersion(), '5.') ? Config::get('useAutoItem') : true;
     }
 }

@@ -13,22 +13,8 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle\Import\Validator;
+namespace Oveleon\ContaoGlossaryBundle\Utils;
 
-use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
-
-/**
- * Validator class for validating the glossary records during and after import.
- */
-class GlossaryValidator
+class AliasException extends \Exception
 {
-    public static function getTrigger(): string
-    {
-        return GlossaryModel::getTable();
-    }
-
-    public static function getModel(): string
-    {
-        return GlossaryModel::class;
-    }
 }

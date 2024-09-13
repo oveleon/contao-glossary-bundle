@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle\Controller;
@@ -18,27 +19,27 @@ use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
-use Exception;
+use Contao\System;
 use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/glossary", defaults={"_scope" = "frontend"})
- */
+#[Route(path: '/api/glossary', defaults: ['_scope' => 'frontend'])]
 class GlossaryController extends AbstractController
 {
-    public function __construct(private ContaoFramework $framework) {}
+    public function __construct(private readonly ContaoFramework $framework)
+    {
+    }
 
+    #[Route(path: '/glossarizer', name: 'glossary_table')]
     /**
-     * @Route("/glossarizer", name="glossary_table")
+     * @deprecated since version 2.3 - to be removed in the future
      */
-    public function showGlossarizer(Request $request): JsonResponse
+    public function showGlossarizer(): JsonResponse
     {
         $this->framework->initialize();
 
@@ -74,10 +75,8 @@ class GlossaryController extends AbstractController
         return new JsonResponse($arrResponse);
     }
 
-    /**
-     * @Route("/info", name="glossary_descriptions")
-     */
-    public function showGlossaryDescriptions(Request $request): JsonResponse
+    #[Route(path: '/info', name: 'glossary_descriptions')]
+    public function showGlossaryDescriptions(): JsonResponse
     {
         $this->framework->initialize();
 
@@ -93,23 +92,21 @@ class GlossaryController extends AbstractController
         while ($objGlossaryItems->next())
         {
             $arrResponse[$objGlossaryItems->id] = [
-                strip_tags($objGlossaryItems->teaser)
+                strip_tags($objGlossaryItems->teaser),
             ];
         }
 
         return new JsonResponse($arrResponse);
     }
 
-    /**
-     * @Route("/item/{id}/json", name="glossary_item_json")
-     */
-    public function getGlossaryItem(Request $request, $id): JsonResponse
+    #[Route(path: '/item/{id}/json', name: 'glossary_item_json')]
+    public function getGlossaryItem(int $id): JsonResponse
     {
         $this->framework->initialize();
 
         $objGlossaryItem = GlossaryItemModel::findPublishedById($id);
 
-        if (null === $objGlossaryItem)
+        if (!$objGlossaryItem instanceof GlossaryItemModel)
         {
             return $this->error('No result found', 404);
         }
@@ -117,7 +114,7 @@ class GlossaryController extends AbstractController
         $arrResponse = [
             'title' => $objGlossaryItem->keyword,
             'url' => Glossary::generateUrl($objGlossaryItem, true),
-            'teaser' => Controller::replaceInsertTags($objGlossaryItem->teaser), // (see #13)
+            'teaser' => System::getContainer()->get('contao.insert_tag.parser')->replace($objGlossaryItem->teaser), // (see #13)
             'class' => $objGlossaryItem->cssClass,
         ];
 
@@ -130,12 +127,9 @@ class GlossaryController extends AbstractController
 
         $arrContent = [];
 
-        while ($objContentElements->next())
+        foreach ($objContentElements as $objContentElement)
         {
-            $arrContent[] =
-            [
-                'content' => Controller::getContentElement($objContentElements->id),
-            ];
+            $arrContent[] = ['content' => Controller::getContentElement($objContentElement->id)];
         }
 
         $arrResponse['items'] = $arrContent;
@@ -143,20 +137,15 @@ class GlossaryController extends AbstractController
         return new JsonResponse($arrResponse);
     }
 
-    /**
-     * @Route("/item/{id}/html", name="glossary_item_html")
-     *
-     * @return JsonResponse|Response
-     * @throws Exception
-     */
-    public function getGlossaryItemContent(Request $request, $id)
+    #[Route(path: '/item/{id}/html', name: 'glossary_item_html')]
+    public function getGlossaryItemContent(int $id): Response
     {
         $this->framework->initialize();
 
         $objGlossaryItem = GlossaryItemModel::findPublishedById($id);
-        $objGlossaryArchive = GlossaryModel::findByPk($objGlossaryItem->pid);
+        $objGlossaryArchive = GlossaryModel::findById($objGlossaryItem->pid);
 
-        if (null === $objGlossaryItem)
+        if (!$objGlossaryItem instanceof GlossaryItemModel)
         {
             return $this->error('No result found', 404);
         }
@@ -165,7 +154,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * Return error
+     * Return error.
      */
     private function error(string $msg, int $status): JsonResponse
     {
