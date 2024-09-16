@@ -32,7 +32,7 @@ use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
  *
  * @property array $glossary_archives
  */
-class ModuleGlossaryReader extends ModuleGlossary
+class ModuleGlossaryReader extends AbstractModuleGlossary
 {
     /**
      * Template.
@@ -44,11 +44,9 @@ class ModuleGlossaryReader extends ModuleGlossary
     /**
      * Display a wildcard in the back end.
      *
-     * @return string
-     *
      * @throws InternalServerErrorException
      */
-    public function generate()
+    public function generate(): string
     {
         $request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
@@ -83,10 +81,10 @@ class ModuleGlossaryReader extends ModuleGlossary
             return '';
         }
 
-        $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives));
+        $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives, true));
 
         // Return if there are no glossaries
-        if ([] === $this->glossary_archives || !\is_array($this->glossary_archives))
+        if ([] === $this->glossary_archives)
         {
             throw new InternalServerErrorException('The glossary reader ID '.$this->id.' has no archives specified.');
         }
@@ -120,7 +118,7 @@ class ModuleGlossaryReader extends ModuleGlossary
             $this->glossary_template = 'glossary_full';
         }
 
-        $arrGlossaryItem = $this->parseGlossaryItem($objGlossaryItem);
+        $arrGlossaryItem = $this->parseGlossaryItem($objGlossaryItem, $this->glossary_template, $this->imgSize);
         $this->Template->glossaryentry = $arrGlossaryItem;
 
         $responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext();

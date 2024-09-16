@@ -24,15 +24,17 @@ use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\StringUtil;
 use Contao\System;
-use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 
 /**
  * @internal
  */
 class GeneratePageListener
 {
+    use GlossaryTrait;
+
     public function __construct(private readonly ContaoFramework $framework)
     {
     }
@@ -114,7 +116,7 @@ class GeneratePageListener
 
                         // Catch wrongly entered empty keywords and filter them out
                         'keywords' => array_values(array_filter($arrKeywords)),
-                        'url' => Glossary::generateUrl($objGlossaryItem),
+                        'url' => $this->generateDetailUrl($objGlossaryItem),
 
                         // Case-sensitive search
                         'cs' => $objGlossaryItem->sensitiveSearch ? 1 : 0,

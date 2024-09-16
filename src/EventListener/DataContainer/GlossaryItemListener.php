@@ -29,14 +29,16 @@ use Contao\PageModel;
 use Contao\System;
 use Contao\User;
 use Doctrine\DBAL\Connection;
-use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Oveleon\ContaoGlossaryBundle\Utils\AliasException;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class GlossaryItemListener
 {
+    use GlossaryTrait;
+
     public function __construct(
         protected ContaoFramework $framework,
         protected Connection $connection,
@@ -49,7 +51,7 @@ class GlossaryItemListener
     #[AsCallback(table: 'tl_glossary_item', target: 'fields.serpPreview.eval.url')]
     public function getSerpUrl(GlossaryItemModel $model): string
     {
-        return Glossary::generateUrl($model, true);
+        return $this->generateDetailUrl($model, true);
     }
 
     /**

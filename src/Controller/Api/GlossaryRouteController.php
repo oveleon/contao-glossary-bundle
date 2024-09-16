@@ -13,24 +13,26 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle\Controller;
+namespace Oveleon\ContaoGlossaryBundle\Controller\Api;
 
 use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Contao\System;
-use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/glossary', defaults: ['_scope' => 'frontend'])]
-class GlossaryController extends AbstractController
+class GlossaryRouteController extends AbstractController
 {
+    use GlossaryTrait;
+
     public function __construct(private readonly ContaoFramework $framework)
     {
     }
@@ -113,7 +115,7 @@ class GlossaryController extends AbstractController
 
         $arrResponse = [
             'title' => $objGlossaryItem->keyword,
-            'url' => Glossary::generateUrl($objGlossaryItem, true),
+            'url' => $this->generateDetailUrl($objGlossaryItem, true),
             'teaser' => System::getContainer()->get('contao.insert_tag.parser')->replace($objGlossaryItem->teaser), // (see #13)
             'class' => $objGlossaryItem->cssClass,
         ];
@@ -150,7 +152,7 @@ class GlossaryController extends AbstractController
             return $this->error('No result found', 404);
         }
 
-        return new Response(Glossary::parseGlossaryItem($objGlossaryItem, $objGlossaryArchive->glossaryHoverCardTemplate, $objGlossaryArchive->hoverCardImgSize));
+        return new Response($this->parseItem($objGlossaryItem, $objGlossaryArchive->glossaryHoverCardTemplate, $objGlossaryArchive->hoverCardImgSize));
     }
 
     /**

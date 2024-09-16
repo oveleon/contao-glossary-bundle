@@ -19,14 +19,16 @@ use Contao\Config;
 use Contao\CoreBundle\Exception\RouteParametersException;
 use Contao\Input;
 use Contao\StringUtil;
-use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 
 /**
  * @internal
  */
 class BreadcrumbListener
 {
+    use GlossaryTrait;
+
     public function __invoke(array $items): array
     {
         $alias = Input::get('items', false, true);
@@ -42,7 +44,7 @@ class BreadcrumbListener
             $breadcrumbItem = [
                 'isRoot' => false,
                 'isActive' => true,
-                'href' => Glossary::generateUrl($glossaryItem),
+                'href' => $this->generateDetailUrl($glossaryItem),
                 'title' => StringUtil::specialchars($glossaryItem->keyword),
                 'link' => $glossaryItem->keyword,
                 'data' => $glossaryItem->row(),

@@ -17,14 +17,16 @@ namespace Oveleon\ContaoGlossaryBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
-use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 
 /**
  * @internal
  */
 class InsertTagsListener
 {
+    use GlossaryTrait;
+
     private const SUPPORTED_TAGS = [
         'glossaryitem',
         'glossaryitem_open',
@@ -61,14 +63,12 @@ class InsertTagsListener
             return '';
         }
 
-        $glossaryItem = $this->framework->getAdapter(Glossary::class);
-
         return match ($insertTag)
         {
             'glossaryitem' => vsprintf(
                 '<a href="%s" title="%s" data-glossary-id="%s">%s</a>',
                 [
-                    $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+                    $this->generateDetailUrl($model, \in_array('absolute', $arguments, true)) ?: './',
                     StringUtil::specialcharsAttribute($model->keyword),
                     $model->id,
                     $model->keyword,
@@ -77,12 +77,12 @@ class InsertTagsListener
             'glossaryitem_open' => vsprintf(
                 '<a href="%s" title="%s" data-glossary-id="%s">',
                 [
-                    $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+                    $this->generateDetailUrl($model, \in_array('absolute', $arguments, true)) ?: './',
                     StringUtil::specialcharsAttribute($model->keyword),
                     $model->id,
                 ],
             ),
-            'glossaryitem_url' => $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+            'glossaryitem_url' => $this->generateDetailUrl($model, \in_array('absolute', $arguments, true)) ?: './',
             'glossaryitem_keyword' => StringUtil::specialcharsAttribute($model->keyword),
             'glossaryitem_teaser' => $model->teaser,
             default => '',

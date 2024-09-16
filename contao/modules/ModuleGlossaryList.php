@@ -32,7 +32,7 @@ use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
  * @property bool   $glossary_quickLinks
  * @property string $glossary_letter
  */
-class ModuleGlossaryList extends ModuleGlossary
+class ModuleGlossaryList extends AbstractModuleGlossary
 {
     /**
      * Template.
@@ -43,10 +43,8 @@ class ModuleGlossaryList extends ModuleGlossary
 
     /**
      * Display a wildcard in the back end.
-     *
-     * @return string
      */
-    public function generate()
+    public function generate(): string
     {
         $request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
@@ -62,10 +60,10 @@ class ModuleGlossaryList extends ModuleGlossary
             return $objTemplate->parse();
         }
 
-        $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives));
+        $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives, true));
 
         // Return if there are no glossaries
-        if ([] === $this->glossary_archives || !\is_array($this->glossary_archives))
+        if ([] === $this->glossary_archives)
         {
             return '';
         }
@@ -106,6 +104,6 @@ class ModuleGlossaryList extends ModuleGlossary
             $objGlossaryItems = GlossaryItemModel::findPublishedByPids($this->glossary_archives);
         }
 
-        $this->parseGlossaryGroups($objGlossaryItems, $this->Template, (bool) $this->glossary_singleGroup, (bool) $this->glossary_hideEmptyGroups, (bool) $this->glossary_utf8Transliteration, (bool) $this->glossary_quickLinks);
+        $this->parseGlossaryGroups($objGlossaryItems, $this->Template, $this->glossary_archives, $this->id, (bool) $this->glossary_singleGroup, (bool) $this->glossary_hideEmptyGroups, (bool) $this->glossary_utf8Transliteration, (bool) $this->glossary_quickLinks);
     }
 }

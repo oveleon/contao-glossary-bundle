@@ -13,14 +13,17 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle;
+namespace Oveleon\ContaoGlossaryBundle\Utils;
 
 use Contao\ArticleModel;
+use Contao\Config;
 use Contao\ContentModel;
 use Contao\Controller;
+use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\Environment;
-use Contao\Frontend;
+use Contao\FilesModel;
 use Contao\FrontendTemplate;
+use Contao\Model\Collection;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
@@ -29,10 +32,7 @@ use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 
 use function Symfony\Component\String\u;
 
-/**
- * Provide methods regarding glossaries.
- */
-class Glossary extends Frontend
+trait GlossaryTrait
 {
     /**
      * URL cache array.
@@ -40,9 +40,22 @@ class Glossary extends Frontend
     private static array $arrUrlCache = [];
 
     /**
+     * Generate an anchor link and return it as string.
+     */
+    public function generateAnchorLink(string $strLink, GlossaryItemModel $objGlossaryItem): string
+    {
+        return \sprintf(
+            '<a href="%s#g_entry_%s">%s</a>',
+            Environment::get('request'),
+            $objGlossaryItem->id,
+            $strLink,
+        );
+    }
+
+    /**
      * Generate a URL and return it as string.
      */
-    public static function generateUrl(GlossaryItemModel $objItem, bool $blnAbsolute = false): string
+    public function generateDetailUrl(GlossaryItemModel $objItem, bool $blnAbsolute = false): string
     {
         $strCacheKey = 'id_'.$objItem->id.($blnAbsolute ? '_absolute' : '');
 
@@ -108,7 +121,7 @@ class Glossary extends Frontend
             }
             else
             {
-                $params = (ModuleGlossary::useAutoItem() ? '/' : '/items/').($objItem->alias ?: $objItem->id);
+                $params = (self::useAutoItem() ? '/' : '/items/').($objItem->alias ?: $objItem->id);
 
                 self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
             }
@@ -120,11 +133,11 @@ class Glossary extends Frontend
     /**
      * Generate a link and return it as string.
      */
-    public static function generateLink(string $strLink, GlossaryItemModel $objGlossaryItem, bool $blnIsReadMore = false): string
+    public function generateLink(string $strLink, GlossaryItemModel $objGlossaryItem, bool $blnIsReadMore = false): string
     {
         $blnIsInternal = 'external' !== $objGlossaryItem->source;
         $strReadMore = $blnIsInternal ? $GLOBALS['TL_LANG']['MSC']['readMore'] : $GLOBALS['TL_LANG']['MSC']['open'];
-        $strGlossaryItemUrl = self::generateUrl($objGlossaryItem);
+        $strGlossaryItemUrl = self::generateDetailUrl($objGlossaryItem);
 
         return \sprintf(
             '<a href="%s" title="%s"%s itemprop="url">%s%s</a>',
@@ -137,9 +150,9 @@ class Glossary extends Frontend
     }
 
     /**
-     * Parse a glossary item and return it as string.
+     * Parse the item and return it as a string.
      */
-    public static function parseGlossaryItem(GlossaryItemModel $objGlossaryItem, string $strTemplate, string $modelImgSize, string $strClass = ''): string
+    public function parseItem(GlossaryItemModel $objGlossaryItem, string $strTemplate, string $modelImgSize, string $strClass = ''): string
     {
         // Load language for 'read more' link
         System::loadLanguageFile('default');
@@ -268,9 +281,151 @@ class Glossary extends Frontend
     /**
      * Returns a transliterated string.
      */
-    public static function transliterateAscii(string $string): string
+    public function transliterateAscii(string $string): string
     {
         return (string) u($string)->ascii();
+    }
+
+    /**
+     * Checks weather auto_item should be used to provide BC.
+     *
+     * @deprecated - To be removed when contao 4.13 support ends
+     *
+     * @internal
+     */
+    public function useAutoItem(): bool
+    {
+        return str_starts_with(ContaoCoreBundle::getVersion(), '5.') ? true : Config::get('useAutoItem');
+    }
+
+    /**
+     * Returns a glossary group link.
+     */
+    protected function generateGroupAnchorLink(string $letter, int $id, bool $blnPageUrl = false): string
+    {
+        if ($blnPageUrl)
+        {
+            return \sprintf('<a href="%s?page_g%s=%s">%s</a>', explode('?', (string) Environment::get('request'), 2)[0], $id, $letter, $letter);
+        }
+
+        return \sprintf('<a href="%s#group%s_%s">%s</a>', Environment::get('request'), $id, $letter, $letter);
+    }
+
+    /**
+     * Parse a glossary item and return it as string.
+     *
+     * Used within frontend modules.
+     */
+    protected function parseGlossaryItem(GlossaryItemModel $objGlossaryItem, string $template = 'glossary_latest', string $imgSize = '', string $strClass = ''): string
+    {
+        if ($objGlossaryItem->cssClass)
+        {
+            $strClass = ' '.$objGlossaryItem->cssClass.$strClass;
+        }
+
+        return $this->parseItem($objGlossaryItem, $template, $imgSize, $strClass);
+    }
+
+    /**
+     * Parse glossary groups and injects them to the template.
+     *
+     * @param Collection<GlossaryItemModel>|GlossaryItemModel|array<GlossaryItemModel>|null $objGlossaryItems
+     */
+    protected function parseGlossaryGroups(Collection|GlossaryItemModel|array|null $objGlossaryItems, FrontendTemplate &$objTemplate, array $archivePids, int $id, bool $blnSingleGroup = false, bool $blnHideEmptyGroups = false, bool $blnTransliteration = true, bool $blnQuickLinks = false): void
+    {
+        $availableGroups = [];
+        $arrQuickLinks = [];
+
+        if (!$blnHideEmptyGroups)
+        {
+            $arrLetterRange = range('A', 'Z');
+
+            foreach ($arrLetterRange as $letter)
+            {
+                $availableGroups[$letter] = [
+                    'item' => \sprintf('<span>%s</span>', $letter),
+                    'class' => 'inactive',
+                ];
+            }
+        }
+
+        if ($blnSingleGroup)
+        {
+            // Fetch all glossary items to generate pagination links
+            $objAvailableGlossaryItems = GlossaryItemModel::findPublishedByPids($archivePids);
+
+            foreach ($objAvailableGlossaryItems as $item)
+            {
+                // Transliterate letters to valid Ascii
+                $itemGroup = $blnTransliteration ? $this->transliterateAscii($item->letter) : $item->letter;
+
+                $availableGroups[$itemGroup] = [
+                    'item' => $this->generateGroupAnchorLink($itemGroup, $id, $blnSingleGroup),
+                    'class' => 'active',
+                ];
+            }
+        }
+
+        $objTemplate->availableGroups = $availableGroups;
+
+        if (null === $objGlossaryItems)
+        {
+            return;
+        }
+
+        $arrGlossaryGroups = [];
+
+        $limit = \count($objGlossaryItems);
+
+        if ($limit < 1)
+        {
+            return;
+        }
+
+        $uuids = [];
+
+        foreach ($objGlossaryItems as $objGlossaryItem)
+        {
+            if ($objGlossaryItem->addImage && $objGlossaryItem->singleSRC)
+            {
+                $uuids[] = $objGlossaryItem->singleSRC;
+            }
+        }
+
+        // Preload all images in one query so they are loaded into the model registry
+        FilesModel::findMultipleByUuids($uuids);
+
+        foreach ($objGlossaryItems as $objGlossaryItem)
+        {
+            // Transliterate letters to valid Ascii
+            $itemGroup = $blnTransliteration ? $this->transliterateAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
+
+            $arrGlossaryGroups[$itemGroup]['id'] = 'group'.$id.'_'.$itemGroup;
+            $arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem);
+
+            $availableGroups[$itemGroup] = [
+                'item' => $this->generateGroupAnchorLink($itemGroup, $id, $blnSingleGroup),
+                'class' => $blnSingleGroup ? 'active selected' : 'active',
+            ];
+
+            if ($blnQuickLinks)
+            {
+                $arrQuickLinks[] = $this->generateAnchorLink($objGlossaryItem->keyword, $objGlossaryItem);
+            }
+        }
+
+        // Sort available groups
+        uksort($availableGroups, 'strnatcasecmp');
+
+        $objTemplate->availableGroups = $availableGroups;
+        $objTemplate->glossarygroups = $arrGlossaryGroups;
+        $objTemplate->hasQuickLinks = false;
+
+        if ($blnQuickLinks)
+        {
+            $objTemplate->hasQuickLinks = true;
+            $objTemplate->quickLinks = $arrQuickLinks;
+        }
     }
 
     /**
@@ -280,7 +435,7 @@ class Glossary extends Frontend
      *
      * @internal
      */
-    private static function isRelativeUrl(mixed $varValue): bool
+    private function isRelativeUrl(mixed $varValue): bool
     {
         return Validator::isUrl($varValue) && !preg_match('(^([0-9a-z+.-]+:|#|/|\{\{))i', (string) $varValue);
     }
