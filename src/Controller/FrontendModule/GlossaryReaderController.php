@@ -13,33 +13,48 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle;
+namespace Oveleon\ContaoGlossaryBundle\Controller\FrontendModule;
 
 use Contao\BackendTemplate;
 use Contao\CoreBundle\ContaoCoreBundle;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Environment;
 use Contao\Input;
+use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Template;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Front end module "glossary reader".
  *
  * @property array $glossary_archives
  */
-class ModuleGlossaryReader extends AbstractModuleGlossary
+#[AsFrontendModule(GlossaryReaderController::TYPE, category: 'glossaries', template: 'mod_glossaryreader')]
+class GlossaryReaderController extends AbstractGlossaryController
 {
-    /**
-     * Template.
-     *
-     * @var string
-     */
-    protected $strTemplate = 'mod_glossaryreader';
+    public const TYPE = 'glossaryreader';
+
+    public $glossary_archives;
+
+    public $id;
+
+    public $glossary_template;
+
+    public $imgSize;
+
+    protected function getResponse(FragmentTemplate|Template $template, ModuleModel $model, Request $request): Response
+    {
+        // TODO: Implement getResponse() method.
+    }
 
     /**
      * Display a wildcard in the back end.

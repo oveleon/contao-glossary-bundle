@@ -20,6 +20,7 @@ use Contao\Config;
 use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\ContaoCoreBundle;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Environment;
 use Contao\FilesModel;
 use Contao\FrontendTemplate;
@@ -27,6 +28,7 @@ use Contao\Model\Collection;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Template;
 use Contao\Validator;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 
@@ -331,7 +333,7 @@ trait GlossaryTrait
      *
      * @param Collection<GlossaryItemModel>|GlossaryItemModel|array<GlossaryItemModel>|null $objGlossaryItems
      */
-    protected function parseGlossaryGroups(Collection|GlossaryItemModel|array|null $objGlossaryItems, FrontendTemplate &$objTemplate, array $archivePids, int $id, bool $blnSingleGroup = false, bool $blnHideEmptyGroups = false, bool $blnTransliteration = true, bool $blnQuickLinks = false): void
+    protected function parseGlossaryGroups(Collection|GlossaryItemModel|array|null $objGlossaryItems, FragmentTemplate|Template &$objTemplate, array $archivePids, int $id, bool $blnSingleGroup = false, bool $blnHideEmptyGroups = false, bool $blnTransliteration = true, bool $blnQuickLinks = false): void
     {
         $availableGroups = [];
         $arrQuickLinks = [];

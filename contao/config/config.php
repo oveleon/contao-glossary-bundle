@@ -17,21 +17,11 @@ use Contao\ArrayUtil;
 use Oveleon\ContaoGlossaryBundle\EventListener\ProductInstaller\AddGlossaryValidatorListener;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
-use Oveleon\ContaoGlossaryBundle\ModuleGlossaryList;
-use Oveleon\ContaoGlossaryBundle\ModuleGlossaryReader;
 
 // Back end modules
 ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['content'], 5, [
     'glossary' => [
         'tables' => ['tl_glossary', 'tl_glossary_item', 'tl_content'],
-    ],
-]);
-
-// Front end modules
-ArrayUtil::arrayInsert($GLOBALS['FE_MOD'], 3, [
-    'glossaries' => [
-        'glossary' => ModuleGlossaryList::class,
-        'glossaryreader' => ModuleGlossaryReader::class,
     ],
 ]);
 
