@@ -87,12 +87,12 @@
         <target>Details des Glossars ID %s anzeigen</target>
       </trans-unit>
       <trans-unit id="tl_glossary.edit">
-        <source>Edit glossary ID %s</source>
-        <target>Glossar ID %s bearbeiten</target>
-      </trans-unit>
-      <trans-unit id="tl_glossary.editheader">
         <source>Edit the settings of glossary archive ID %s</source>
         <target>Einstellungen des Glossars ID %s bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_glossary.children">
+        <source>Edit glossary ID %s</source>
+        <target>Glossar ID %s bearbeiten</target>
       </trans-unit>
       <trans-unit id="tl_glossary.copy">
         <source>Duplicate glossary ID %s</source>

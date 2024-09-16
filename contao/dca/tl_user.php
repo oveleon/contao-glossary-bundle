@@ -21,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['glossarys'] = [
     'inputType' => 'checkbox',
     'foreignKey' => 'tl_glossary.title',
     'eval' => ['multiple' => true],
-    'sql' => 'blob NULL',
+    'sql' => ['type' => 'blob', 'notnull' => false, 'length' => 65535],
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['glossaryp'] = [
@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['glossaryp'] = [
     'options' => ['create', 'delete'],
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
     'eval' => ['multiple' => true],
-    'sql' => 'blob NULL',
+    'sql' => ['type' => 'blob', 'notnull' => false, 'length' => 65535],
 ];
 
 // Extend the default palettes

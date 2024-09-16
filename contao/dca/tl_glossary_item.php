@@ -18,7 +18,6 @@ use Contao\Config;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\System;
-use Oveleon\ContaoGlossaryBundle\EventListener\DataContainer\GlossaryItemListener;
 
 System::loadLanguageFile('tl_content');
 
@@ -31,26 +30,10 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
         'switchToEdit' => true,
         'enableVersioning' => true,
         'markAsCopy' => 'keyword',
-        'onload_callback' => [
-            [GlossaryItemListener::class, 'checkPermission'],
-            [GlossaryItemListener::class, 'generateSitemap'],
-        ],
-        'oncut_callback' => [
-            [GlossaryItemListener::class, 'scheduleUpdate'],
-        ],
-        'ondelete_callback' => [
-            [GlossaryItemListener::class, 'scheduleUpdate'],
-        ],
-        'onsubmit_callback' => [
-            [GlossaryItemListener::class, 'setGlossaryItemGroup'],
-            [GlossaryItemListener::class, 'scheduleUpdate'],
-        ],
-        'oninvalidate_cache_tags_callback' => [
-            [GlossaryItemListener::class, 'addSitemapCacheInvalidationTag'],
-        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
+                'tstamp' => 'index',
                 'alias' => 'index',
                 'pid,published' => 'index',
             ],
@@ -64,7 +47,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'fields' => ['keyword'],
             'headerFields' => ['title', 'jumpTo', 'tstamp', 'protected'],
             'panelLayout' => 'filter;sort,search,limit',
-            'child_record_callback' => [GlossaryItemListener::class, 'listItems'],
             'child_record_class' => 'no_padding',
         ],
         'global_operations' => [
@@ -126,18 +108,18 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
     // Fields
     'fields' => [
         'id' => [
-            'sql' => 'int(10) unsigned NOT NULL auto_increment',
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'autoincrement' => true],
         ],
         'pid' => [
             'foreignKey' => 'tl_glossary.title',
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
             'relation' => ['type' => 'belongsTo', 'load' => 'lazy'],
         ],
         'tstamp' => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
         'letter' => [
-            'sql' => "char(1) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
         ],
         'keyword' => [
             'exclude' => true,
@@ -146,33 +128,34 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'flag' => 1,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'maxlength' => 128, 'tl_class' => 'w50'],
-            'sql' => "varchar(64) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
         ],
         'alias' => [
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'alias', 'doNotCopy' => true, 'unique' => true, 'maxlength' => 255, 'tl_class' => 'w50 clr'],
-            'sql' => "varchar(255) BINARY NOT NULL default ''",
+            'sql' => ['type' => 'binary', 'default' => ''],
         ],
         'keywords' => [
             'exclude' => true,
             'inputType' => 'listWizard',
             'eval' => ['doNotCopy' => true, 'tl_class' => 'w50'],
-            'sql' => 'blob NULL',
+            'sql' => ['type' => 'blob', 'notnull' => false, 'length' => 65535],
         ],
         'sensitiveSearch' => [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 clr m12'],
-            'sql' => "char(1) NOT NULL default ''",
+            // ToDo -> Use boolean fields migration when Contao 4.13 support ends
+            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
         ],
         'pageTitle' => [
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'decodeEntities' => true, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => '']
         ],
         'robots' => [
             'exclude' => true,
@@ -180,20 +163,20 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'inputType' => 'select',
             'options' => ['index,follow', 'index,nofollow', 'noindex,follow', 'noindex,nofollow'],
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true],
-            'sql' => "varchar(32) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 32, 'default' => ''],
         ],
         'description' => [
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['style' => 'height:60px', 'decodeEntities' => true, 'tl_class' => 'clr'],
-            'sql' => 'text NULL',
+            'sql' => ['type' => 'text', 'length' => 65535, 'notnull' => false]
         ],
         'serpPreview' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['serpPreview'],
             'exclude' => true,
             'inputType' => 'serpPreview',
-            'eval' => ['url_callback' => [GlossaryItemListener::class, 'getSerpUrl'], 'title_tag_callback' => [GlossaryItemListener::class, 'getTitleTag'], 'titleFields' => ['pageTitle', 'keyword'], 'descriptionFields' => ['description', 'teaser']],
+            'eval' => ['titleFields' => ['pageTitle', 'keyword'], 'descriptionFields' => ['description', 'teaser']],
             'sql' => null,
         ],
         'subheadline' => [
@@ -201,34 +184,34 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'long'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'teaser' => [
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
-            'sql' => 'text NULL',
+            'sql' => ['type' => 'text', 'length' => 65535, 'notnull' => false]
         ],
         'addImage' => [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true],
-            'sql' => "char(1) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
         ],
         'overwriteMeta' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['overwriteMeta'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
-            'sql' => "char(1) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
         ],
         'singleSRC' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['singleSRC'],
             'exclude' => true,
             'inputType' => 'fileTree',
             'eval' => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => Config::get('validImageTypes'), 'mandatory' => true],
-            'sql' => 'binary(16) NULL',
+            'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false, 'fixed' => true]
         ],
         'alt' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['alt'],
@@ -236,7 +219,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'imageTitle' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['imageTitle'],
@@ -244,7 +227,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'size' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['imgSize'],
@@ -253,7 +236,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'eval' => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
             'options_callback' => static fn () => System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance()),
-            'sql' => "varchar(64) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
         ],
         'imagemargin' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
@@ -261,7 +244,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'inputType' => 'trbl',
             'options' => ['px', '%', 'em', 'rem'],
             'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'],
-            'sql' => "varchar(128) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 128, 'default' => ''],
         ],
         'imageUrl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'],
@@ -269,14 +252,14 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'addWizardClass' => false, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'fullsize' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['fullsize'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 m12'],
-            'sql' => "char(1) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
         ],
         'caption' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['caption'],
@@ -284,7 +267,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'floating' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['floating'],
@@ -293,7 +276,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'options' => ['above', 'left', 'right', 'below'],
             'eval' => ['cols' => 4, 'tl_class' => 'w50'],
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'sql' => "varchar(12) NOT NULL default 'above'",
+            'sql' => ['type' => 'string', 'length' => 12, 'default' => 'above'],
         ],
         'source' => [
             'exclude' => true,
@@ -301,21 +284,21 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'inputType' => 'radio',
             'reference' => &$GLOBALS['TL_LANG']['tl_glossary_item'],
             'eval' => ['submitOnChange' => true, 'helpwizard' => true],
-            'sql' => "varchar(32) NOT NULL default 'default'",
+            'sql' => ['type' => 'string', 'length' => 32, 'default' => 'default'],
         ],
         'jumpTo' => [
             'exclude' => true,
             'inputType' => 'pageTree',
             'foreignKey' => 'tl_page.title',
             'eval' => ['mandatory' => true, 'fieldType' => 'radio'],
-            'sql' => 'int(10) unsigned NOT NULL default 0',
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
             'relation' => ['type' => 'belongsTo', 'load' => 'lazy'],
         ],
         'articleId' => [
             'exclude' => true,
             'inputType' => 'select',
             'eval' => ['chosen' => true, 'mandatory' => true, 'tl_class' => 'w50'],
-            'sql' => 'int(10) unsigned NOT NULL default 0',
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
             'relation' => ['table' => 'tl_article', 'type' => 'hasOne', 'load' => 'lazy'],
         ],
         'url' => [
@@ -324,20 +307,20 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'addWizardClass' => false, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'target' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['target'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 m12'],
-            'sql' => "char(1) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
         ],
         'cssClass' => [
             'exclude' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'published' => [
             'toggle' => true,
@@ -346,7 +329,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'flag' => 1,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true],
-            'sql' => "char(1) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
         ],
     ],
 ];

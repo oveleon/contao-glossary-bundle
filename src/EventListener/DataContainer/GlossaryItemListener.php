@@ -46,6 +46,7 @@ class GlossaryItemListener
     /**
      * Return the SERP URL.
      */
+    #[AsCallback(table: 'tl_glossary_item', target: 'fields.serpPreview.eval.url')]
     public function getSerpUrl(GlossaryItemModel $model): string
     {
         return Glossary::generateUrl($model, true);
@@ -54,6 +55,7 @@ class GlossaryItemListener
     /**
      * Return the title tag from the associated page layout.
      */
+    #[AsCallback(table: 'tl_glossary_item', target: 'fields.serpPreview.eval.title_tag')]
     public function getTitleTag(GlossaryItemModel $model): string
     {
         if (!$glossary = GlossaryModel::findById($model->pid))
@@ -219,6 +221,7 @@ class GlossaryItemListener
         return $arrOptions;
     }
 
+    #[AsCallback(table: 'tl_glossary_item', target: 'config.onload')]
     public function checkPermission(DataContainer $dc): void
     {
         $objUser = Controller::getContainer()->get('security.helper')->getUser();
@@ -345,6 +348,7 @@ class GlossaryItemListener
     /**
      * Check for modified glossary items and update the XML files if necessary.
      */
+    #[AsCallback(table: 'tl_glossary_item', target: 'config.onload')]
     public function generateSitemap(): void
     {
         /** @var SessionInterface $objSession */
@@ -371,7 +375,10 @@ class GlossaryItemListener
      * Since duplicated items are unpublished by default, it is not necessary to
      * schedule updates on copyAll as well.
      */
-    public function scheduleUpdate(DataContainer $dc): void
+    #[AsCallback(table: 'tl_glossary_item', target: 'config.oncut')]
+    #[AsCallback(table: 'tl_glossary_item', target: 'config.ondelete')]
+    #[AsCallback(table: 'tl_glossary_item', target: 'config.onsubmit')]
+    public function scheduleGlossaryItemUpdate(DataContainer $dc): void
     {
         // Return if there is no ID
         if (!$dc->activeRecord || !$dc->activeRecord->pid || 'copy' === Input::get('act'))
@@ -388,6 +395,7 @@ class GlossaryItemListener
         $objSession->set('glossaryitems_updater', array_unique($session));
     }
 
+    #[AsCallback(table: 'tl_glossary_item', target: 'config.oninvalidate_cache_tags')]
     public function addSitemapCacheInvalidationTag(DataContainer $dc, array $tags): array
     {
         $archiveModel = GlossaryModel::findById($dc->activeRecord->pid);
@@ -401,10 +409,8 @@ class GlossaryItemListener
         return array_merge($tags, ['contao.sitemap.'.$pageModel->rootId]);
     }
 
-    /**
-     * Set group by keyword.
-     */
-    public function setGlossaryItemGroup(DataContainer $dc): void
+    #[AsCallback(table: 'tl_glossary_item', target: 'config.onsubmit')]
+    public function setGlossaryItemGroupByKeyword(DataContainer $dc): void
     {
         $newGroup = mb_strtoupper(mb_substr($dc->activeRecord->keyword, 0, 1, 'UTF-8'));
 
@@ -417,6 +423,7 @@ class GlossaryItemListener
         }
     }
 
+    #[AsCallback(table: 'tl_glossary_item', target: 'list.sorting.child_record')]
     public function listItems(array $arrRow): string
     {
         return '<div class="tl_content_left">'.$arrRow['keyword'].'</div>';

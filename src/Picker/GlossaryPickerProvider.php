@@ -49,10 +49,9 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
     }
 
     /**
-     * Hint: picker provider interface must be compatible with Contao 4 and 5 so no type is given
+     * Hint: picker provider interface must be compatible with Contao 4 and 5 so no type is given.
      *
      * @param string $context
-     * @return bool
      */
     public function supportsContext($context): bool
     {

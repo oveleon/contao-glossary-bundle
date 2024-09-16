@@ -75,7 +75,7 @@ class DataContainerListener
 
         $modules = $this->connection->fetchAllAssociative(
             'SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type=:type ORDER BY t.name, m.name',
-            ['type'=> 'glossaryreader']
+            ['type' => 'glossaryreader'],
         );
 
         foreach ($modules as $module)

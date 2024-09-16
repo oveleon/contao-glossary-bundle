@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_archives'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['mandatory' => true, 'multiple' => true],
-    'sql' => 'blob NULL',
+    'sql' => ['type' => 'blob', 'notnull' => false, 'length' => 65535],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = [
@@ -38,21 +38,21 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_readerModule'] = [
     'inputType' => 'select',
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
     'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'],
-    'sql' => 'int(10) unsigned NOT NULL default 0',
+    'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_hideEmptyGroups'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
-    'sql' => "char(1) NOT NULL default ''",
+    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_singleGroup'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true, 'tl_class' => 'clr'],
-    'sql' => "char(1) NOT NULL default ''",
+    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_letter'] = [
@@ -60,7 +60,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_letter'] = [
     'inputType' => 'select',
     'options' => range('A', 'Z'),
     'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
-    'sql' => "char(1) NOT NULL default 'A'",
+    'sql' => ['type' => 'string', 'length' => 1, 'default' => 'A', 'fixed' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_utf8Transliteration'] = [
@@ -68,14 +68,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_utf8Transliteration'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50 clr'],
-    'sql' => "char(1) NOT NULL default '1'",
+    'sql' => ['type' => 'string', 'length' => 1, 'default' => '1', 'fixed' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_quickLinks'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
-    'sql' => "char(1) NOT NULL default ''",
+    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = [
@@ -83,5 +83,5 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = [
     'inputType' => 'select',
     'options_callback' => static fn () => Controller::getTemplateGroup('glossary_'),
     'eval' => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 clr'],
-    'sql' => "varchar(64) NOT NULL default ''",
+    'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
 ];

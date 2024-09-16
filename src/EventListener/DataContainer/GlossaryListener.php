@@ -17,6 +17,7 @@ namespace Oveleon\ContaoGlossaryBundle\EventListener\DataContainer;
 
 use Contao\Backend;
 use Contao\Controller;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\Database;
@@ -28,42 +29,37 @@ use Contao\System;
 use Doctrine\DBAL\Connection;
 use Oveleon\ContaoGlossaryBundle\Security\ContaoGlossaryPermissions;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class GlossaryListener
 {
     public function __construct(
         protected ContaoFramework $framework,
         protected Connection $connection,
+        private readonly AuthorizationCheckerInterface $security,
     ) {
     }
 
-    /**
-     * Return the edit header button.
-     */
-    public function editHeader(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
+    #[AsCallback(table: 'tl_glossary', target: 'list.operations.edit.button')]
+    public function edit(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
-        return System::getContainer()->get('security.helper')->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_glossary') ? '<a href="'.Backend::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $this->renderButton($this->security->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_glossary'), $row, $href, $label, $title, $icon, $attributes);
     }
 
-    /**
-     * Return the copy archive button.
-     */
+    #[AsCallback(table: 'tl_glossary', target: 'list.operations.copy.button')]
     public function copyArchive(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
-        return System::getContainer()->get('security.helper')->isGranted(ContaoGlossaryPermissions::USER_CAN_CREATE_ARCHIVES) ? '<a href="'.Backend::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $this->renderButton($this->security->isGranted(ContaoGlossaryPermissions::USER_CAN_CREATE_ARCHIVES), $row, $href, $label, $title, $icon, $attributes);
     }
 
-    /**
-     * Return the delete archive button.
-     */
+    #[AsCallback(table: 'tl_glossary', target: 'list.operations.delete.button')]
     public function deleteArchive(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
-        return System::getContainer()->get('security.helper')->isGranted(ContaoGlossaryPermissions::USER_CAN_DELETE_ARCHIVES) ? '<a href="'.Backend::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $this->renderButton($this->security->isGranted(ContaoGlossaryPermissions::USER_CAN_DELETE_ARCHIVES), $row, $href, $label, $title, $icon, $attributes);
     }
 
-    /**
-     * Add the glossary to the permissions.
-     */
+    #[AsCallback(table: 'tl_glossary', target: 'config.config.oncreate')]
+    #[AsCallback(table: 'tl_glossary', target: 'config.config.oncopy')]
     public function adjustPermissions(int|string $insertId): void
     {
         // The oncreate_callback passes $insertId as second argument
@@ -152,12 +148,8 @@ class GlossaryListener
         }
     }
 
-    /**
-     * @param DataContainer $dc
-     *
-     * @return array
-     */
-    public function addSitemapCacheInvalidationTag($dc, array $tags)
+    #[AsCallback(table: 'tl_glossary', target: 'config.oninvalidate_cache_tags')]
+    public function addSitemapCacheInvalidationTag(DataContainer $dc, array $tags): array
     {
         $pageModel = PageModel::findWithDetails($dc->activeRecord->jumpTo);
 
@@ -167,5 +159,15 @@ class GlossaryListener
         }
 
         return array_merge($tags, ['contao.sitemap.'.$pageModel->rootId]);
+    }
+
+    private function renderButton(bool $granted, array $row, string $href, string $label, string $title, string $icon, string $attributes): string
+    {
+        if (!$granted)
+        {
+            return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        }
+
+        return '<a href="'.Backend::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
     }
 }
