@@ -134,15 +134,12 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'relation' => ['type' => 'belongsTo', 'load' => 'lazy'],
         ],
         'tstamp' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['tstamp'],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'letter' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['letter'],
             'sql' => "char(1) NOT NULL default ''",
         ],
         'keyword' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['keyword'],
             'exclude' => true,
             'search' => true,
             'sorting' => true,
@@ -152,7 +149,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'alias' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['alias'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -160,21 +156,18 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(255) BINARY NOT NULL default ''",
         ],
         'keywords' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['keywords'],
             'exclude' => true,
             'inputType' => 'listWizard',
             'eval' => ['doNotCopy' => true, 'tl_class' => 'w50'],
             'sql' => 'blob NULL',
         ],
         'sensitiveSearch' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['sensitiveSearch'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 clr m12'],
             'sql' => "char(1) NOT NULL default ''",
         ],
         'pageTitle' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['pageTitle'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -182,7 +175,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'robots' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['robots'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'select',
@@ -191,7 +183,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(32) NOT NULL default ''",
         ],
         'description' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['description'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -206,7 +197,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => null,
         ],
         'subheadline' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['subheadline'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -214,7 +204,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'teaser' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['teaser'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -222,7 +211,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => 'text NULL',
         ],
         'addImage' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['addImage'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true],
@@ -259,7 +247,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'size' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_content']['size'],
+            'label' => &$GLOBALS['TL_LANG']['MSC']['imgSize'],
             'exclude' => true,
             'inputType' => 'imageSize',
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
@@ -308,7 +296,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(12) NOT NULL default 'above'",
         ],
         'source' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['source'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'radio',
@@ -317,7 +304,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "varchar(32) NOT NULL default 'default'",
         ],
         'jumpTo' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['jumpTo'],
             'exclude' => true,
             'inputType' => 'pageTree',
             'foreignKey' => 'tl_page.title',
@@ -326,7 +312,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'relation' => ['type' => 'belongsTo', 'load' => 'lazy'],
         ],
         'articleId' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['articleId'],
             'exclude' => true,
             'inputType' => 'select',
             'eval' => ['chosen' => true, 'mandatory' => true, 'tl_class' => 'w50'],
@@ -349,7 +334,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sql' => "char(1) NOT NULL default ''",
         ],
         'cssClass' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['cssClass'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
@@ -357,7 +341,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
         ],
         'published' => [
             'toggle' => true,
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary_item']['published'],
             'exclude' => true,
             'filter' => true,
             'flag' => 1,

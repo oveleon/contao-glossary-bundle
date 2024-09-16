@@ -23,14 +23,12 @@ $GLOBALS['TL_DCA']['tl_page']['subpalettes']['activateGlossary'] = 'glossaryArch
 
 // Fields
 $GLOBALS['TL_DCA']['tl_page']['fields']['activateGlossary'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['activateGlossary'],
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
     'sql' => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryArchives'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['glossaryArchives'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['mandatory' => true, 'multiple' => true],
@@ -38,7 +36,6 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryArchives'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryHoverCard'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['activateGlossaryHoverCards'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => [
@@ -50,7 +47,6 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryHoverCard'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['glossaryConfigTemplate'],
     'inputType' => 'select',
     'options_callback' => static fn () => Controller::getTemplateGroup('config_glossary_'),
     'eval' => ['tl_class' => 'w50 clr'],
@@ -58,7 +54,6 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['disableGlossary'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_page']['disableGlossary'],
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
     'sql' => "char(1) NOT NULL default ''",

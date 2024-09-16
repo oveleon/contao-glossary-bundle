@@ -58,7 +58,6 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
         ],
         'global_operations' => [
             'all' => [
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href' => 'act=select',
                 'class' => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
@@ -109,11 +108,9 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'tstamp' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['tstamp'],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'title' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['title'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -121,7 +118,6 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'jumpTo' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['jumpTo'],
             'exclude' => true,
             'inputType' => 'pageTree',
             'foreignKey' => 'tl_page.title',
@@ -130,7 +126,6 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'relation' => ['type' => 'hasOne', 'load' => 'lazy'],
         ],
         'glossaryHoverCardTemplate' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['glossaryHoverCardTemplate'],
             'default' => 'hovercard_glossary_default',
             'exclude' => true,
             'inputType' => 'select',
@@ -139,7 +134,6 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'sql' => "varchar(64) NOT NULL default 'hovercard_glossary_default'",
         ],
         'hoverCardImgSize' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['hoverCardImgSize'],
             'exclude' => true,
             'inputType' => 'imageSize',
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
@@ -148,7 +142,6 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'protected' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['protected'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
@@ -156,7 +149,6 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'sql' => "char(1) NOT NULL default ''",
         ],
         'groups' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_glossary']['groups'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'foreignKey' => 'tl_member_group.name',
