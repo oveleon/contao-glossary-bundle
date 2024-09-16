@@ -155,7 +155,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'decodeEntities' => true, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => '']
+            'sql' => ['type' => 'string', 'default' => ''],
         ],
         'robots' => [
             'exclude' => true,
@@ -170,7 +170,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['style' => 'height:60px', 'decodeEntities' => true, 'tl_class' => 'clr'],
-            'sql' => ['type' => 'text', 'length' => 65535, 'notnull' => false]
+            'sql' => ['type' => 'text', 'length' => 65535, 'notnull' => false],
         ],
         'serpPreview' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['serpPreview'],
@@ -191,7 +191,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
-            'sql' => ['type' => 'text', 'length' => 65535, 'notnull' => false]
+            'sql' => ['type' => 'text', 'length' => 65535, 'notnull' => false],
         ],
         'addImage' => [
             'exclude' => true,
@@ -211,7 +211,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'exclude' => true,
             'inputType' => 'fileTree',
             'eval' => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => Config::get('validImageTypes'), 'mandatory' => true],
-            'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false, 'fixed' => true]
+            'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false, 'fixed' => true],
         ],
         'alt' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['alt'],

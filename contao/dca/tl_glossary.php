@@ -32,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'keys' => [
                 'id' => 'primary',
                 'tstamp' => 'index',
-                'jumpTo' => 'index'
+                'jumpTo' => 'index',
             ],
         ],
     ],
@@ -59,11 +59,11 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
         'operations' => [
             'edit' => [
                 'href' => 'act=edit',
-                'icon' => 'header.svg',
+                'icon' => 'edit.svg',
             ],
             'children' => [
                 'href' => 'table=tl_glossary_item',
-                'icon' => 'edit.svg',
+                'icon' => 'children.svg',
             ],
             'copy' => [
                 'href' => 'act=copy',
@@ -113,7 +113,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'foreignKey' => 'tl_page.title',
             'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
             'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
-            'relation' => ['type'=>'hasOne', 'load'=>'lazy'],
+            'relation' => ['type' => 'hasOne', 'load' => 'lazy'],
         ],
         'glossaryHoverCardTemplate' => [
             'default' => 'hovercard_glossary_default',
