@@ -146,8 +146,16 @@ class GlossaryReaderController extends AbstractFrontendModuleController
 
     private function parse(): void
     {
-        $this->template->referer = 'javascript:history.go(-1)';
-        $this->template->back = $this->translator->trans('MSC.goBack', [], 'contao_default');
+        if ($this->model->overviewPage)
+        {
+            $this->template->referer = PageModel::findById($this->model->overviewPage)->getFrontendUrl();
+            $this->template->back = $this->model->customLabel ?: $this->translator->trans('MSC.goBack', [], 'contao_default');
+        }
+        else
+        {
+            $this->template->referer = 'javascript:history.go(-1)';
+            $this->template->back = $this->translator->trans('MSC.goBack', [], 'contao_default');
+        }
 
         if (!($objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $this->archiveIds)) instanceof GlossaryItemModel)
         {
