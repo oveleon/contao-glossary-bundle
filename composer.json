@@ -6,15 +6,22 @@
   "authors": [
     {
       "name": "Sebastian Zoglowek",
-      "homepage": "https://github.com/zoglo"
+      "homepage": "https://github.com/zoglo",
+      "role": "Developer"
     },
     {
       "name": "Fabian Ekert",
-      "homepage": "https://github.com/eki89"
+      "homepage": "https://github.com/eki89",
+      "role": "Developer"
     },
     {
       "name": "Daniele Sciannimanica",
-      "homepage": "https://github.com/doishub"
+      "homepage": "https://github.com/doishub",
+      "role": "Developer"
+    },
+    {
+      "name": "Oveleon",
+      "homepage": "https://oveleon.de/"
     }
   ],
   "require": {
@@ -42,9 +49,9 @@
     "phpstan/phpstan-phpunit": "^1.0",
     "phpstan/phpstan-symfony": "^1.0",
     "shipmonk/composer-dependency-analyser": "^1.5",
+    "shipmonk/dead-code-detector": "^0.2.1"
     "slam/phpstan-extensions": "^6.0",
     "thecodingmachine/phpstan-strict-rules": "^1.0",
-    "shipmonk/dead-code-detector": "^0.2.1"
   },
   "conflict": {
     "contao/core": "*",
