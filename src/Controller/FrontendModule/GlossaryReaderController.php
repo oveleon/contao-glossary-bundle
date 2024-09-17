@@ -17,10 +17,12 @@ namespace Oveleon\ContaoGlossaryBundle\Controller\FrontendModule;
 
 use Contao\BackendTemplate;
 use Contao\CoreBundle\ContaoCoreBundle;
+use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Environment;
 use Contao\Input;
@@ -30,8 +32,10 @@ use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Front end module "glossary reader".
@@ -39,44 +43,86 @@ use Symfony\Component\HttpFoundation\Response;
  * @property array $glossary_archives
  */
 #[AsFrontendModule(GlossaryReaderController::TYPE, category: 'glossaries', template: 'mod_glossaryreader')]
-class GlossaryReaderController extends AbstractGlossaryController
+class GlossaryReaderController extends AbstractFrontendModuleController
 {
+    use GlossaryTrait;
+
     public const TYPE = 'glossaryreader';
 
-    public $glossary_archives;
+    private FragmentTemplate|Template $template;
 
-    public $id;
+    private ModuleModel $model;
 
-    public $glossary_template;
+    private array $archiveIds = [];
 
-    public $imgSize;
+    public function __construct(
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
 
     protected function getResponse(FragmentTemplate|Template $template, ModuleModel $model, Request $request): Response
     {
-        // TODO: Implement getResponse() method.
-    }
+        $this->template = $template;
 
-    /**
-     * Display a wildcard in the back end.
-     *
-     * @throws InternalServerErrorException
-     */
-    public function generate(): string
-    {
-        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
-
-        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
+        if ($this->scopeMatcher->isBackendRequest($request))
         {
-            $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD']['glossaryreader'][0].' ###';
-            $objTemplate->title = $this->headline;
-            $objTemplate->id = $this->id;
-            $objTemplate->link = $this->name;
-            $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', ['do' => 'themes', 'table' => 'tl_module', 'act' => 'edit', 'id' => $this->id]));
+            $this->template = new BackendTemplate('be_wildcard');
+        }
+        else
+        {
+            $this->initialize();
 
-            return $objTemplate->parse();
+            if (empty($this->archiveIds = StringUtil::deserialize($model->glossary_archives, true)))
+            {
+                throw new InternalServerErrorException('The publication reader ID '.$model->id.' has no archives specified.');
+            }
+
+            $this->model = $model;
+
+            $this->parse();
         }
 
+        return $this->template->getResponse();
+    }
+
+    private function setResponseData(GlossaryItemModel $glossaryItem): void
+    {
+        $responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext();
+
+        if ($responseContext && $responseContext->has(HtmlHeadBag::class))
+        {
+            /** @var HtmlHeadBag $htmlHeadBag */
+            $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
+            $htmlDecoder = System::getContainer()->get('contao.string.html_decoder');
+
+            if ($glossaryItem->pageTitle)
+            {
+                $htmlHeadBag->setTitle($glossaryItem->pageTitle); // Already stored decoded
+            }
+            elseif ($glossaryItem->keyword)
+            {
+                $htmlHeadBag->setTitle($htmlDecoder->inputEncodedToPlainText($glossaryItem->keyword));
+            }
+
+            if ($glossaryItem->description)
+            {
+                $htmlHeadBag->setMetaDescription($htmlDecoder->inputEncodedToPlainText($glossaryItem->description));
+            }
+            elseif ($glossaryItem->teaser)
+            {
+                $htmlHeadBag->setMetaDescription($htmlDecoder->htmlToPlainText($glossaryItem->teaser));
+            }
+
+            if ($glossaryItem->robots)
+            {
+                $htmlHeadBag->setMetaRobots($glossaryItem->robots);
+            }
+        }
+    }
+
+    private function initialize(): Response|null
+    {
         $auto_item = Input::get('auto_item');
 
         if (
@@ -90,82 +136,32 @@ class GlossaryReaderController extends AbstractGlossaryController
             $auto_item = Input::get('items');
         }
 
-        // Return an empty string if "items" is not set
         if (null === $auto_item)
         {
-            return '';
+            return $this->template->getResponse();
         }
 
-        $this->glossary_archives = $this->sortOutProtected(StringUtil::deserialize($this->glossary_archives, true));
-
-        // Return if there are no glossaries
-        if ([] === $this->glossary_archives)
-        {
-            throw new InternalServerErrorException('The glossary reader ID '.$this->id.' has no archives specified.');
-        }
-
-        return parent::generate();
+        return null;
     }
 
-    /**
-     * Generate the module.
-     */
-    protected function compile(): void
+    private function parse(): void
     {
-        /** @var PageModel $objPage */
-        global $objPage;
+        $this->template->referer = 'javascript:history.go(-1)';
+        $this->template->back = $this->translator->trans('MSC.goBack', [], 'contao_default');
 
-        $this->Template->glossaryitem = '';
-        $this->Template->referer = 'javascript:history.go(-1)';
-        $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
-
-        // Get the glossary item
-        $objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $this->glossary_archives);
-
-        if (!$objGlossaryItem instanceof GlossaryItemModel)
+        if (!($objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $this->archiveIds)) instanceof GlossaryItemModel)
         {
             throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
 
-        // Set the default template
-        if (!$this->glossary_template)
-        {
-            $this->glossary_template = 'glossary_full';
-        }
+        $arrGlossaryItem = $this->parseGlossaryItem(
+            $objGlossaryItem,
+            $this->model->glossary_template ?: 'glossary_full',
+            $this->model->imgSize,
+        );
 
-        $arrGlossaryItem = $this->parseGlossaryItem($objGlossaryItem, $this->glossary_template, $this->imgSize);
-        $this->Template->glossaryentry = $arrGlossaryItem;
+        $this->template->glossaryentry = $arrGlossaryItem;
 
-        $responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext();
-
-        if ($responseContext && $responseContext->has(HtmlHeadBag::class))
-        {
-            /** @var HtmlHeadBag $htmlHeadBag */
-            $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
-            $htmlDecoder = System::getContainer()->get('contao.string.html_decoder');
-
-            if ($objGlossaryItem->pageTitle)
-            {
-                $htmlHeadBag->setTitle($objGlossaryItem->pageTitle); // Already stored decoded
-            }
-            elseif ($objGlossaryItem->keyword)
-            {
-                $htmlHeadBag->setTitle($htmlDecoder->inputEncodedToPlainText($objGlossaryItem->keyword));
-            }
-
-            if ($objGlossaryItem->description)
-            {
-                $htmlHeadBag->setMetaDescription($htmlDecoder->inputEncodedToPlainText($objGlossaryItem->description));
-            }
-            elseif ($objGlossaryItem->teaser)
-            {
-                $htmlHeadBag->setMetaDescription($htmlDecoder->htmlToPlainText($objGlossaryItem->teaser));
-            }
-
-            if ($objGlossaryItem->robots)
-            {
-                $htmlHeadBag->setMetaRobots($objGlossaryItem->robots);
-            }
-        }
+        $this->setResponseData($objGlossaryItem);
     }
 }

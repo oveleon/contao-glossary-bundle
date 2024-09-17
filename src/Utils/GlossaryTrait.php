@@ -24,6 +24,7 @@ use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Environment;
 use Contao\FilesModel;
 use Contao\FrontendTemplate;
+use Contao\FrontendUser;
 use Contao\Model\Collection;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -31,6 +32,7 @@ use Contao\System;
 use Contao\Template;
 use Contao\Validator;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 
 use function Symfony\Component\String\u;
 
@@ -428,6 +430,56 @@ trait GlossaryTrait
             $objTemplate->hasQuickLinks = true;
             $objTemplate->quickLinks = $arrQuickLinks;
         }
+    }
+
+    /**
+     * Sort out protected glossaries.
+     */
+    protected function sortOutProtected(array $glossaryIds): array
+    {
+        if ([] === $glossaryIds)
+        {
+            return [];
+        }
+
+        /** @var FrontendUser $user */
+        $user = System::getContainer()->get('security.helper')?->getUser();
+
+        if ($user instanceof FrontendUser)
+        {
+            return [];
+        }
+
+        if (null === $objGlossaries = GlossaryModel::findMultipleByIds($glossaryIds))
+        {
+            return [];
+        }
+
+        $blnFeUserLoggedIn = System::getContainer()->get('contao.security.token_checker')->hasFrontendUser();
+
+        $archiveIds = [];
+
+        foreach ($objGlossaries as $objGlossary)
+        {
+            if ($objGlossary->protected)
+            {
+                if (!$blnFeUserLoggedIn || !\is_array($user->groups))
+                {
+                    continue;
+                }
+
+                $groups = StringUtil::deserialize($objGlossary->groups);
+
+                if (empty($groups) || !\is_array($groups) || [] === array_intersect($groups, $user->groups))
+                {
+                    continue;
+                }
+            }
+
+            $archiveIds[] = $objGlossary->id;
+        }
+
+        return $archiveIds;
     }
 
     /**
