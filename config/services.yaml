@@ -8,7 +8,7 @@ services:
     resource: '../src/'
     exclude: '../src/{Model,DependencyInjection,Resources}'
 
-  Oveleon\ContaoGlossaryBundle\Controller\GlossaryController:
+  Oveleon\ContaoGlossaryBundle\Controller\Api\GlossaryRouteController:
     arguments:
       - '@contao.framework'
     tags:

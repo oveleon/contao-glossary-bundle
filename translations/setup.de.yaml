@@ -1,0 +1,17 @@
+setup:
+    tables:
+        tl_glossary:                    'Glossar-Archive'
+        tl_glossary_item:               'Glossar-Einträge'
+        tl_content:
+            tl_glossary_item:           'Inhaltselemente (Glossar)'
+    prompt:
+        glossary:
+            jumpTo:
+                label:                  'Glossar-Archiv → Weiterleitungsseite'
+                description:            'Ein oder mehrere Glossar-Archive verweisen auf eine Weiterleitungsseite, welche nicht aufgelöst werden kann. Ihre Auswahl wird für alle weiteren Glossar-Archive, welche auf die selbe Weiterleitungsseite referenzieren, übernommen.'
+                explanation:            'Beim Importieren eines oder mehrerer Glossar-Archive konnte die zugehörige Weiterleitungsseite nicht gefunden werden. Wählen Sie bitte eine Seite aus Ihrer Contao-Instanz, um eine Verknüpfung zwischen diesen Glossar-Archiven und einer Seite herzustellen.<br/><br/><b>Folgende Seite wurde nicht importiert und benötigt eine Alternative:</b>'
+        content:
+            glossary:
+                title:                  'Inhaltselement → Glossar-Eintrag'
+                description:            'Ein oder mehrere Inhaltselemente konnten nicht zugeordnet werden. Ihre Auswahl wird für alle weiteren Inhaltselemente, welche auf den selben Glossar-Eintrag referenzieren, übernommen.'
+                explanation:            'Beim Importieren eines oder mehrerer Inhaltselementen konnte der zugehörige Glossar-Eintrag nicht gefunden werden. Wählen Sie bitte ein Eintrag aus Ihrer Contao-Instanz, um eine Verknüpfung zwischen diesen Inhaltselementen und einem Glossar-Eintrag herzustellen.<br/><br/><b>Folgender Glossar-Eintrag wurde nicht importiert und benötigt eine Alternative:</b>'

@@ -7,23 +7,26 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
-use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 
 /**
  * @internal
  */
 class InsertTagsListener
 {
+    use GlossaryTrait;
+
     private const SUPPORTED_TAGS = [
         'glossaryitem',
         'glossaryitem_open',
@@ -32,11 +35,11 @@ class InsertTagsListener
         'glossaryitem_teaser',
     ];
 
-    public function __construct(private ContaoFramework $framework)
+    public function __construct(private readonly ContaoFramework $framework)
     {
     }
 
-    public function __invoke(string $tag, bool $useCache, $cacheValue, array $flags): string|false
+    public function __invoke(string $tag, bool $useCache, mixed $cacheValue, array $flags): string|false
     {
         $elements = explode('::', $tag);
         $key = strtolower($elements[0]);
@@ -60,22 +63,26 @@ class InsertTagsListener
             return '';
         }
 
-        $glossaryItem = $this->framework->getAdapter(Glossary::class);
-
         return match ($insertTag)
         {
-            'glossaryitem' => vsprintf('<a href="%s" title="%s" data-glossary-id="%s">%s</a>', [
-                $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
-                StringUtil::specialcharsAttribute($model->keyword),
-                $model->id,
-                $model->keyword
-            ]),
-            'glossaryitem_open' => vsprintf('<a href="%s" title="%s" data-glossary-id="%s">', [
-                $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
-                StringUtil::specialcharsAttribute($model->keyword),
-                $model->id
-            ]),
-            'glossaryitem_url' => $glossaryItem->generateUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+            'glossaryitem' => vsprintf(
+                '<a href="%s" title="%s" data-glossary-id="%s">%s</a>',
+                [
+                    $this->generateDetailUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+                    StringUtil::specialcharsAttribute($model->keyword),
+                    $model->id,
+                    $model->keyword,
+                ],
+            ),
+            'glossaryitem_open' => vsprintf(
+                '<a href="%s" title="%s" data-glossary-id="%s">',
+                [
+                    $this->generateDetailUrl($model, \in_array('absolute', $arguments, true)) ?: './',
+                    StringUtil::specialcharsAttribute($model->keyword),
+                    $model->id,
+                ],
+            ),
+            'glossaryitem_url' => $this->generateDetailUrl($model, \in_array('absolute', $arguments, true)) ?: './',
             'glossaryitem_keyword' => StringUtil::specialcharsAttribute($model->keyword),
             'glossaryitem_teaser' => $model->teaser,
             default => '',

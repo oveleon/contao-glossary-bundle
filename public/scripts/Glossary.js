@@ -118,9 +118,23 @@ export class Glossary
      * Checks if it's an Apple device
      * @private
      */
-    _isNewIE()
+    _isNewIE(useragent = navigator.userAgent)
     {
-        return (/iPod|iPhone|iPad|Macintosh/.test(navigator.userAgent))
+        if (!(/iPod|iPhone|iPad|Macintosh/.test(useragent)))
+            return false;
+
+        if (useragent.includes('Safari/'))
+        {
+            const version = useragent.split('Version/')[1]?.split(' ')[0];
+
+            if (version)
+            {
+                const [major, minor] = version.split('.').map(Number);
+                return (major < 16) || (major === 16 && minor < 4);
+            }
+        }
+
+        return false;
     }
 
     /**

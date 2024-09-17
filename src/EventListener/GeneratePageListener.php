@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle\EventListener;
@@ -23,16 +24,18 @@ use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\StringUtil;
 use Contao\System;
-use Oveleon\ContaoGlossaryBundle\Glossary;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
+use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 
 /**
  * @internal
  */
 class GeneratePageListener
 {
-    public function __construct(private ContaoFramework $framework)
+    use GlossaryTrait;
+
+    public function __construct(private readonly ContaoFramework $framework)
     {
     }
 
@@ -46,7 +49,7 @@ class GeneratePageListener
         }
 
         // Get Root page Settings
-        $objRootPage = PageModel::findByPk($pageModel->rootId);
+        $objRootPage = PageModel::findById($pageModel->rootId);
 
         if (null === $objRootPage || !$objRootPage->activateGlossary)
         {
@@ -68,14 +71,15 @@ class GeneratePageListener
         }
 
         // Load glossary configuration template
-        $objTemplate      = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
-        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives, ['order' => "LENGTH(tl_glossary_item.keyword) DESC"]);
-        $glossaryConfig   = null;
+        $objTemplate = new FrontendTemplate($objRootPage->glossaryConfigTemplate ?: 'config_glossary_default');
+        $objGlossaryItems = GlossaryItemModel::findPublishedByPids($glossaryArchives, ['order' => 'LENGTH(tl_glossary_item.keyword) DESC']);
+        $glossaryConfig = null;
 
         $pageId = $pageModel->id;
-        $alias  = Input::get('items');
+        $alias = Input::get('items');
 
         // Set the item from the auto_item parameter
+        // ToDo: See #5983
         if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem'))
         {
             $alias = Input::get('auto_item');
@@ -112,7 +116,7 @@ class GeneratePageListener
 
                         // Catch wrongly entered empty keywords and filter them out
                         'keywords' => array_values(array_filter($arrKeywords)),
-                        'url' => Glossary::generateUrl($objGlossaryItem),
+                        'url' => $this->generateDetailUrl($objGlossaryItem),
 
                         // Case-sensitive search
                         'cs' => $objGlossaryItem->sensitiveSearch ? 1 : 0,
@@ -120,21 +124,17 @@ class GeneratePageListener
                 }
             }
 
-            if (!empty($arrGlossaryItems))
+            if ([] !== $arrGlossaryItems)
             {
                 $glossaryConfig = json_encode($arrGlossaryItems);
             }
         }
 
-        switch ($objRootPage->glossaryHoverCard) {
-            case 'enabled':
-                $objTemplate->hoverCardMode = true;
-                break;
-
-            default:
-                $objTemplate->hoverCardMode = false;
-                break;
-        }
+        $objTemplate->hoverCardMode = match ($objRootPage->glossaryHoverCard)
+        {
+            'enabled' => true,
+            default => false,
+        };
 
         // Adds a 'lang' attribute (#24)
         $objTemplate->language = $pageModel->rootLanguage;

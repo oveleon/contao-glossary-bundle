@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * @package     contao-glossary-bundle
  * @license     AGPL-3.0
- * @author      Fabian Ekert        <https://github.com/eki89>
- * @author      Sebastian Zoglowek  <https://github.com/zoglo>
- * @copyright   Oveleon             <https://www.oveleon.de/>
+ * @author      Sebastian Zoglowek    <https://github.com/zoglo>
+ * @author      Fabian Ekert          <https://github.com/eki89>
+ * @author      Daniele Sciannimanica <https://github.com/doishub>
+ * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
 namespace Oveleon\ContaoGlossaryBundle\Picker;
@@ -23,7 +24,7 @@ use Knp\Menu\FactoryInterface;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
@@ -33,8 +34,12 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
     /**
      * @internal Do not inherit from this class; decorate the "contao_glossary.picker.glossary_provider" service instead
      */
-    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, TranslatorInterface|null $translator, private Security $security)
-    {
+    public function __construct(
+        FactoryInterface $menuFactory,
+        RouterInterface $router,
+        TranslatorInterface|null $translator,
+        private readonly AuthorizationCheckerInterface $security,
+    ) {
         parent::__construct($menuFactory, $router, $translator);
     }
 
@@ -43,6 +48,11 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         return 'glossaryPicker';
     }
 
+    /**
+     * Hint: picker provider interface must be compatible with Contao 4 and 5 so no type is given.
+     *
+     * @param string $context
+     */
     public function supportsContext($context): bool
     {
         return 'link' === $context && $this->security->isGranted('contao_user.modules', 'glossarys');
@@ -53,7 +63,7 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         return $this->isMatchingInsertTag($config);
     }
 
-    public function getDcaTable(PickerConfig $config = null): string
+    public function getDcaTable(PickerConfig|null $config = null): string
     {
         return 'tl_glossary_item';
     }
@@ -80,16 +90,16 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         return $attributes;
     }
 
-    public function convertDcaValue(PickerConfig $config, $value): string
+    public function convertDcaValue(PickerConfig $config, mixed $value): string
     {
-        return sprintf($this->getInsertTag($config), $value);
+        return \sprintf($this->getInsertTag($config), $value);
     }
 
-    protected function getRouteParameters(PickerConfig $config = null): array
+    protected function getRouteParameters(PickerConfig|null $config = null): array
     {
         $params = ['do' => 'glossary'];
 
-        if (null === $config || !$config->getValue() || !$this->supportsValue($config))
+        if (!$config instanceof PickerConfig || !$config->getValue() || !$this->supportsValue($config))
         {
             return $params;
         }
@@ -108,12 +118,8 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         return '{{glossaryitem_url::%s}}';
     }
 
-    /**
-     * @param int|string $id
-     */
     private function getGlossaryId(int|string $id): int|null
     {
-        /** @var GlossaryItemModel $glossaryAdapter */
         $glossaryAdapter = $this->framework->getAdapter(GlossaryItemModel::class);
 
         if (!($glossaryItemModel = $glossaryAdapter->findById($id)) instanceof GlossaryItemModel)
