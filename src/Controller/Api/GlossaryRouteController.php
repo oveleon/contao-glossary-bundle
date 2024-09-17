@@ -54,11 +54,11 @@ class GlossaryRouteController extends AbstractController
             return new JsonResponse($arrResponse);
         }
 
-        while ($objGlossaryItems->next())
+        foreach ($objGlossaryItems as $objGlossaryItem)
         {
-            $strTerm = $objGlossaryItems->keyword;
+            $strTerm = $objGlossaryItem->keyword;
 
-            $arrKeywords = StringUtil::deserialize($objGlossaryItems->keywords, true);
+            $arrKeywords = StringUtil::deserialize($objGlossaryItem->keywords, true);
 
             foreach ($arrKeywords as $strKeyword)
             {
@@ -91,10 +91,10 @@ class GlossaryRouteController extends AbstractController
             return new JsonResponse($arrResponse);
         }
 
-        while ($objGlossaryItems->next())
+        foreach ($objGlossaryItems as $objGlossaryItem)
         {
-            $arrResponse[$objGlossaryItems->id] = [
-                strip_tags($objGlossaryItems->teaser),
+            $arrResponse[$objGlossaryItem->id] = [
+                strip_tags($objGlossaryItem->teaser),
             ];
         }
 

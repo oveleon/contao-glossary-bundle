@@ -18,7 +18,6 @@ namespace Oveleon\ContaoGlossaryBundle\EventListener\DataContainer;
 use Contao\Backend;
 use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\Database;
 use Contao\DataContainer;
@@ -26,7 +25,6 @@ use Contao\Image;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
-use Doctrine\DBAL\Connection;
 use Oveleon\ContaoGlossaryBundle\Security\ContaoGlossaryPermissions;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -34,8 +32,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class GlossaryListener
 {
     public function __construct(
-        protected ContaoFramework $framework,
-        protected Connection $connection,
         private readonly AuthorizationCheckerInterface $security,
     ) {
     }

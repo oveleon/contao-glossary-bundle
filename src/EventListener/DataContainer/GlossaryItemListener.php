@@ -29,19 +29,22 @@ use Contao\PageModel;
 use Contao\System;
 use Contao\User;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 use Oveleon\ContaoGlossaryBundle\Utils\AliasException;
 use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GlossaryItemListener
 {
     use GlossaryTrait;
 
     public function __construct(
-        protected ContaoFramework $framework,
-        protected Connection $connection,
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -99,18 +102,22 @@ class GlossaryItemListener
      * Auto-generate the glossary item alias if it has not been set yet.
      *
      * @throws AliasException
+     * @throws Exception
      */
     #[AsCallback(table: 'tl_glossary_item', target: 'fields.alias.save')]
     public function generateAlias(mixed $varValue, DataContainer $dc): string
     {
         $aliasExists = static function (string $alias) use ($dc): bool
         {
-            $result = Database::getInstance()
-                ->prepare('SELECT id FROM tl_glossary_item WHERE alias=? AND id!=?')
-                ->execute($alias, $dc->id)
-            ;
+            $result = $this->connection->fetchAllAssociative(
+                'SELECT id FROM tl_glossary_item WHERE alias=:alias AND id!=:id',
+                [
+                    'alias' => $alias,
+                    'id' => $dc->id,
+                ],
+            );
 
-            return $result->numRows > 0;
+            return [] !== $result;
         };
 
         // Generate alias if there is none
@@ -120,11 +127,11 @@ class GlossaryItemListener
         }
         elseif (preg_match('/^[1-9]\d*$/', (string) $varValue))
         {
-            throw new AliasException(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $varValue));
+            throw new AliasException($this->translator->trans('ERR.aliasNumeric', [$varValue], 'contao_default'));
         }
         elseif ($aliasExists($varValue))
         {
-            throw new AliasException(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+            throw new AliasException($this->translator->trans('ERR.aliasExists', [$varValue], 'contao_default'));
         }
 
         return $varValue;

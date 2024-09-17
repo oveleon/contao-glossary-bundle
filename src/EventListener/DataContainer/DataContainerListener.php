@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class DataContainerListener
 {
     public function __construct(
-        protected Connection $connection,
+        private readonly Connection $connection,
         private readonly AuthorizationCheckerInterface $security,
         private readonly TokenStorageInterface $tokenStorage,
     ) {
