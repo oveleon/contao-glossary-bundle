@@ -13,7 +13,7 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle\EventListener\ProductInstaller;
+namespace Oveleon\ContaoGlossaryBundle\EventListener\Import;
 
 use Oveleon\ContaoGlossaryBundle\Import\Validator\ContentGlossaryValidator;
 use Oveleon\ContaoGlossaryBundle\Import\Validator\GlossaryValidator;

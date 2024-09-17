@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 
 use Contao\ArrayUtil;
-use Oveleon\ContaoGlossaryBundle\EventListener\ProductInstaller\AddGlossaryValidatorListener;
+use Oveleon\ContaoGlossaryBundle\EventListener\Import\AddGlossaryValidatorListener;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
 
