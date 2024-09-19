@@ -42,7 +42,6 @@ class GlossaryItemListener
     use GlossaryTrait;
 
     public function __construct(
-        private readonly ContaoFramework $framework,
         private readonly Connection $connection,
         private readonly TranslatorInterface $translator,
     ) {
