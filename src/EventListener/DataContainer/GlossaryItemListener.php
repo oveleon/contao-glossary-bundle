@@ -107,9 +107,11 @@ class GlossaryItemListener
     #[AsCallback(table: 'tl_glossary_item', target: 'fields.alias.save')]
     public function generateAlias(mixed $varValue, DataContainer $dc): string
     {
-        $aliasExists = static function (string $alias) use ($dc): bool
+        $connection = $this->connection;
+
+        $aliasExists = static function (string $alias) use ($dc, $connection): bool
         {
-            $result = $this->connection->fetchAllAssociative(
+            $result = $connection->fetchAllAssociative(
                 'SELECT id FROM tl_glossary_item WHERE alias=:alias AND id!=:id',
                 [
                     'alias' => $alias,
