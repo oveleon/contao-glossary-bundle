@@ -25,7 +25,7 @@ parameters:
 
     excludePaths:
         - %currentWorkingDirectory%/src/Import/Validator
-        - %currentWorkingDirectory%/src/EventListener/ProductInstaller
+        - %currentWorkingDirectory%/src/EventListener/Import
 
     dynamicConstantNames:
         - BE_USER_LOGGED_IN
