@@ -127,6 +127,13 @@ class GeneratePageListener
             if ([] !== $arrGlossaryItems)
             {
                 $glossaryConfig = json_encode($arrGlossaryItems);
+
+                // Tag the glossary items
+                if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+                {
+                    $responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+                    $responseTagger->addTags(array_map(static fn ($id) => 'contao.db.tl_glossary_item.'.$id, array_column($arrGlossaryItems, 'id')));
+                }
             }
         }
 
@@ -144,13 +151,6 @@ class GeneratePageListener
         $objTemplate->cacheStatus = !$blnDebug;
 
         $objTemplate->glossaryConfig = $glossaryConfig;
-
-        // Tag glossary items
-        if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
-        {
-            $responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
-            $responseTagger->addTags(array_map(static fn ($id) => 'contao.db.tl_glossary_item.'.$id, array_column($arrGlossaryItems, 'id')));
-        }
 
         $GLOBALS['TL_BODY'][] = $objTemplate->parse();
     }
