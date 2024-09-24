@@ -95,11 +95,7 @@ class GlossaryListController extends AbstractFrontendModuleController
             $glossaryItems,
             $this->template,
             $this->archiveIds,
-            $this->model->id,
-            (bool) $this->model->glossary_singleGroup,
-            (bool) $this->model->glossary_hideEmptyGroups,
-            (bool) $this->model->glossary_utf8Transliteration,
-            (bool) $this->model->glossary_quickLinks,
+            $this->model,
         );
     }
 

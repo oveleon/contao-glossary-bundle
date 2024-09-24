@@ -26,6 +26,7 @@ use Contao\FilesModel;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
+use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
@@ -335,12 +336,12 @@ trait GlossaryTrait
      *
      * @param Collection<GlossaryItemModel>|GlossaryItemModel|array<GlossaryItemModel>|null $objGlossaryItems
      */
-    protected function parseGlossaryGroups(Collection|GlossaryItemModel|array|null $objGlossaryItems, FragmentTemplate|Template &$objTemplate, array $archivePids, int $id, bool $blnSingleGroup = false, bool $blnHideEmptyGroups = false, bool $blnTransliteration = true, bool $blnQuickLinks = false): void
+    protected function parseGlossaryGroups(Collection|GlossaryItemModel|array|null $objGlossaryItems, FragmentTemplate|Template &$objTemplate, array $archivePids, ModuleModel $model): void
     {
         $availableGroups = [];
         $arrQuickLinks = [];
 
-        if (!$blnHideEmptyGroups)
+        if (!((bool) $model->glossary_hideEmptyGroups))
         {
             $arrLetterRange = range('A', 'Z');
 
@@ -352,6 +353,11 @@ trait GlossaryTrait
                 ];
             }
         }
+
+        $id = $model->id;
+        $blnQuickLinks = (bool) $this->model->glossary_quickLinks;
+        $blnTransliteration = (bool) $this->model->glossary_utf8Transliteration;
+        $blnSingleGroup = (bool) $model->glossary_singleGroup;
 
         if ($blnSingleGroup)
         {
@@ -396,6 +402,8 @@ trait GlossaryTrait
             }
         }
 
+        $itemTemplate = $model->glossary_template ?: 'glossary_latest';
+
         // Preload all images in one query so they are loaded into the model registry
         FilesModel::findMultipleByUuids($uuids);
 
@@ -405,7 +413,7 @@ trait GlossaryTrait
             $itemGroup = $blnTransliteration ? $this->transliterateAscii($objGlossaryItem->letter) : $objGlossaryItem->letter;
 
             $arrGlossaryGroups[$itemGroup]['id'] = 'group'.$id.'_'.$itemGroup;
-            $arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem);
+            $arrGlossaryGroups[$itemGroup]['items'][] = $this->parseGlossaryItem($objGlossaryItem, $itemTemplate);
 
             $availableGroups[$itemGroup] = [
                 'item' => $this->generateGroupAnchorLink($itemGroup, $id, $blnSingleGroup),
