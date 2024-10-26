@@ -75,7 +75,7 @@ class GlossaryReaderController extends AbstractFrontendModuleController
 
             if (empty($this->archiveIds = StringUtil::deserialize($model->glossary_archives, true)))
             {
-                throw new InternalServerErrorException('The publication reader ID '.$model->id.' has no archives specified.');
+                throw new InternalServerErrorException('The glossary reader ID '.$model->id.' has no archives specified.');
             }
 
             $this->model = $model;

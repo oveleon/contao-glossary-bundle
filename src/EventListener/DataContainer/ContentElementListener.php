@@ -47,13 +47,13 @@ class ContentElementListener
         }
 
         // Set the root IDs
-        if (empty($user->publications) || !\is_array($user->publications))
+        if (empty($user->glossary) || !\is_array($user->glossary))
         {
             $root = [0];
         }
         else
         {
-            $root = $user->publications;
+            $root = $user->glossary;
         }
 
         // Check current action
