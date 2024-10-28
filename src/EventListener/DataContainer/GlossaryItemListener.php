@@ -248,7 +248,9 @@ class GlossaryItemListener
         else
         {
             $root = $objUser->glossarys;
-            foreach ($root as $k => $v) {
+
+            foreach ($root as $k => $v)
+            {
                 $root[$k] = (int) $v;
             }
         }
@@ -269,7 +271,7 @@ class GlossaryItemListener
                 break;
 
             case 'create':
-                if (!Input::get('pid') || !\in_array((int)Input::get('pid'), $root, true))
+                if (!Input::get('pid') || !\in_array((int) Input::get('pid'), $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to create glossary items in glossary ID '.Input::get('pid').'.');
                 }
@@ -296,7 +298,7 @@ class GlossaryItemListener
                     $pid = Input::get('pid');
                 }
 
-                if (!\in_array((int)$pid, $root, true))
+                if (!\in_array((int) $pid, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' glossary item ID '.$id.' to glossary ID '.$pid.'.');
                 }
@@ -327,7 +329,7 @@ class GlossaryItemListener
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!\in_array((int)$id, $root, true))
+                if (!\in_array((int) $id, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
                 }
@@ -349,7 +351,7 @@ class GlossaryItemListener
                     throw new AccessDeniedException('Invalid command "'.Input::get('act').'".');
                 }
 
-                if (!\in_array((int)$id, $root, true))
+                if (!\in_array((int) $id, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to access glossary ID '.$id.'.');
                 }

@@ -54,7 +54,9 @@ class ContentElementListener
         else
         {
             $root = $user->glossarys;
-            foreach ($root as $k => $v) {
+
+            foreach ($root as $k => $v)
+            {
                 $root[$k] = (int) $v;
             }
         }
@@ -116,14 +118,14 @@ class ContentElementListener
     {
         if ($isPid)
         {
-            $objArchive = (object)$this->connection->fetchAssociative(
+            $objArchive = (object) $this->connection->fetchAssociative(
                 'SELECT a.id, n.id AS nid FROM tl_glossary_item n, tl_glossary a WHERE n.id=:id AND n.pid=a.id',
                 ['id' => $id],
             );
         }
         else
         {
-            $objArchive = (object)$this->connection->fetchAssociative(
+            $objArchive = (object) $this->connection->fetchAssociative(
                 'SELECT a.id, n.id AS nid FROM tl_content c, tl_glossary_item n, tl_glossary a WHERE c.id=:id AND c.pid=n.id AND n.pid=a.id',
                 ['id' => $id],
             );
