@@ -321,7 +321,7 @@ export class Glossary
     async _setDetails()
     {
         // Always cache in session for details
-        await fetch(this.options.route.info)
+        await fetch(this.options.route.info, {headers: {"Accept-Language": this.options.language.lang}})
             .then((response) => {
                 if (response.status >= 300)
                     throw new Error(response.statusText)
@@ -466,7 +466,7 @@ export class Glossary
             this._buildHovercard()
 
         // Fetch glossary content from API
-        await fetch(this.options.route.prefix + id + this.options.route.suffix, {signal: this.abortController.signal})
+        await fetch(this.options.route.prefix + id + this.options.route.suffix, {signal: this.abortController.signal, headers: {"Accept-Language": this.options.language.lang}})
             .then((response) => {
                 if (response.status >= 300)
                     throw new Error(response.statusText)
