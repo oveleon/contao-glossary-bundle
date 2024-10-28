@@ -47,13 +47,18 @@ class ContentElementListener
         }
 
         // Set the root IDs
-        if (empty($user->glossary) || !\is_array($user->glossary))
+        if (empty($user->glossarys) || !\is_array($user->glossarys))
         {
             $root = [0];
         }
         else
         {
-            $root = $user->glossary;
+            $root = $user->glossarys;
+
+            foreach ($root as $k => $v)
+            {
+                $root[$k] = (int) $v;
+            }
         }
 
         // Check current action
@@ -113,14 +118,14 @@ class ContentElementListener
     {
         if ($isPid)
         {
-            $objArchive = $this->connection->fetchOne(
+            $objArchive = (object) $this->connection->fetchAssociative(
                 'SELECT a.id, n.id AS nid FROM tl_glossary_item n, tl_glossary a WHERE n.id=:id AND n.pid=a.id',
                 ['id' => $id],
             );
         }
         else
         {
-            $objArchive = $this->connection->fetchOne(
+            $objArchive = (object) $this->connection->fetchAssociative(
                 'SELECT a.id, n.id AS nid FROM tl_content c, tl_glossary_item n, tl_glossary a WHERE c.id=:id AND c.pid=n.id AND n.pid=a.id',
                 ['id' => $id],
             );
