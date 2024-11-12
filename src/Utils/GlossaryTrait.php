@@ -450,20 +450,15 @@ trait GlossaryTrait
             return [];
         }
 
-        /** @var FrontendUser $user */
-        $user = System::getContainer()->get('security.helper')?->getUser();
-
-        if ($user instanceof FrontendUser)
-        {
-            return [];
-        }
-
         if (null === $objGlossaries = GlossaryModel::findMultipleByIds($glossaryIds))
         {
             return [];
         }
 
         $blnFeUserLoggedIn = System::getContainer()->get('contao.security.token_checker')->hasFrontendUser();
+
+        /** @var FrontendUser $user */
+        $user = System::getContainer()->get('security.helper')?->getUser();
 
         $archiveIds = [];
 
