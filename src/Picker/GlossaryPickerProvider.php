@@ -55,7 +55,7 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
      */
     public function supportsContext($context): bool
     {
-        return 'link' === $context && $this->security->isGranted('contao_user.modules', 'glossarys');
+        return 'link' === $context && $this->security->isGranted('contao_user.modules', 'glossary');
     }
 
     public function supportsValue(PickerConfig $config): bool
