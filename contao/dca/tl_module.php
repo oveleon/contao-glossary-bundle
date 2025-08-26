@@ -21,8 +21,8 @@ use Oveleon\ContaoGlossaryBundle\Controller\FrontendModule\GlossaryReaderControl
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'glossary_singleGroup';
 
 // Add palettes to tl_module
-$GLOBALS['TL_DCA']['tl_module']['palettes'][GlossaryListController::TYPE] = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule,glossary_hideEmptyGroups,glossary_singleGroup,glossary_utf8Transliteration;{template_legend},glossary_quickLinks,glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][GlossaryReaderController::TYPE] = '{title_legend},name,headline,type;{config_legend},glossary_archives,overviewPage,customLabel;{template_legend:hide},glossary_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][GlossaryListController::TYPE] = '{title_legend},name,headline,type;{config_legend},glossary_archives,glossary_readerModule,glossary_hideEmptyGroups,glossary_singleGroup,glossary_utf8Transliteration;{template_legend},glossary_quickLinks,glossary_template,customTpl;{image_legend:collapsed},imgSize;{protected_legend:collapsed},protected;{expert_legend:collapsed},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][GlossaryReaderController::TYPE] = '{title_legend},name,headline,type;{config_legend},glossary_archives,overviewPage,customLabel;{template_legend:collapsed},glossary_template,customTpl;{image_legend:collapsed},imgSize;{protected_legend:collapsed},protected;{expert_legend:collapsed},guests,cssID';
 
 // Add subpalettes to tl_module
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['glossary_singleGroup'] = 'glossary_letter';
@@ -47,14 +47,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_hideEmptyGroups'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
-    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+    'sql' => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_singleGroup'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true, 'tl_class' => 'clr'],
-    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+    'sql' => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_letter'] = [
@@ -70,14 +70,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_utf8Transliteration'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50 clr'],
-    'sql' => ['type' => 'string', 'length' => 1, 'default' => '1', 'fixed' => true],
+    'sql' => ['type' => 'boolean', 'default' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_quickLinks'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
-    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+    'sql' => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['glossary_template'] = [

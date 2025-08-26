@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Oveleon\ContaoGlossaryBundle\EventListener\DataContainer;
 
 use Contao\Backend;
-use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\Database;
@@ -26,15 +25,13 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Oveleon\ContaoGlossaryBundle\Security\ContaoGlossaryPermissions;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class GlossaryListener
 {
-    public function __construct(
-        private readonly AuthorizationCheckerInterface $security,
-    ) {
-    }
+    public function __construct(private readonly Security $security)
+    {}
 
     #[AsCallback(table: 'tl_glossary', target: 'list.operations.edit.button')]
     public function edit(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
@@ -64,7 +61,7 @@ class GlossaryListener
             $insertId = func_get_arg(1);
         }
 
-        $objUser = Controller::getContainer()->get('security.helper')->getUser();
+        $objUser = $this->security->getUser();
 
         if ($objUser->isAdmin)
         {

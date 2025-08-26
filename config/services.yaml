@@ -1,30 +1,20 @@
 services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-    public: true
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
 
-  _instanceof:
-    Contao\CoreBundle\Framework\FrameworkAwareInterface:
-      calls:
-        - [ setFramework, [ '@contao.framework' ] ]
+    _instanceof:
+        Contao\CoreBundle\Framework\FrameworkAwareInterface:
+            calls:
+                - [ setFramework, [ '@contao.framework' ] ]
 
-  Oveleon\ContaoGlossaryBundle\:
-    resource: '../src/'
-    exclude: '../src/{Model,DependencyInjection,Resources}'
+    Oveleon\ContaoGlossaryBundle\:
+        resource: '../src/'
+        exclude: '../src/{Model,DependencyInjection,Resources}'
 
-  Oveleon\ContaoGlossaryBundle\Controller\Api\GlossaryRouteController:
-    arguments:
-      - '@contao.framework'
-    tags:
-      - controller.service_arguments
-
-  contao_glossary.picker.glossary_provider:
-    class: Oveleon\ContaoGlossaryBundle\Picker\GlossaryPickerProvider
-    arguments:
-      - '@knp_menu.factory'
-      - '@router'
-      - '@?translator'
-      - '@security.helper'
-    tags:
-      - { name: contao.picker_provider, priority: 0 }
+    Oveleon\ContaoGlossaryBundle\Controller\GlossaryRouteController:
+        arguments:
+            - '@contao.framework'
+        tags:
+            - controller.service_arguments

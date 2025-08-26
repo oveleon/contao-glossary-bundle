@@ -16,10 +16,8 @@ declare(strict_types=1);
 namespace Oveleon\ContaoGlossaryBundle\Utils;
 
 use Contao\ArticleModel;
-use Contao\Config;
 use Contao\ContentModel;
 use Contao\Controller;
-use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Environment;
 use Contao\FilesModel;
@@ -126,7 +124,7 @@ trait GlossaryTrait
             }
             else
             {
-                $params = (self::useAutoItem() ? '/' : '/items/').($objItem->alias ?: $objItem->id);
+                $params = '/'.($objItem->alias ?: $objItem->id);
 
                 self::$arrUrlCache[$strCacheKey] = StringUtil::ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
             }
@@ -204,7 +202,7 @@ trait GlossaryTrait
         {
             $id = $objGlossaryItem->id;
 
-            $objTemplate->text = static function () use ($id)
+            $objTemplate->text = static function () use ($id): string
             {
                 $strText = '';
                 $objElement = ContentModel::findPublishedByPidAndTable($id, GlossaryItemModel::getTable());
@@ -220,7 +218,7 @@ trait GlossaryTrait
                 return $strText;
             };
 
-            $objTemplate->hasText = static fn () => ContentModel::countPublishedByPidAndTable($objGlossaryItem->id, GlossaryItemModel::getTable()) > 0;
+            $objTemplate->hasText = static fn (): bool => ContentModel::countPublishedByPidAndTable($objGlossaryItem->id, GlossaryItemModel::getTable()) > 0;
         }
 
         $objTemplate->addImage = false;
@@ -289,18 +287,6 @@ trait GlossaryTrait
     public function transliterateAscii(string $string): string
     {
         return (string) u($string)->ascii();
-    }
-
-    /**
-     * Checks weather auto_item should be used to provide BC.
-     *
-     * @deprecated - To be removed when contao 4.13 support ends
-     *
-     * @internal
-     */
-    public function useAutoItem(): bool
-    {
-        return str_starts_with(ContaoCoreBundle::getVersion(), '5.') ? true : Config::get('useAutoItem');
     }
 
     /**
@@ -466,14 +452,24 @@ trait GlossaryTrait
         {
             if ($objGlossary->protected)
             {
-                if (!$blnFeUserLoggedIn || !\is_array($user->groups))
+                if (!$blnFeUserLoggedIn)
                 {
                     continue;
                 }
-
+                if (!\is_array($user->groups))
+                {
+                    continue;
+                }
                 $groups = StringUtil::deserialize($objGlossary->groups);
-
-                if (empty($groups) || !\is_array($groups) || [] === array_intersect($groups, $user->groups))
+                if (empty($groups))
+                {
+                    continue;
+                }
+                if (!\is_array($groups))
+                {
+                    continue;
+                }
+                if ([] === array_intersect($groups, $user->groups))
                 {
                     continue;
                 }
@@ -494,6 +490,6 @@ trait GlossaryTrait
      */
     private function isRelativeUrl(mixed $varValue): bool
     {
-        return Validator::isUrl($varValue) && !preg_match('(^([0-9a-z+.-]+:|#|/|\{\{))i', (string) $varValue);
+        return Validator::isUrl($varValue) && \in_array(preg_match('(^([0-9a-z+.-]+:|#|/|\{\{))i', (string) $varValue), [0, false], true);
     }
 }

@@ -92,7 +92,7 @@ class GeneratePageListener
             foreach ($objGlossaryItems as $objGlossaryItem)
             {
                 // Check if keywords exist
-                if (array_filter($arrKeywords = StringUtil::deserialize($objGlossaryItem->keywords, true)))
+                if ([] !== array_filter($arrKeywords = StringUtil::deserialize($objGlossaryItem->keywords, true)))
                 {
                     switch ($objGlossaryItem->source)
                     {
@@ -132,7 +132,7 @@ class GeneratePageListener
                 if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
                 {
                     $responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
-                    $responseTagger->addTags(array_map(static fn ($id) => 'contao.db.tl_glossary_item.'.$id, array_column($arrGlossaryItems, 'id')));
+                    $responseTagger->addTags(array_map(static fn ($id): string => 'contao.db.tl_glossary_item.'.$id, array_column($arrGlossaryItems, 'id')));
                 }
             }
         }

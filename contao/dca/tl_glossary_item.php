@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 
 use Contao\BackendUser;
-use Contao\Config;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\System;
@@ -57,43 +56,25 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             ],
         ],
         'operations' => [
-            'edit' => [
-                'href' => 'table=tl_content',
-                'icon' => 'edit.svg',
-            ],
-            'editheader' => [
-                'href' => 'act=edit',
-                'icon' => 'header.svg',
-            ],
-            'copy' => [
-                'href' => 'act=paste&amp;mode=copy',
-                'icon' => 'copy.svg',
-            ],
-            'cut' => [
-                'href' => 'act=paste&amp;mode=cut',
-                'icon' => 'cut.svg',
-            ],
-            'delete' => [
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
-            ],
+            'edit',
+            'children',
+            'copy',
+            'cut',
+            'delete',
             'toggle' => [
                 'href' => 'act=toggle&amp;field=published',
                 'icon' => 'visible.svg',
+                'primary' => true,
                 'showInHeader' => true,
             ],
-            'show' => [
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-            ],
+            'show',
         ],
     ],
 
     // Palettes
     'palettes' => [
         '__selector__' => ['source', 'addImage', 'overwriteMeta'],
-        'default' => '{title_legend},keyword,alias;{keyword_legend:hide},keywords,sensitiveSearch;{source_legend:hide},source;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},subheadline,teaser;{image_legend},addImage;{expert_legend:hide},cssClass;{publish_legend},published',
+        'default' => '{title_legend},keyword,alias;{keyword_legend:collapsed},keywords,sensitiveSearch;{source_legend:collapsed},source;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},subheadline,teaser;{image_legend},addImage;{expert_legend:collapsed},cssClass;{publish_legend},published',
     ],
 
     // Subpalettes
@@ -101,7 +82,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
         'source_internal' => 'jumpTo',
         'source_article' => 'articleId',
         'source_external' => 'url,target',
-        'addImage' => 'singleSRC,size,floating,imagemargin,fullsize,overwriteMeta',
+        'addImage' => 'singleSRC,fullsize,size,floating,overwriteMeta',
         'overwriteMeta' => 'alt,imageTitle,imageUrl,caption',
     ],
 
@@ -125,7 +106,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'exclude' => true,
             'search' => true,
             'sorting' => true,
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'maxlength' => 128, 'tl_class' => 'w50'],
             'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
@@ -147,8 +128,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 clr m12'],
-            // ToDo -> Use boolean fields migration when Contao 4.13 support ends
-            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'pageTitle' => [
             'exclude' => true,
@@ -197,20 +177,20 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true],
-            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'overwriteMeta' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['overwriteMeta'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
-            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'singleSRC' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['singleSRC'],
             'exclude' => true,
             'inputType' => 'fileTree',
-            'eval' => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => Config::get('validImageTypes'), 'mandatory' => true],
+            'eval' => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'mandatory' => true],
             'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false, 'fixed' => true],
         ],
         'alt' => [
@@ -238,14 +218,6 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'options_callback' => static fn () => System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance()),
             'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
         ],
-        'imagemargin' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
-            'exclude' => true,
-            'inputType' => 'trbl',
-            'options' => ['px', '%', 'em', 'rem'],
-            'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'length' => 128, 'default' => ''],
-        ],
         'imageUrl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'],
             'exclude' => true,
@@ -259,7 +231,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 m12'],
-            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'caption' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['caption'],
@@ -314,7 +286,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 m12'],
-            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'cssClass' => [
             'exclude' => true,
@@ -326,10 +298,10 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'toggle' => true,
             'exclude' => true,
             'filter' => true,
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true],
-            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
     ],
 ];

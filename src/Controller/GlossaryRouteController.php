@@ -13,12 +13,11 @@ declare(strict_types=1);
  * @copyright   Oveleon               <https://www.oveleon.de/>
  */
 
-namespace Oveleon\ContaoGlossaryBundle\Controller\Api;
+namespace Oveleon\ContaoGlossaryBundle\Controller;
 
 use Contao\ContentModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\StringUtil;
 use Contao\System;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
@@ -26,8 +25,11 @@ use Oveleon\ContaoGlossaryBundle\Utils\GlossaryTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * @internal
+ */
 #[Route(path: '/api/glossary', defaults: ['_scope' => 'frontend'])]
 class GlossaryRouteController extends AbstractController
 {
@@ -35,46 +37,6 @@ class GlossaryRouteController extends AbstractController
 
     public function __construct(private readonly ContaoFramework $framework)
     {
-    }
-
-    #[Route(path: '/glossarizer', name: 'glossary_table')]
-    /**
-     * @deprecated since version 2.3 - to be removed in the future
-     */
-    public function showGlossarizer(): JsonResponse
-    {
-        $this->framework->initialize();
-
-        $objGlossaryItems = GlossaryItemModel::findAll();
-
-        $arrResponse = [];
-
-        if (null === $objGlossaryItems)
-        {
-            return new JsonResponse($arrResponse);
-        }
-
-        foreach ($objGlossaryItems as $objGlossaryItem)
-        {
-            $strTerm = $objGlossaryItem->keyword;
-
-            $arrKeywords = StringUtil::deserialize($objGlossaryItem->keywords, true);
-
-            foreach ($arrKeywords as $strKeyword)
-            {
-                if (!empty($strKeyword))
-                {
-                    $strTerm .= ', '.$strKeyword;
-                }
-            }
-
-            $arrResponse[] = [
-                'term' => $strTerm,
-                'description' => strip_tags($objGlossaryItems->teaser),
-            ];
-        }
-
-        return new JsonResponse($arrResponse);
     }
 
     #[Route(path: '/info', name: 'glossary_descriptions')]
@@ -155,9 +117,6 @@ class GlossaryRouteController extends AbstractController
         return new Response($this->parseItem($objGlossaryItem, $objGlossaryArchive->glossaryHoverCardTemplate, $objGlossaryArchive->hoverCardImgSize));
     }
 
-    /**
-     * Return error.
-     */
     private function error(string $msg, int $status): JsonResponse
     {
         return new JsonResponse(['message' => $msg, 'status' => $status], $status);

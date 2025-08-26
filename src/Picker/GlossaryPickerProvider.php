@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoGlossaryBundle\Picker;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsPickerProvider;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\CoreBundle\Picker\AbstractInsertTagPickerProvider;
@@ -23,22 +24,23 @@ use Contao\CoreBundle\Picker\PickerConfig;
 use Knp\Menu\FactoryInterface;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AsPickerProvider(priority: 0)]
 class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
     /**
-     * @internal Do not inherit from this class; decorate the "contao_glossary.picker.glossary_provider" service instead
+     * @internal
      */
     public function __construct(
         FactoryInterface $menuFactory,
         RouterInterface $router,
         TranslatorInterface|null $translator,
-        private readonly AuthorizationCheckerInterface $security,
+        private readonly Security $security,
     ) {
         parent::__construct($menuFactory, $router, $translator);
     }
@@ -48,12 +50,7 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         return 'glossaryPicker';
     }
 
-    /**
-     * Hint: picker provider interface must be compatible with Contao 4 and 5 so no type is given.
-     *
-     * @param string $context
-     */
-    public function supportsContext($context): bool
+    public function supportsContext(string $context): bool
     {
         return 'link' === $context && $this->security->isGranted('contao_user.modules', 'glossary');
     }
@@ -81,7 +78,7 @@ class GlossaryPickerProvider extends AbstractInsertTagPickerProvider implements 
         {
             $attributes['value'] = $this->getInsertTagValue($config);
 
-            if ($flags = $this->getInsertTagFlags($config))
+            if (($flags = $this->getInsertTagFlags($config)) !== [])
             {
                 $attributes['flags'] = $flags;
             }

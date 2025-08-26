@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 use Contao\BackendUser;
 use Contao\Controller;
-use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\System;
@@ -50,41 +49,21 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'format' => '%s',
         ],
         'global_operations' => [
-            'all' => [
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
-            ],
+            'all',
         ],
         'operations' => [
-            'edit' => [
-                'href' => 'act=edit',
-                'icon' => 'edit.svg',
-            ],
-            'children' => [
-                'href' => 'table=tl_glossary_item',
-                'icon' => 'children.svg',
-            ],
-            'copy' => [
-                'href' => 'act=copy',
-                'icon' => 'copy.svg',
-            ],
-            'delete' => [
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
-            ],
-            'show' => [
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-            ],
+            'edit',
+            'children',
+            'copy',
+            'delete',
+            'show',
         ],
     ],
 
     // Palettes
     'palettes' => [
         '__selector__' => ['protected'],
-        'default' => '{title_legend},title,jumpTo;{template_legend},glossaryHoverCardTemplate;{image_legend},hoverCardImgSize;{protected_legend:hide},protected',
+        'default' => '{title_legend},title,jumpTo;{template_legend},glossaryHoverCardTemplate;{image_legend},hoverCardImgSize;{protected_legend:collapsed},protected',
     ],
 
     // Subpalettes
@@ -136,8 +115,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true],
-            // ToDo -> Use boolean fields migration when Contao 4.13 support ends
-            'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'groups' => [
             'exclude' => true,
@@ -149,21 +127,3 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
         ],
     ],
 ];
-
-// Backwards compatibility for old icons and position
-$version = ContaoCoreBundle::getVersion();
-
-if (version_compare($version, '5', '<'))
-{
-    $GLOBALS['TL_DCA']['tl_glossary']['list']['operations']['edit']['icon'] = 'header.svg';
-    $GLOBALS['TL_DCA']['tl_glossary']['list']['operations']['children']['icon'] = 'edit.svg';
-
-    // Swap places for backwards compatibility
-    [
-        $GLOBALS['TL_DCA']['tl_glossary']['list']['operations']['children'],
-        $GLOBALS['TL_DCA']['tl_glossary']['list']['operations']['edit']
-    ] = [
-        $GLOBALS['TL_DCA']['tl_glossary']['list']['operations']['edit'],
-        $GLOBALS['TL_DCA']['tl_glossary']['list']['operations']['children'],
-    ];
-}

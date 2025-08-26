@@ -25,7 +25,7 @@ $GLOBALS['TL_DCA']['tl_page']['subpalettes']['activateGlossary'] = 'glossaryArch
 $GLOBALS['TL_DCA']['tl_page']['fields']['activateGlossary'] = [
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
-    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+    'sql' => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryArchives'] = [
@@ -56,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['glossaryConfigTemplate'] = [
 $GLOBALS['TL_DCA']['tl_page']['fields']['disableGlossary'] = [
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
-    'sql' => ['type' => 'string', 'length' => 1, 'default' => '', 'fixed' => true],
+    'sql' => ['type' => 'boolean', 'default' => false],
 ];
 
 // Extend the root palettes

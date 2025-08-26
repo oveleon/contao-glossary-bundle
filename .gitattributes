@@ -1,3 +1,7 @@
+/.gitattributes export-ignore
 /.github export-ignore
 /.gitignore export-ignore
 /docs export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/webpack.config.js export-ignore

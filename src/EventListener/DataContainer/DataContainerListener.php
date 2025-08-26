@@ -20,15 +20,13 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Oveleon\ContaoGlossaryBundle\Security\ContaoGlossaryPermissions;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class DataContainerListener
 {
     public function __construct(
         private readonly Connection $connection,
-        private readonly AuthorizationCheckerInterface $security,
-        private readonly TokenStorageInterface $tokenStorage,
+        private readonly Security $security,
     ) {
     }
 
@@ -39,7 +37,7 @@ class DataContainerListener
     #[AsCallback(table: 'tl_module', target: 'fields.glossary_archives.options')]
     public function getGlossaries(): array
     {
-        $user = $this->tokenStorage->getToken()?->getUser();
+        $user = $this->security->getUser();
 
         if (
             !$user instanceof BackendUser

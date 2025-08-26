@@ -22,15 +22,15 @@ use Contao\DataContainer;
 use Contao\Input;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ContentElementListener
 {
     public function __construct(
         private readonly Connection $connection,
         private readonly RequestStack $requestStack,
-        private readonly TokenStorageInterface $tokenStorage,
+        private readonly Security $security,
     ) {
     }
 
@@ -39,7 +39,7 @@ class ContentElementListener
      */
     public function checkPermission(DataContainer $dc): void
     {
-        $user = $this->tokenStorage->getToken()?->getUser();
+        $user = $this->security->getUser();
 
         if (!$user instanceof BackendUser || $user->isAdmin)
         {
@@ -87,6 +87,7 @@ class ContentElementListener
                     $this->checkAccessToElement((int) Input::get('pid'), $root, 2 === (int) Input::get('mode'));
                 }
 
+                // ToDo: Use connection or voters in the future...
                 $objCes = Database::getInstance()->prepare("SELECT id FROM tl_content WHERE ptable='tl_glossary_item' AND pid=?")
                     ->execute($dc->currentPid)
                 ;

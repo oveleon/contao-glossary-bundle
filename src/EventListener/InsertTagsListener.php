@@ -27,7 +27,7 @@ class InsertTagsListener
 {
     use GlossaryTrait;
 
-    private const SUPPORTED_TAGS = [
+    private const array SUPPORTED_TAGS = [
         'glossaryitem',
         'glossaryitem_open',
         'glossaryitem_url',

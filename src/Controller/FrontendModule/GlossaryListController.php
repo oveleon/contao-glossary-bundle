@@ -59,7 +59,7 @@ class GlossaryListController extends AbstractFrontendModuleController
         {
             $this->template = new BackendTemplate('be_wildcard');
         }
-        elseif ($model->glossary_readerModule > 0 && (isset($_GET['items']) || ($this->useAutoItem() && isset($_GET['auto_item']))))
+        elseif ($model->glossary_readerModule > 0 && (isset($_GET['items']) || (isset($_GET['auto_item']))))
         {
             // Show the glossary reader if an item has been selected
             return new Response(Controller::getFrontendModule($model->glossary_readerModule, $template->inColumn));
@@ -107,7 +107,7 @@ class GlossaryListController extends AbstractFrontendModuleController
         if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
         {
             $responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
-            $responseTagger->addTags(array_map(static fn ($id) => 'contao.db.tl_glossary.'.$id, $this->archiveIds));
+            $responseTagger->addTags(array_map(static fn ($id): string => 'contao.db.tl_glossary.'.$id, $this->archiveIds));
         }
 
         $this->renderGlossaryList();

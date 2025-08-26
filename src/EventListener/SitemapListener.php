@@ -22,11 +22,9 @@ use Contao\Database;
 use Contao\PageModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryItemModel;
 use Oveleon\ContaoGlossaryBundle\Model\GlossaryModel;
-use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-/**
- * @ServiceTag("kernel.event_listener", event=ContaoCoreEvents::SITEMAP)
- */
+#[AsEventListener(ContaoCoreEvents::SITEMAP)]
 class SitemapListener
 {
     public function __construct(private readonly ContaoFramework $framework)

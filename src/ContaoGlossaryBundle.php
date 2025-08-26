@@ -15,12 +15,15 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoGlossaryBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
-class ContaoGlossaryBundle extends Bundle
+class ContaoGlossaryBundle extends AbstractBundle
 {
-    public function getPath(): string
+    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        return \dirname(__DIR__);
+        $container->import('../config/listener.yaml');
+        $container->import('../config/services.yaml');
     }
 }

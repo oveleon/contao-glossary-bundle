@@ -86,7 +86,7 @@ class GlossaryItemListener
         $title = implode(
             '%s',
             array_map(
-                static fn ($strVal) => str_replace('%', '%%', System::getContainer()->get('contao.insert_tag.parser')->replaceInline($strVal)),
+                static fn (string $strVal) => str_replace('%', '%%', System::getContainer()->get('contao.insert_tag.parser')->replaceInline($strVal)),
                 explode('{{page::pageTitle}}', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}', 2),
             ),
         );
@@ -426,7 +426,7 @@ class GlossaryItemListener
     #[AsCallback(table: 'tl_glossary_item', target: 'config.onsubmit')]
     public function setGlossaryItemGroupByKeyword(DataContainer $dc): void
     {
-        $newGroup = mb_strtoupper(mb_substr($dc->activeRecord->keyword, 0, 1, 'UTF-8'));
+        $newGroup = mb_strtoupper(mb_substr((string) $dc->activeRecord->keyword, 0, 1, 'UTF-8'));
 
         if ($dc->activeRecord->letter !== $newGroup)
         {
