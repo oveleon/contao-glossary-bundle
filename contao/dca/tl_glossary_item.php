@@ -116,7 +116,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'alias', 'doNotCopy' => true, 'unique' => true, 'maxlength' => 255, 'tl_class' => 'w50 clr'],
-            'sql' => ['type' => 'binary', 'default' => ''],
+            'sql' => "varchar(255) BINARY NOT NULL default ''",
         ],
         'keywords' => [
             'exclude' => true,
@@ -135,7 +135,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'decodeEntities' => true, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'robots' => [
             'exclude' => true,
@@ -164,7 +164,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'long'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'teaser' => [
             'exclude' => true,
@@ -199,7 +199,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'imageTitle' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['imageTitle'],
@@ -207,7 +207,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'size' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['imgSize'],
@@ -224,7 +224,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'addWizardClass' => false, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'fullsize' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['fullsize'],
@@ -239,7 +239,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'floating' => [
             'label' => &$GLOBALS['TL_LANG']['tl_content']['floating'],
@@ -279,7 +279,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'addWizardClass' => false, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'target' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['target'],
@@ -292,7 +292,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'exclude' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'published' => [
             'toggle' => true,

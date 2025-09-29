@@ -84,7 +84,7 @@ $GLOBALS['TL_DCA']['tl_glossary'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'jumpTo' => [
             'exclude' => true,
