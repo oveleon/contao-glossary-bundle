@@ -108,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_glossary_item'] = [
             'sorting' => true,
             'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'text',
-            'eval' => ['mandatory' => true, 'maxlength' => 128, 'tl_class' => 'w50'],
+            'eval' => ['mandatory' => true, 'maxlength' => 128, 'basicEntities' => true,'tl_class' => 'w50'],
             'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
         ],
         'alias' => [
