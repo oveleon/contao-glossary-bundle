@@ -109,27 +109,7 @@ class SitemapListener
 
         foreach ($arrPages as $strUrl)
         {
-            $this->addUrlToDefaultUrlSet($strUrl, $event);
+            $event->addUrlToDefaultUrlSet($strUrl);
         }
-    }
-
-    private function addUrlToDefaultUrlSet(string $url, SitemapEvent $event): self
-    {
-        $sitemap = $event->getDocument();
-        $urlSet = $sitemap->getElementsByTagNameNS('https://www.sitemaps.org/schemas/sitemap/0.9', 'urlset')->item(0);
-
-        if (null === $urlSet)
-        {
-            return $this;
-        }
-
-        $loc = $sitemap->createElement('loc', $url);
-        $urlEl = $sitemap->createElement('url');
-        $urlEl->appendChild($loc);
-        $urlSet->appendChild($urlEl);
-
-        $sitemap->appendChild($urlSet);
-
-        return $this;
     }
 }
