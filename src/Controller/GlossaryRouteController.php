@@ -56,7 +56,7 @@ class GlossaryRouteController extends AbstractController
         foreach ($objGlossaryItems as $objGlossaryItem)
         {
             $arrResponse[$objGlossaryItem->id] = [
-                strip_tags($objGlossaryItem->teaser),
+                strip_tags((string) $objGlossaryItem->teaser),
             ];
         }
 
