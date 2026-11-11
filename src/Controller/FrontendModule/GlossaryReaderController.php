@@ -122,7 +122,7 @@ class GlossaryReaderController extends AbstractFrontendModuleController
 
     private function initialize(): Response|null
     {
-        if (null === Input::get('auto_item'))
+        if (null === $this->getAlias())
         {
             return $this->template->getResponse();
         }
@@ -143,7 +143,7 @@ class GlossaryReaderController extends AbstractFrontendModuleController
             $this->template->back = $this->translator->trans('MSC.goBack', [], 'contao_default');
         }
 
-        if (!($objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $this->archiveIds)) instanceof GlossaryItemModel)
+        if (!($objGlossaryItem = GlossaryItemModel::findPublishedByParentAndIdOrAlias($this->getAlias(), $this->archiveIds)) instanceof GlossaryItemModel)
         {
             throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
@@ -157,5 +157,10 @@ class GlossaryReaderController extends AbstractFrontendModuleController
         $this->template->glossaryentry = $arrGlossaryItem;
 
         $this->setResponseData($objGlossaryItem);
+    }
+
+    private function getAlias(): string|null
+    {
+        return Input::get('auto_item') ?: Input::get('items');
     }
 }
