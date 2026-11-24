@@ -44,20 +44,16 @@ class GlossaryRouteController extends AbstractController
     {
         $this->framework->initialize();
 
-        $objGlossaryItems = GlossaryItemModel::findAll();
-
         $arrResponse = [];
 
-        if (null === $objGlossaryItems)
+        foreach (GlossaryItemModel::findAll() ?? [] as $objGlossaryItem)
         {
-            return new JsonResponse($arrResponse);
-        }
-
-        foreach ($objGlossaryItems as $objGlossaryItem)
-        {
-            $arrResponse[$objGlossaryItem->id] = [
-                strip_tags((string) $objGlossaryItem->teaser),
-            ];
+            if ($objGlossaryItem->teaser)
+            {
+                $arrResponse[$objGlossaryItem->id] = [
+                    strip_tags($objGlossaryItem->teaser),
+                ];
+            }
         }
 
         return new JsonResponse($arrResponse);
